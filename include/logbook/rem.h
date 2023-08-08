@@ -58,7 +58,16 @@ struct  BOOK_PUBLIC source_location
 
 
 
+/**
+@brief remark entry.
 
+ ... Later, the rem class will no longer be managed using default static global stream as std::vector<std::string>.
+ The Application Book API would rather take ownership and the
+ control of the stream of rems as independant stream. So rem will only produce std::string
+
+@author &copy;2023, Serge Lussier (serge.lussier@oldlonecoder.club)
+
+ */
 class BOOK_PUBLIC rem
 {
 
