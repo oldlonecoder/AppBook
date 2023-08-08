@@ -1,0 +1,3 @@
+#chrtools.
+My personal touch to simple and quick string tool classes
+...
