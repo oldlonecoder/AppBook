@@ -11,13 +11,15 @@
  ***************************************************************************/
 
 
-#include <logbook/rem.h>
-#include <chrtools/strbrk.h>
+#include "logbook/rem.h"
+#include "chrtools/strbrk.h"
 #include <mutex>
 
+#warning "This is the development version."
 
 namespace book
 {
+
 std::mutex guard{};
 
 rem::memory rem::mem_stream;
@@ -577,8 +579,10 @@ rem& rem::tail()
     return rem::mem_stream.back();
 }
 
-
-
+rem::code rem::assign_stream(std::fstream* /* cstream_ptr */)
+{
+    return rem::notimplemented;
+}
 }
 
 

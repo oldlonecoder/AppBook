@@ -210,6 +210,7 @@ public:
     std::string cc();
     static void clear(std::function<void(rem& re)> fn);
     rem& tail();
+    static rem::code assign_stream(std::fstream* cstream);
 
 };
 
