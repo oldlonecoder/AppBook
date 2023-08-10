@@ -18,7 +18,12 @@ add_library(
         SHARED
         include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
         include/${TargetName}/rem.h                    src/rem.cc
-        # ...Will grow...
+                # ...Will grow...
+        include/${TargetName}/expect.h
+        include/${TargetName}/notify.h
+        include/${TargetName}/object.h                 src/object.cc
+        include/${TargetName}/text.h                   src/text.cc
+
 )
 
 
