@@ -15,12 +15,10 @@
 
 
 
-#include <chrtools/stracc.h>
-#include <chrtools/strbrk.h>
-#include <chrtools/Icons.h>
-#include <chrtools/accents.fr.h>
-#include <logbook/rem.h>
-#include <logbook/notify.h>
+#include "chrtools/Icons.h"
+#include "chrtools/accents.fr.h"
+#include "logbook/rem.h"
+#include "logbook/notify.h"
 
 namespace book
 {

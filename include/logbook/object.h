@@ -11,8 +11,8 @@
  ***************************************************************************/
 
 #pragma once
-#include <chrtools/stracc.h>
-#include <logbook/rem.h>
+#include "chrtools/stracc.h"
+#include "logbook/rem.h"
 
 namespace book {
 
