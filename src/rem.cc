@@ -232,30 +232,30 @@ rem::~rem()
 
 rem& rem::operator << (char c)
 {
-    guard.lock();
+    //guard.lock();
     _text << c;
-    guard.unlock();
+    //guard.unlock();
     return *this;
 }
 
 rem& rem::operator << (const char* c)
 {
-    guard.lock();
+    //guard.lock();
     _text << c;
-    guard.unlock();
+    //guard.unlock();
     return *this;
 }
 
 
-rem& rem::operator << (const std::string& str) {  guard.lock(); _text << str;  guard.unlock(); return *this; }
-rem& rem::operator << (const stracc& str) {  guard.lock(); _text << str; guard.unlock();  return *this; }
-rem& rem::operator << (Icon::Type ic) {  guard.lock(); _text << ic;  guard.unlock(); return *this; }
-rem& rem::operator << (Accent::Type ac) { guard.lock();_text << ac;             guard.unlock(); return *this; }
-rem& rem::operator << (color::type c)   { guard.lock();_text << c;              guard.unlock(); return *this; }
-rem& rem::operator << (chattr::pair p)  { guard.lock();_text << p;              guard.unlock(); return *this; }
-rem& rem::operator << (const point& p)  { guard.lock();_text << (std::string)p; guard.unlock();         return *this; }
-rem& rem::operator << (const dim& dd)   { guard.lock();_text << (std::string)dd;guard.unlock();         return *this; }
-rem& rem::operator << (const rect& dd)  { guard.lock();_text << (std::string)dd;guard.unlock();         return *this; }
+rem& rem::operator << (const std::string& str) {  /*guard.lock();*/ _text << str; /* guard.unlock();*/ return *this; }
+rem& rem::operator << (const stracc& str) {   _text << str; return *this; }
+rem& rem::operator << (Icon::Type ic) {  _text << ic;  return *this; }
+rem& rem::operator << (Accent::Type ac) { _text << ac; return *this; }
+rem& rem::operator << (color::type c)   { _text << c;  return *this; }
+rem& rem::operator << (chattr::pair p)  { _text << p;  return *this; }
+rem& rem::operator << (const point& p)  { _text << (std::string)p;   return *this; }
+rem& rem::operator << (const dim& dd)   { _text << (std::string)dd;  return *this; }
+rem& rem::operator << (const rect& dd)  { _text << (std::string)dd;  return *this; }
 
 
 
@@ -264,7 +264,7 @@ rem& rem::operator << (const rect& dd)  { guard.lock();_text << (std::string)dd;
 
 rem & rem::operator<<(rem::code c)
 {
-    guard.lock();
+
     switch(c)
     {
     case rem::begin:
@@ -301,7 +301,7 @@ rem & rem::operator<<(rem::code c)
     }
     break;
     }
-    guard.unlock();
+
     return *this;
 }
 
@@ -583,6 +583,6 @@ rem::code rem::assign_stream(std::fstream* /* cstream_ptr */)
 {
     return rem::notimplemented;
 }
+
+
 }
-
-
