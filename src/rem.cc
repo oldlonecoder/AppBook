@@ -15,7 +15,12 @@
 #include "chrtools/strbrk.h"
 #include <mutex>
 
-#warning "This is the development version."
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#   pragma message("Warning: This is the development version.")
+#else 
+#   warning "This is the development version."
+#endif
+
 
 namespace book
 {
