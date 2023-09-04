@@ -539,7 +539,13 @@ std::string rem::cc()
     if(ty != rem::output)
     {
         //Get the color pair from the application DB for the given rem::type:
-        str , color::White , '[' , p ,  Icon::Data[icon] ,  rem::text(ty) , color::White , "] ";
+        if(ty == rem::syntax)
+        {
+            auto [ic,sp] = rem::attributes(rem::error);
+            str , color::White , '[' , p ,  Icon::Data[icon] , sp, Icon::Data[ic], rem::text(ty) , ' ', rem::text(rem::error), "] ";
+        }
+        else
+            str , color::White , '[' , p ,  Icon::Data[icon] ,  rem::text(ty) , color::White , "] ";
     }
 
     if(loc)
