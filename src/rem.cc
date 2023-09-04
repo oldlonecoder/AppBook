@@ -17,7 +17,7 @@
 
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #   pragma message("Warning: This is the development version.")
-#else 
+#else
 #   warning "This is the development version."
 #endif
 
@@ -27,7 +27,12 @@ namespace book
 
 std::mutex guard{};
 
+
+
+
 rem::memory rem::mem_stream;
+chattr::format rem::gencoding = chattr::format::ansi256;
+
 int rem::_indentation = 0;
 
 
@@ -280,14 +285,19 @@ rem & rem::operator<<(rem::code c)
         break;
     case rem::endl:
     {
-        //if(encode == chattr::format::ansi256)
-        //{
-            _text , '\n';
-            //str_acc.fill(0x20, indent);
-        //}
-        //else
-        //    if(encode == chattr::format::html)
-        //        str_acc , "<br />";
+
+        switch(rem::gencoding)
+        {
+            case  chattr::format::ansi256:
+                _text , attr<chattr::format::ansi256>::endl();
+            break;
+            case chattr::format::html:
+                _text , attr<chattr::format::html>::endl();
+            break;
+            default:
+                _text = '\n';
+            break;
+        }
         break;
     }
     case rem::stamp:

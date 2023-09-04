@@ -132,7 +132,9 @@ public:
     static constexpr code weekday          = 4004;
 private:
     using memory = std::vector<rem>;
+
     static rem::memory mem_stream;
+    static chattr::format gencoding;
     stracc _text{};
     rem::code co = 0;
     rem::type ty = 0;
