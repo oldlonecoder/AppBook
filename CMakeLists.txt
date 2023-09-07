@@ -23,6 +23,7 @@ add_library(
         include/${TargetName}/notify.h
         include/${TargetName}/object.h                 src/object.cc
         include/${TargetName}/text.h                   src/text.cc
+        include/${TargetName}/Book.h                   src/book.cc
 
 )
 

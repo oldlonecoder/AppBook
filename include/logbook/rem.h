@@ -123,6 +123,7 @@ public:
     static constexpr code overflow         = 27; ///< buffer overflow
     static constexpr code oob              = 28; ///< buffer overflow
     static constexpr code need_reimplement = 29;
+    static constexpr code commit           = 30;
     static constexpr code function         = 1000;
     static constexpr code file             = 1001;
     static constexpr code line             = 1002;
@@ -210,9 +211,10 @@ public:
     static rem::attribute_data& attributes(rem::code c);
     static rem::attribute_data& attributes(rem::type t);
     std::string cc();
-    static void clear(std::function<void(rem& re)> fn);
+    static void clear(std::function<void(rem& re)> fn=nullptr);
     rem& tail();
     static rem::code assign_stream(std::fstream* cstream);
+
 
 };
 

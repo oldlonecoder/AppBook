@@ -155,6 +155,7 @@ std::map<rem::code, const char*> _ = {
     {rem::overflow,       "buffer overflow"},
     {rem::oob,            "out of boundaries"},
     {rem::need_reimplement,"need to be re-implemented in derived instances"},
+    {rem::commit,         " "},
     {rem::hour,           "hour"},
     {rem::minute,         "minute"},
     {rem::seconds,        "seconds"},
@@ -277,6 +278,9 @@ rem & rem::operator<<(rem::code c)
 
     switch(c)
     {
+    case rem::commit:
+        std::cout << cc() << '\n'; // for now.
+        break;
     case rem::begin:
         _indent = rem::indent();
         break;
