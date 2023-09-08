@@ -38,6 +38,10 @@
 #include "chrtools/geometry.h"
 #include "logbook/public.h"
 
+
+class Book;
+
+
 namespace book
 {
 
@@ -131,10 +135,9 @@ public:
     static constexpr code minute           = 4002;
     static constexpr code seconds          = 4003;
     static constexpr code weekday          = 4004;
-private:
     using memory = std::vector<rem>;
-
-    static rem::memory mem_stream;
+private:
+    static rem::memory global_stream;
     static chattr::format gencoding;
     stracc _text{};
     rem::code co = 0;

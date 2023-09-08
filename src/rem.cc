@@ -30,7 +30,7 @@ std::mutex guard{};
 
 
 
-rem::memory rem::mem_stream;
+rem::memory rem::global_stream;
 chattr::format rem::gencoding = chattr::format::ansi256;
 
 int rem::_indentation = 0;
@@ -362,166 +362,166 @@ rem::attribute_data &rem::attributes(rem::type t)
 rem& rem::push_error(source_location &&loc_)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::error,std::move(loc_));
+    rem::global_stream.emplace_back(rem::error,std::move(loc_));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_warning(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::warning,std::move(loc));
+    rem::global_stream.emplace_back(rem::warning,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_fatal(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::fatal,std::move(loc));
+    rem::global_stream.emplace_back(rem::fatal,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_except(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::except,std::move(loc));
+    rem::global_stream.emplace_back(rem::except,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_message(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::message,std::move(loc));
+    rem::global_stream.emplace_back(rem::message,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::out(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::output,std::move(loc));
+    rem::global_stream.emplace_back(rem::output,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_debug(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::debug,std::move(loc));
+    rem::global_stream.emplace_back(rem::debug,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_info(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::info,std::move(loc));
+    rem::global_stream.emplace_back(rem::info,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_comment(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::comment,std::move(loc));
+    rem::global_stream.emplace_back(rem::comment,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_syntax(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::syntax,std::move(loc));
+    rem::global_stream.emplace_back(rem::syntax,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_status(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::status,std::move(loc));
+    rem::global_stream.emplace_back(rem::status,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_test(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::test,std::move(loc));
+    rem::global_stream.emplace_back(rem::test,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_interrupted(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::interrupted,std::move(loc));
+    rem::global_stream.emplace_back(rem::interrupted,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_aborted(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::aborted,std::move(loc));
+    rem::global_stream.emplace_back(rem::aborted,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem& rem::push_segfault(source_location &&loc)
 {
     guard.lock();
-    if(!rem::mem_stream.empty())
-        rem::mem_stream.back() << rem::endl;
+    if(!rem::global_stream.empty())
+        rem::global_stream.back() << rem::endl;
 
-    rem::mem_stream.emplace_back(rem::segfault,std::move(loc));
+    rem::global_stream.emplace_back(rem::segfault,std::move(loc));
     guard.unlock();
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 
@@ -587,7 +587,7 @@ std::string rem::cc()
 
 void rem::clear(std::function<void(rem& le)> fn)
 {
-    for (auto& e : rem::mem_stream)
+    for (auto& e : rem::global_stream)
     {
         if(fn)
             fn(e);
@@ -595,13 +595,13 @@ void rem::clear(std::function<void(rem& le)> fn)
             std::cout << e.cc();
         e._text.clear();
     }
-    rem::mem_stream.clear();
+    rem::global_stream.clear();
 }
 
 
 rem& rem::tail()
 {
-    return rem::mem_stream.back();
+    return rem::global_stream.back();
 }
 
 rem::code rem::assign_stream(std::fstream* /* cstream_ptr */)

@@ -14,14 +14,33 @@
 #pragma once
 #include <logbook/rem.h>
 #include <fstream>
+#include <logbook/object.h>
+
 //#include <chrtools/textattr.h>
 
 using book::source_location;
+
+
+
+
+/*!
+ * \brief The Book class
+ *
+ *
+ *
+ * \code
+ * Book;
+ * //...
+ * Book::error(HERE) << " Fonctionnement usuel de rem... " << rem::commit;
+ */
 
 class BOOK_PUBLIC Book
 {
 
     std::ofstream* out_stream{nullptr}; ///< Output stream address.
+
+    static Book* _Book;
+    chattr::format _format{chattr::format::ansi256};
 
 
 public:
@@ -33,31 +52,54 @@ public:
         bool immediate;
     };
 
+    struct BOOK_PUBLIC section : public book::object
+    {
+        section(const std::string& atitle);
+        ~section() override;
+
+
+    };
+
+    struct BOOK_PUBLIC bloc :public book::object
+    {
+        book::rem::memory content;
+        bloc(const std::string atitle);
+
+        ~bloc() override;
+
+        book::rem& error(source_location&& src={});
+        book::rem& out(source_location&& src={});
+        book::rem& warning(source_location&& src={});
+        book::rem& fatal(source_location&& src={});
+        book::rem& except(source_location&& src={});
+        book::rem& message(source_location&& src={});
+        book::rem& debug(source_location&& src={});
+        book::rem& info(source_location&& src={});
+        book::rem& comment(source_location&& src={});
+        book::rem& syntax(source_location&& src={});
+        book::rem& status(source_location&& src={});
+        book::rem& test(source_location&& src={});
+        book::rem& interrupted(source_location&& src={});
+        book::rem& aborted(source_location&& src={});
+        book::rem& segfault(source_location&& src={});
+    };
+
+
+
     Book();
 
     config_data& config() { return conf; }
 
-    static book::rem& error(source_location&& src={});
-    static book::rem& out(source_location&& src={});
-    static book::rem& warning(source_location&& src={});
-    static book::rem& fatal(source_location&& src={});
-    static book::rem& except(source_location&& src={});
-    static book::rem& message(source_location&& src={});
-    static book::rem& debug(source_location&& src={});
-    static book::rem& info(source_location&& src={});
-    static book::rem& comment(source_location&& src={});
-    static book::rem& syntax(source_location&& src={});
-    static book::rem& status(source_location&& src={});
-    static book::rem& test(source_location&& src={});
-    static book::rem& interrupted(source_location&& src={});
-    static book::rem& aborted(source_location&& src={});
-    static book::rem& segfault(source_location&& src={});
+    static Book::bloc* log_scope();
+    static Book::bloc& new_bloc(const std::string& atitle);
 
 private:
     config_data conf;
 
+    Book::bloc* current{nullptr};
 
 };
+
 
 
 
