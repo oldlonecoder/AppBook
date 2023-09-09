@@ -43,6 +43,11 @@ Book::bloc::bloc(const std::string atitle): object(Book::log_scope(), atitle)
 
 }
 
+Book::bloc::~bloc()
+{
+
+}
+
 rem& Book::bloc::error(source_location&& src)
 {
     if(!content.empty())
