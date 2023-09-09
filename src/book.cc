@@ -20,6 +20,21 @@ Book::Book()
     //...
 }
 
+
+Book::section::section(const std::string& atitle)
+{
+
+}
+
+Book::section::~section()
+{
+
+}
+
+
+
+
+
 Book::bloc* Book::log_scope()
 {
     if(Book::_Book)
@@ -42,6 +57,8 @@ Book::bloc::bloc(const std::string atitle): object(Book::log_scope(), atitle)
 {
 
 }
+
+Book::bloc::bloc(object* parent_obj, const std::string& atitle): book::object(parent_obj, atitle){}
 
 Book::bloc::~bloc()
 {

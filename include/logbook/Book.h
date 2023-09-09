@@ -52,18 +52,29 @@ public:
         bool immediate;
     };
 
-    struct BOOK_PUBLIC section : public book::object
-    {
-        section(const std::string& atitle);
-        ~section() override;
-
-
-    };
-
+    /*!
+     * \brief The bloc class
+     *
+     * \note ex.: Book["section::subject"]["bloc-id?"].error(HERE) << "...";
+     *    //...
+     *    Book::bloc& arith = Book::address["Runtime"]["arithmetics-dev"];
+     *    //...
+     *    if(alu_fail)
+     *        throw airth.except(HERE) << " alu: division by zero";
+     *    //...
+     *    arith.debug(HERE)(.../xio.cc line 340; function: collapse_closepair( xio* ) ) << " debug trace...";
+     *
+     *    //...
+     *    Book::select("section-id/bloc-id);
+     *    Book::out() << " salutation!";
+     *
+     *    Enlever Book::bloc qui est superflu. Déplacer bloc à-même la section - donc bloc devient Book::Section.
+     */
     struct BOOK_PUBLIC bloc :public book::object
     {
         book::rem::memory content;
         bloc(const std::string atitle);
+        bloc(book::object* parent_obj /* Normally Book::section* */, const std::string& atitle);
 
         ~bloc() override;
 
@@ -85,6 +96,20 @@ public:
     };
 
 
+    /*!
+     * \brief The section class
+     */
+    struct BOOK_PUBLIC section : public book::object
+    {
+        section(const std::string& atitle);
+        ~section() override;
+
+        Book::bloc& new_bloc(const std::string& atitle);
+
+
+
+    };
+
 
     Book();
 
@@ -99,6 +124,7 @@ private:
     Book::bloc* current{nullptr};
 
 };
+
 
 
 
