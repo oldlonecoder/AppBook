@@ -560,17 +560,17 @@ std::string rem::cc()
     {
         if(!loc.filename.empty())
         {
-            strbrk txt(std::string(loc.filename.data()),"/",false);
-            strbrk::token_t::list l;
-            auto cnt = txt(l,"/",false);
+            strbrk txt;
+            txt.config() = { loc.filename.data(),"/",strbrk::discard};
+            auto& data = txt.config();
+            auto cnt = txt();
             ///@todo check cnt....
 
             str , color::White , '[';
             str , color::CadetBlue2 , Icon::Folder;
             if(cnt>1)
                 str , ".../";
-
-            str , l.back()() , color::White , ']';
+            str , data.words.back()() , color::White , ']';
         }
         if(loc.line > 0)
         {
