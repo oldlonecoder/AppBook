@@ -106,18 +106,22 @@ rem::code_attribute_table rem::codes_data = {
 std::string rem::text(rem::type ty)
 {
     std::map<rem::type, const char*> _ = {
-        {error  , "error"   },
-        {warning, "warning" },
-        {fatal  , "fatal"   },
-        {except , "except"  },
-        {message, "message" },
-        {output , "output"  },
-        {debug  , "debug"   },
-        {info   , "info"    },
-        {comment, "comment" },
-        {syntax , "syntax"  },
-        {status , "status"  },
-        {test   , "test"    }
+        {rem::none, "none"},
+        {rem::error,"error"},
+        {rem::warning,"warning"},
+        {rem::fatal, "fatal"},
+        {rem::except,"expection"},
+        {rem::message, "message"},
+        {rem::output,""},
+        {rem::debug,"debug"},
+        {rem::info,"information"},
+        {rem::comment,"comment"},
+        {rem::syntax,"syntax error"},
+        {rem::status,"status"},
+        {rem::test,"test"},
+        {rem::interrupted,"interrupted"},
+        {rem::aborted,"aborted"},
+        {rem::segfault,"segmentation fault"}
     };
     return _[ty];
 }
