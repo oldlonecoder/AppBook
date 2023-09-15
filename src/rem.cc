@@ -561,9 +561,8 @@ std::string rem::cc()
         if(!loc.filename.empty())
         {
             strbrk txt;
-            txt.config() = { loc.filename.data(),"/",strbrk::discard};
-            auto& data = txt.config();
-            auto cnt = txt();
+            strbrk::config_data data = { loc.filename.data(),"/",strbrk::discard};
+            auto cnt = txt(data);
             ///@todo check cnt....
 
             str , color::White , '[';
