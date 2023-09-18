@@ -57,12 +57,12 @@ public:
      *
      * \note ex.: Book["section::subject"]["bloc-id?"].error(HERE) << "...";
      *    //...
-     *    Book::bloc& arith = Book::address["Runtime"]["arithmetics-dev"];
+     *    Book::bloc& aro = Book::address["Runtime"]["arithmetics-dev"];
      *    //...
      *    if(alu_fail)
-     *        throw airth.except(HERE) << " alu: division by zero";
+     *        throw aro.except(HERE) << " alu: division by zero";
      *    //...
-     *    arith.debug(HERE)(.../xio.cc line 340; function: collapse_closepair( xio* ) ) << " debug trace...";
+     *    aro.debug(HERE)(.../xio.cc line 340; function: collapse_closepair( xio* ) ) << " debug trace...";
      *
      *    //...
      *    Book::select("section-id/bloc-id);
@@ -78,21 +78,21 @@ public:
 
         ~bloc() override;
 
-        book::rem& error(source_location&& src={});
-        book::rem& out(source_location&& src={});
-        book::rem& warning(source_location&& src={});
-        book::rem& fatal(source_location&& src={});
-        book::rem& except(source_location&& src={});
-        book::rem& message(source_location&& src={});
-        book::rem& debug(source_location&& src={});
-        book::rem& info(source_location&& src={});
-        book::rem& comment(source_location&& src={});
-        book::rem& syntax(source_location&& src={});
-        book::rem& status(source_location&& src={});
-        book::rem& test(source_location&& src={});
-        book::rem& interrupted(source_location&& src={});
-        book::rem& aborted(source_location&& src={});
-        book::rem& segfault(source_location&& src={});
+        book::rem& error        (source_location&& src={});
+        book::rem& out          (source_location&& src={});
+        book::rem& warning      (source_location&& src={});
+        book::rem& fatal        (source_location&& src={});
+        book::rem& except       (source_location&& src={});
+        book::rem& message      (source_location&& src={});
+        book::rem& debug        (source_location&& src={});
+        book::rem& info         (source_location&& src={});
+        book::rem& comment      (source_location&& src={});
+        book::rem& syntax       (source_location&& src={});
+        book::rem& status       (source_location&& src={});
+        book::rem& test         (source_location&& src={});
+        book::rem& interrupted  (source_location&& src={});
+        book::rem& aborted      (source_location&& src={});
+        book::rem& segfault     (source_location&& src={});
     };
 
 
@@ -117,6 +117,23 @@ public:
 
     static Book::bloc* log_scope();
     static Book::bloc& new_bloc(const std::string& atitle);
+
+
+    //static book::rem& error(source_location&& src = {});
+    //static book::rem& out(source_location&& src = {});
+    //static book::rem& warning(source_location&& src = {});
+    //static book::rem& fatal(source_location&& src = {});
+    //static book::rem& except(source_location&& src = {});
+    //static book::rem& message(source_location&& src = {});
+    //static book::rem& debug(source_location&& src = {});
+    //static book::rem& info(source_location&& src = {});
+    //static book::rem& comment(source_location&& src = {});
+    //static book::rem& syntax(source_location&& src = {});
+    //static book::rem& status(source_location&& src = {});
+    //static book::rem& test(source_location&& src = {});
+    //static book::rem& interrupted(source_location&& src = {});
+    //static book::rem& aborted(source_location&& src = {});
+    //static book::rem& segfault(source_location&& src = {});
 
 private:
     config_data conf;
