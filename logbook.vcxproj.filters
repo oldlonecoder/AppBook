@@ -36,7 +36,7 @@
     <ClInclude Include="include\logbook\Book.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\logbook\cmdarg.h">
+    <ClInclude Include="include\logbook\cargs.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClCompile Include="src\book.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\cmdarg.cc">
+    <ClCompile Include="src\cargs.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
