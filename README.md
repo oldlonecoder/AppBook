@@ -1,4 +1,6 @@
 #logbook
-#### List of main components classes:
+#### Depends on [chrtools](https://github.com/oldlonecoder/chrtools)
 
 My personal c++ not modern touch to log book and support tools.
+
+###
