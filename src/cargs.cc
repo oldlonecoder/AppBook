@@ -4,12 +4,12 @@ namespace book::cmd
 
 argdata null_arg;
 
-book::cmd::cargs::~cargs()
+cargs::~cargs()
 {
     args.clear();
 }
 
-argdata& book::cmd::cargs::query(const std::string& sw)
+argdata& cargs::query_switch(const std::string& sw)
 {
     for (auto& a : args)
     {
@@ -19,7 +19,7 @@ argdata& book::cmd::cargs::query(const std::string& sw)
     return null_arg;
 }
 
-argdata& book::cmd::cargs::operator<<(argdata&& a)
+argdata& cargs::operator<<(argdata&& a)
 {
     args.emplace_back(std::move(a));
     return args.back();
@@ -28,10 +28,34 @@ argdata& book::cmd::cargs::operator<<(argdata&& a)
 
 
 
-bool book::cmd::argdata::operator!()
+bool argdata::operator!()
 {
     return sw_char.empty() || sw_text.empty();
 }
 
+rem::code cargs::process(int argc, char** argv)
+{
+    argdata& arg = null_arg; // Init with dummy argdata 
+
+    for (int i = 1; i < argc; i++)
+    {
+        auto const* carg = argv[i];
+        auto & next_arg = query_switch(carg);
+        if(!next_arg)
+        {
+            if ((arg.required > arg.count) && (arg.required > 0)) // first pass it is the same as null_arg then use the defaults args
+            {
+                arg.arguments.push_back(carg);
+                ++arg.count;
+            }
+            else
+                defaults.arguments.push_back(carg);
+            continue;
+        }
+        else
+            arg = next_arg;   
+    }
+    return rem::notimplemented;
+}
 
 }
