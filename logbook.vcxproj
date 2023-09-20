@@ -138,6 +138,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\logbook\Book.h" />
+    <ClInclude Include="include\logbook\cmdarg.h" />
     <ClInclude Include="include\logbook\expect.h" />
     <ClInclude Include="include\logbook\notify.h" />
     <ClInclude Include="include\logbook\object.h" />
@@ -147,6 +148,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\book.cc" />
+    <ClCompile Include="src\cmdarg.cc" />
     <ClCompile Include="src\object.cc" />
     <ClCompile Include="src\rem.cc" />
     <ClCompile Include="src\text.cc" />
