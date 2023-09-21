@@ -23,7 +23,8 @@ struct BOOK_PUBLIC argdata
 
     notify<const argdata&> callback;
     data                   arguments{};
-    
+    bool                   uses{ false };
+
     bool operator !();
 };
 
@@ -36,10 +37,12 @@ class BOOK_PUBLIC cargs
 public:
     cargs() = default;
     ~cargs();
-    argdata& query_switch(const std::string& sw);
+    argdata::iterator query_switch(const std::string& sw);
     argdata& operator << (argdata&& a);
 
     rem::code process(int argc, char** argv);
+
+    std::string usage();
 
 };
 
