@@ -41,7 +41,7 @@ public:
     argdata& operator << (argdata&& a);
 
     rem::code process(int argc, char** argv);
-
+    rem::code set_default_callback(notify<const argdata&>::slot slot);
     std::string usage();
 
 };

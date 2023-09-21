@@ -34,7 +34,7 @@ rem::code cargs::process(int argc, char** argv)
         auto next_arg = query_switch(carg);
         if(next_arg == args.end())
         {
-            if ((arg->required > arg->count) && (arg->required > 0)) // first pass it is the same as null_arg then use the defaults args
+            if ((arg != args.end()) && (arg->required > arg->count) && (arg->required > 0)) // first pass it is the same as null_arg then use the defaults args)
             {
                 rem::push_debug(HERE) << " adding argument '" << color::Yellow << carg << color::Reset << "' to '" << color::LighcoreateBlue << arg->name << '\'' << rem::commit;
                 arg->arguments.push_back(carg);
@@ -60,7 +60,16 @@ rem::code cargs::process(int argc, char** argv)
             (void)arg.callback(arg);
     }
 
+    rem::push_debug(HERE) << " Executing defaults callbacks:" << rem::commit;
+    defaults.callback(defaults);
+
     return rem::notimplemented;
+}
+
+rem::code cargs::set_default_callback(notify<const argdata&>::slot slot)
+{
+    defaults.callback.connect(slot);
+    return rem::ok;
 }
 
 bool argdata::operator !()
@@ -72,10 +81,11 @@ std::string cargs::usage()
 {
     stracc str;
     str << "usage:\n";
-    str << "------------------------------------------------------\n";
+    str << "--------------------------------------------------------------------------\n";
     for (auto const& arg : args)
     {
         str << "%-2s | %-15s | %s" << arg.sw_char << arg.sw_text << arg.description << "\n";
+        str << "--------------------------------------------------------------------------\n";
     }
     return str();
 }

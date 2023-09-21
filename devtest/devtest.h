@@ -20,7 +20,7 @@ public:
     expect<> option_1(const cmd::argdata& arg);
     expect<> option_2(const cmd::argdata& arg);
     expect<> option_3(const cmd::argdata& arg);
-
+    expect<> default_args(const cmd::argdata& arg);
     book::rem::code setup_cmdline_args(int argc, char **argv);
 };
 
