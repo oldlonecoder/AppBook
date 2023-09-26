@@ -24,6 +24,7 @@ add_library(
         include/${TargetName}/object.h                 src/object.cc
         include/${TargetName}/text.h                   src/text.cc
         include/${TargetName}/Book.h                   src/book.cc
+        include/${TargetName}/cargs.h                  src/cargs.cc
 
 )
 

@@ -43,7 +43,7 @@ public:
 
     notify& operator=(notify const& other) {
         if (this != &other) {
-            disconnect_all();
+            _slots = other._slots;
         }
         return *this;
     }
@@ -111,7 +111,10 @@ public:
     //// Calls all connected functions.
     expect<> operator()(Args... p) {
         if (_slots.empty())
-            return rem::accepted;
+        {
+            rem::push_warning(HERE) << " no notify slot." << rem::commit;
+            return rem::notexist;
+        }
         expect<> R;
         for (auto const&fn : _slots) {
             R = fn(p...);
