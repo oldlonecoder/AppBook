@@ -13,7 +13,7 @@ devtest::devtest(const std::string& test_name)
 {
 }
 
-expect<> devtest::option_1(const cmd::argdata& arg)
+rem::code devtest::option_1(const cmd::argdata<devtest>& arg)
 {
     rem::push_message(HERE) << "arguments:" << rem::commit;
     for (auto const& str : arg.arguments)
@@ -25,7 +25,7 @@ expect<> devtest::option_1(const cmd::argdata& arg)
     return rem::accepted;
 }
 
-expect<> devtest::option_2(const cmd::argdata& arg)
+rem::code devtest::option_2(const cmd::argdata<devtest>& arg)
 {
     rem::push_message(HERE) << "arguments:" << rem::commit;
     for (auto const& str : arg.arguments)
@@ -37,7 +37,7 @@ expect<> devtest::option_2(const cmd::argdata& arg)
     return rem::accepted;
 }
 
-expect<> devtest::option_3(const cmd::argdata& arg)
+rem::code devtest::option_3(const cmd::argdata<devtest>& arg)
 {
     rem::push_message(HERE) << "arguments:" << rem::commit;
     for (auto const& str : arg.arguments)
@@ -49,7 +49,7 @@ expect<> devtest::option_3(const cmd::argdata& arg)
     return rem::accepted;
 }
 
-expect<> devtest::default_args(const cmd::argdata& arg)
+rem::code devtest::default_args(const cmd::argdata<devtest>& arg)
 {
     rem::push_message(HERE) << "arguments:" << rem::commit;
     for (auto const& str : arg.arguments)
@@ -64,15 +64,12 @@ expect<> devtest::default_args(const cmd::argdata& arg)
 
 rem::code devtest::setup_cmdline_args(int argc, char** argv)
 {
-    cmd::argdata& a = cmdargs << cmd::argdata{"Expression", "-e", "--expression", "evaluate expression from the command line.", 1};
-    a.callback.connect(this, &devtest::option_1);
-    cmd::argdata& b = cmdargs << cmd::argdata{"Source File", "-f", "--source", "source file.", 1 };
-    b.callback.connect(this, &devtest::option_2);
-    cmd::argdata& c = cmdargs << cmd::argdata{"Source Files", "", "", "source files."};
-    c.callback.connect(this, &devtest::option_3);
+    cmdargs << cmd::argdata<devtest>{this, &devtest::option_1,"Expression", "-e", "--expression", "evaluate expression from the command line.", 1};
+    cmd::argdata<devtest>& b = cmdargs << cmd::argdata<devtest>{this, &devtest::option_2,"Source File", "-f", "--source", "source file.", 1 };
+    cmd::argdata<devtest>& c = cmdargs << cmd::argdata<devtest>{this, &devtest::option_3,"Source Files", "", "", "source files."};
 
-    cmdargs.set_default_callback([this](const cmd::argdata& a)->expect<> { return default_args(a); });
-    
+    cmdargs.set_default_callback(&devtest::default_args);
+
     rem::push_debug(HERE) << " usage:" << rem::commit;
     rem::out() << cmdargs.usage() << rem::commit;
 
