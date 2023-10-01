@@ -1,215 +1,110 @@
 #include "logbook/Book.h"
 
+#include <exception>
+#include <filesystem>
 
 
-Book* Book::_Book = nullptr;
+using book::code;
+using book::cat;
+
+Book* Book::__Application_Book__{nullptr};
 
 
+code Book::init(const std::string &book_name)
+{
+    if(Book::__Application_Book__) return code::exist;
 
-using book::rem;
+    Book::__Application_Book__ = new Book(book_name);
+
+    // --- Initialise env and filesystem / or the future sqlite database. Create it if not exists, open if exists.
+    using fs = std::filesystem;
+    stracc loc = fs::current_path();
+    loc << id() <<".Book";
+    if(! fs::exists(loc()) )
+        fs::create_directory(loc());
+    fs::current_path(loc());
+
+    out_stream = &std::cout; // By default we set our out_stream to the address of the console's stdout. Subsequent creations of stack of elements will
+                             // set it to the given output stream file / or not,  so out_stream always points to a valid output file.
+
+
+    return code::accepted;
+}
+
+
 
 
 Book::Book()
 {
-    if(Book::_Book)
-    {
-        book::rem::push_error(HEREF) << " Attemps to instanciate singleton Book object - Forbidden!";
-        return;
-    }
-    _Book = this;
+    Book::__Application_Book__ = this;
+}
+
+Book::~Book()
+{
+    Book::__Application_Book__ = nullptr;
+    //... Sections Chaining clear...
     //...
+    for(auto* s: sections) delete s;
+
 }
 
 
-Book::section::section(const std::string& atitle)
+/*!
+ * \brief Book::open  If the directory and subdirs already exist, then the Book select the last section created.
+ * \return code::accepted
+ * \author &copy; 2023, oldlonecoder ( serge.lussier@oldlonecoder.club )
+ *
+ * \note At the call of this method, the filesystem must already be positionned into the "$id().Book" subdirectory!
+ */
+book::rem::code Book::open()
+{
+    struct ent
+    {
+        bool is_set = false;
+        fs::file_time_type htime;
+        fs::directory_entry entry;
+    }last_entry;
+
+    fs::file_time_type htime;
+    for(const auto& item : fs::directory_iterator(fs::current_path()))
+    {
+        if(entry.is_directory())
+        {
+            auto const& tp = entry.last_write_time();
+            if(htime < tp)
+            {
+                last_entry.is_set = true;
+                last_entry.entry = entry;
+                last_entry.htime = tp;
+            }
+        }
+    }
+    if(!last_entry.is_set) return code::rejected;
+    //...
+
+    return code::success;
+}
+
+book::rem::code Book::close()
 {
 
 }
 
-Book::section::~section()
-{
 
+Book::Book(const std::string &book_id):book::object(nullptr,book_id){}
+
+
+
+std::string Book::section::stack::get_filename()
+{
+    if(!Book::__Application_Book__)
+        throw Book::exception("Book set!! ");
+
+    return id() + (Book::__Application_Book__->_format == attr::format::html ? ".html" : ".log");
 }
 
 
-
-
-
-Book::bloc* Book::log_scope()
+book::code Book::section::stack::open()
 {
-    if(Book::_Book)
-        return Book::_Book->current;
-    book::rem::push_error(HERE) << "Using Book API without its instance";
-    return nullptr;
+    return code::notimplemented;
 }
-
-Book::bloc& Book::new_bloc(const std::string& atitle)
-{
-    auto* b = new Book::bloc(atitle);
-    Book::_Book->current = b;
-    return *b;
-}
-
-
-
-
-Book::bloc::bloc(const std::string atitle): object(Book::log_scope(), atitle)
-{
-
-}
-
-Book::bloc::bloc(object* parent_obj, const std::string& atitle): book::object(parent_obj, atitle){}
-
-Book::bloc::~bloc()
-{
-
-}
-
-rem& Book::bloc::error(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::error,std::move(src));
-    return content.back();
-}
-
-
-rem& Book::bloc::out(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::output,std::move(src));
-    return content.back();
-}
-
-
-rem& Book::bloc::warning(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::warning,std::move(src));
-    return content.back();
-}
-
-rem& Book::bloc::fatal(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::fatal,std::move(src));
-    return content.back();
-}
-
-rem& Book::bloc::except(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::except,std::move(src));
-    return content.back();
-}
-
-rem& Book::bloc::message(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::message,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::debug(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::debug,std::move(src));
-    return content.back();
-}
-
-rem& Book::bloc::info(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::info,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::comment(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::comment,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::syntax(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::syntax,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::status(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::status,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::test(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::test,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::interrupted(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::interrupted,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::aborted(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::aborted,std::move(src));
-
-    return content.back();
-}
-
-rem& Book::bloc::segfault(source_location&& src)
-{
-    if(!content.empty())
-        content.back() << rem::endl;
-
-    content.emplace_back(rem::segfault,std::move(src));
-
-    return content.back();
-}
-
-
-

@@ -23,9 +23,8 @@ add_library(
         include/${TargetName}/notify.h
         include/${TargetName}/object.h                 src/object.cc
         include/${TargetName}/text.h                   src/text.cc
-        include/${TargetName}/Book.h                   src/book.cc
+        include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc
         include/${TargetName}/cargs.h                  src/cargs.cc
-
 )
 
 

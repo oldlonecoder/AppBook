@@ -174,7 +174,7 @@ public:
     rem& operator << (const stracc& str);
     rem& operator << (Icon::Type ic);
     rem& operator << (Accent::Type ac);
-    rem& operator << (color::type c);
+    rem& operator << (color::code c);
     rem& operator << (chattr::pair p);
     rem& operator << (const point& p);
     rem& operator << (const dim& dd);
