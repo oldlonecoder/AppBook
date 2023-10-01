@@ -12,13 +12,13 @@
 
 
 #pragma once
-#include <logbook/rem.h>
+#include <logbook/expect.h>
 #include <fstream>
 #include <logbook/object.h>
 
 //#include <chrtools/textattr.h>
 
-using book::source_location;
+
 
 
 
@@ -26,12 +26,29 @@ using book::source_location;
 /*!
  * \brief The Book class
  *
+ *  <p>
+ *      <u> structure: </u>
+ *      <ul>
+ *          <li> book </li>
+ *          <p>
+ *              <ul>
+ *                  <li>section : represented as (sub-)directory in the filesystem </li>
+ *                  <ul>
+ *                      <li>content-bloc: represented by file content under the section (sub-)directory</li>
+ *                  </ul>
+ *              <ul>
+ *          </p>
+ *      </ul>
+ *  </P>
  *
  *
  * \code
  * Book;
  * //...
  * Book::error(HERE) << " Fonctionnement usuel de rem... " << rem::commit;
+ * //...
+ * \endcode
+ * \author &copy;2023, oldlonecoder
  */
 
 class BOOK_PUBLIC Book
@@ -68,31 +85,37 @@ public:
      *    Book::select("section-id/bloc-id);
      *    Book::out() << " salutation!";
      *
-     *    Enlever Book::bloc qui est superflu. Déplacer bloc à-même la section - donc bloc devient Book::Section.
+     *
      */
     struct BOOK_PUBLIC bloc :public book::object
     {
+
+        std::ostream output_file; ///< the filename and path location are implicitely set by the parent section, this bloc ID and the ouput format.
+        std::string description;
         book::rem::memory content;
+
         bloc(const std::string atitle);
         bloc(book::object* parent_obj /* Normally Book::section* */, const std::string& atitle);
 
         ~bloc() override;
 
-        book::rem& error        (source_location&& src={});
-        book::rem& out          (source_location&& src={});
-        book::rem& warning      (source_location&& src={});
-        book::rem& fatal        (source_location&& src={});
-        book::rem& except       (source_location&& src={});
-        book::rem& message      (source_location&& src={});
-        book::rem& debug        (source_location&& src={});
-        book::rem& info         (source_location&& src={});
-        book::rem& comment      (source_location&& src={});
-        book::rem& syntax       (source_location&& src={});
-        book::rem& status       (source_location&& src={});
-        book::rem& test         (source_location&& src={});
-        book::rem& interrupted  (source_location&& src={});
-        book::rem& aborted      (source_location&& src={});
-        book::rem& segfault     (source_location&& src={});
+        book::expect<> open();
+
+        book::rem& error        (book::source_location&& src={});
+        book::rem& out          (book::source_location&& src={});
+        book::rem& warning      (book::source_location&& src={});
+        book::rem& fatal        (book::source_location&& src={});
+        book::rem& except       (book::source_location&& src={});
+        book::rem& message      (book::source_location&& src={});
+        book::rem& debug        (book::source_location&& src={});
+        book::rem& info         (book::source_location&& src={});
+        book::rem& comment      (book::source_location&& src={});
+        book::rem& syntax       (book::source_location&& src={});
+        book::rem& status       (book::source_location&& src={});
+        book::rem& test         (book::source_location&& src={});
+        book::rem& interrupted  (book::source_location&& src={});
+        book::rem& aborted      (book::source_location&& src={});
+        book::rem& segfault     (book::source_location&& src={});
     };
 
 
@@ -101,14 +124,17 @@ public:
      */
     struct BOOK_PUBLIC section : public book::object
     {
-        section(const std::string& atitle);
+
+        std::string title;
+        std::string description;
+
+        section(const std::string& section_id);
         ~section() override;
 
-        Book::bloc& new_bloc(const std::string& atitle);
-
-
+        Book::bloc& new_bloc(const std::string& bloc_id);
 
     };
+
 
 
     Book();
