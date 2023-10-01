@@ -45,20 +45,6 @@ class Book;
 namespace book
 {
 
-struct  BOOK_PUBLIC source_location
-{
-    int line = 0;
-    std::string_view filename = "";
-    std::string_view function_sig = "";
-    explicit operator bool()const { return !((line == 0) && filename.empty() && function_sig.empty()); }
-};
-
-//#define sfnl    {__LINE__,__FILE__,__FUNCTION__}
-//#define sfnll   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
-//#define sfl     {__LINE__, "", __FUNCTION__}
-#define HERE    {__LINE__,__FILE__,__FUNCTION__}
-#define HEREF   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
-
 
 
 
@@ -174,7 +160,7 @@ public:
     rem& operator << (const stracc& str);
     rem& operator << (Icon::Type ic);
     rem& operator << (Accent::Type ac);
-    rem& operator << (color::type c);
+    rem& operator << (color::code c);
     rem& operator << (chattr::pair p);
     rem& operator << (const point& p);
     rem& operator << (const dim& dd);

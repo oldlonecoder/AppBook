@@ -12,14 +12,12 @@
 
 #pragma once
 #include "chrtools/stracc.h"
-#include "logbook/rem.h"
+#include <logbook/public.h>
 
 namespace book {
 
 class  BOOK_PUBLIC object
 {
-
-    CLASSNAME(object)
 
 public:
     using list = std::vector<object*>;

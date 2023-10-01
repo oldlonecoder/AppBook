@@ -17,7 +17,7 @@
 
 #include "chrtools/Icons.h"
 #include "chrtools/accents.fr.h"
-#include "logbook/rem.h"
+//#include "logbook/book_data.h"
 #include "logbook/notify.h"
 
 namespace book
@@ -50,7 +50,7 @@ using std::string_view;
 /*!
  * \brief The stml (Simple Text Markup Language) text class
  *
-    \code rem::code Test::TestText()
+    \code book::code Test::TestText()
         {
             text txt;
             txt = "<fb:Reset; f:Yellow; Icon:Home;> Salut <b:Reset F:White;  f:yellow;> &agrave; <fb:reset;>Toi!";
@@ -91,10 +91,10 @@ public:
         * Destructor
         */
     ~text();
-    rem::code compile();
+    book::code compile();
 
-    rem::code operator >> (std::string&);
-    rem::code operator()();
+    book::code operator >> (std::string&);
+    book::code operator()();
 
     std::string text_str() { return _d; }
     std::string operator << (const std::string& input_str);
@@ -196,8 +196,8 @@ public:
     struct BOOK_PUBLIC  attribute
     {
         // ============ Indiquer c'est quoi qu'il faut lire!!!!!! ======================
-        color::type _fg  = color::Black;
-        color::type _bg  = color::Black;
+        color::code _fg  = color::Black;
+        color::code _bg  = color::Black;
         Icon::Type _icn   = 0;
         Accent::Type _accnt = Accent::Err;
         // =============================================================================
@@ -278,30 +278,30 @@ private:
         void syntax_error(token_data& atoken);
         void value_error(token_data& atoken);
         void close_token(token_data& Info);
-        rem::code execute();
+        book::code execute();
         text::attribute compile_attribute(text::attribute& Attr);
         text::attribute compile_accent(text::attribute& Attr);
         text::token_data scan();
         text::token_data skip_to_attribute();
-        color::type color_id(token_data& Token);
+        color::code color_id(token_data& Token);
         Icon::Type icon_id(token_data& Token);
         text::token_data scan_identifier();
-        rem::code eat_token(text::token_data& Token);
+        book::code eat_token(text::token_data& Token);
         compiler() = delete;
         explicit compiler(text& aTextInstance);
         ~compiler() = default;
         bool eof();
 
-        using parser_fnptr_t = rem::code(text::compiler::*)(text::attribute&);
+        using parser_fnptr_t = book::code(text::compiler::*)(text::attribute&);
         using parsers_table_t = std::unordered_map<token_data::mnemonic, text::compiler::parser_fnptr_t>;
 
-        rem::code parse_icon(text::attribute& A);       // Parser for/pour ':' + 'IconID' + ';'
-        rem::code parse_fg(text::attribute& A);         // Parser for/pour ':' + 'ColorID' + ';'
-        rem::code ParseBg(text::attribute& A);          // Parser for/pour ':' + 'ColorID' + ';'
-        rem::code parse_color(text::attribute& A);      // Parser for/pour ':' + 'ColorID' + ',' + 'ColorID' + ';'
-        rem::code parse_br(text::attribute& A);         // 'BR'; ( <br; .. > or/ou <br>)
-        rem::code close_attribute(text::attribute& A);  // 'BR'; ( <br; .. > or/ou <br>)
-        rem::code check_eos(text::attribute& A);
+        book::code parse_icon(text::attribute& A);       // Parser for/pour ':' + 'IconID' + ';'
+        book::code parse_fg(text::attribute& A);         // Parser for/pour ':' + 'ColorID' + ';'
+        book::code ParseBg(text::attribute& A);          // Parser for/pour ':' + 'ColorID' + ';'
+        book::code parse_color(text::attribute& A);      // Parser for/pour ':' + 'ColorID' + ',' + 'ColorID' + ';'
+        book::code parse_br(text::attribute& A);         // 'BR'; ( <br; .. > or/ou <br>)
+        book::code close_attribute(text::attribute& A);  // 'BR'; ( <br; .. > or/ou <br>)
+        book::code check_eos(text::attribute& A);
         std::string mark();
     };
 

@@ -111,15 +111,13 @@ public:
     //// Calls all connected functions.
     expect<> operator()(Args... p) {
         if (_slots.empty())
-        {
-            rem::push_warning(HERE) << " no notify slot." << rem::commit;
-            return rem::notexist;
-        }
+            return book::code::notexist;
+
         expect<> R;
         for (auto const&fn : _slots) {
             R = fn(p...);
             if (_acc) _acc->push_back(R);
-            if (!R || *R == rem::rejected) return R;
+            if (!R || *R == book::code::rejected) return R;
         }
         return R;
     }
@@ -132,7 +130,7 @@ public:
             if (it._id != id_) {
                 R = it(p...);
                 if (_acc) _acc->push_back(R);
-                if (!R || *R == rem::rejected) return R;
+                if (!R || *R == book::code::rejected) return R;
             }
         }
         return R;
@@ -144,7 +142,7 @@ public:
         if (id_ != _slots.end()) {
             R = (*id_)(p...);
             if (_acc) _acc->push_back(R);
-            if (!R || *R == rem::rejected) return R;
+            if (!R || *R == book::code::rejected) return R;
         }
         return R;
     }

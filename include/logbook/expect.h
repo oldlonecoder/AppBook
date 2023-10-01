@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "logbook/rem.h"
+#include "logbook/book_data.h"
 
 
 
@@ -34,24 +34,20 @@ namespace book
  *  if T is not a reference then there we can return rem::push_*...
  *  Using std::any has also its own hellish troubles struggling to remove ref casts and co. No miracle.
  */
-template<typename T=rem::code> class expect
+template<typename T=book::code> class expect
 {
-    rem* fail{nullptr};
     T value;
-
     bool good = false;
 
 
 public:
     expect() = default;// { }
-    expect(rem& msg): fail(&msg),good(false){}
-
     expect(T val): value(val), good(true){}
 
     expect(expect&& e) noexcept {
         good = e.good;
         if(!good)
-            fail = std::move(e.fail);
+            return;
         else
             value = std::move(e.value);
     }
@@ -59,7 +55,7 @@ public:
     expect(expect& e){
         good = e.good;
         if(!good)
-            fail = e.fail;
+            return;
         else
             value = e.value;
     }
@@ -67,7 +63,7 @@ public:
     expect(const expect& e){
         good = e.good;
         if(!good)
-            fail = e.fail;
+            return;
         else
             value = e.value;
     }
@@ -77,7 +73,7 @@ public:
     expect& operator = (expect&& e) noexcept{
         good = e.good;
         if(!good)
-            fail = std::move(e.fail);
+            return *this;
         else
             value = std::move(e.value);
         return *this;
@@ -86,35 +82,31 @@ public:
     expect& operator =(expect& e){
         good = e.good;
         if(!good)
-            fail = e.fail;
+            return *this;
         else
             value = e.value;
         return this;
     }
 
-    expect& operator =(const expect& e){
+    expect& operator = (const expect& e){
         good = e.good;
-        if(!good)
-            fail = e.fail;
-        else
+        if(good)
             value = e.value;
         return this;
     }
 
-    T operator *(){
+    T& operator *(){
         if(!good)
-            throw rem::push_except() << rem::expected << " book::expect<...> good state, but is not.";
+            throw "this expect instance cannot return expected type value";
         return value;
     }
 
     auto& operator()()
     {
-        if(good)
-            throw rem::push_except() << rem::expected << " book::expect<...> non good state, but it is, use expect<T>:: T operator *() insbookd.";
-        if(!fail)
-            throw rem::push_except() << rem::expected << " book::expect<...>::fail non null, but it is.";
+        if(!good)
+            throw "this expect instance cannot return expected type value";
 
-        return *fail;
+        return value;
     }
 
 
@@ -123,9 +115,9 @@ public:
      *
      * \note Advice: use with care! struct or class types. If not, then compile error...
      */
-    auto operator ->(){
+    auto& operator ->(){
         if(!good)
-            throw rem::push_except() << rem::expected << " book::expect<...> good state, but is not.";
+            throw "this expect instance cannot return expected type value";
         return value;
     }
     operator bool() { return good; }

@@ -106,22 +106,22 @@ rem::code_attribute_table rem::codes_data = {
 std::string rem::text(rem::type ty)
 {
     std::map<rem::type, const char*> _ = {
-        {rem::none, "none"},
-        {rem::error,"error"},
-        {rem::warning,"warning"},
-        {rem::fatal, "fatal"},
-        {rem::except,"expection"},
-        {rem::message, "message"},
-        {rem::output,""},
-        {rem::debug,"debug"},
-        {rem::info,"information"},
-        {rem::comment,"comment"},
-        {rem::syntax,"syntax error"},
-        {rem::status,"status"},
-        {rem::test,"test"},
-        {rem::interrupted,"interrupted"},
-        {rem::aborted,"aborted"},
-        {rem::segfault,"segmentation fault"}
+        {rem::none,             "none"},
+        {rem::error,            "error"},
+        {rem::warning,          "warning"},
+        {rem::fatal,            "fatal"},
+        {rem::except,           "expection"},
+        {rem::message,          "message"},
+        {rem::output,           ""},
+        {rem::debug,            "debug"},
+        {rem::info,             "information"},
+        {rem::comment,          "comment"},
+        {rem::syntax,           "syntax error"},
+        {rem::status,           "status"},
+        {rem::test,             "test"},
+        {rem::interrupted,      "interrupted"},
+        {rem::aborted,          "aborted"},
+        {rem::segfault,         "segmentation fault"}
     };
     return _[ty];
 }
@@ -266,7 +266,7 @@ rem& rem::operator << (const std::string& str) {  /*guard.lock();*/ _text << str
 rem& rem::operator << (const stracc& str) {   _text << str; return *this; }
 rem& rem::operator << (Icon::Type ic) {  _text << ic;  return *this; }
 rem& rem::operator << (Accent::Type ac) { _text << ac; return *this; }
-rem& rem::operator << (color::type c)   { _text << c;  return *this; }
+rem& rem::operator << (color::code c)   { _text << c;  return *this; }
 rem& rem::operator << (chattr::pair p)  { _text << p;  return *this; }
 rem& rem::operator << (const point& p)  { _text << (std::string)p;   return *this; }
 rem& rem::operator << (const dim& dd)   { _text << (std::string)dd;  return *this; }

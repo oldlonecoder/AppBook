@@ -14,18 +14,19 @@ set(TargetName ${PROJECT_NAME})
 SET(FRAMEWORK_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
+
         ${TargetName}
         SHARED
         include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
-        include/${TargetName}/rem.h                    src/rem.cc
+        #include/${TargetName}/rem.h                    src/rem.cc
                 # ...Will grow...
         include/${TargetName}/expect.h
         include/${TargetName}/notify.h
         include/${TargetName}/object.h                 src/object.cc
         include/${TargetName}/text.h                   src/text.cc
-        include/${TargetName}/Book.h                   src/book.cc
+        include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc
         include/${TargetName}/cargs.h                  src/cargs.cc
-
+        include/logbook/book_data.h                    src/book_data.cc
 )
 
 

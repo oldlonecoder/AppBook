@@ -13,7 +13,7 @@ template <typename T> struct BOOK_PUBLIC argdata
     using data = std::vector<std::string_view>;
     using list = std::vector<argdata<T>>;
     using iterator = argdata::list::iterator;
-    using callback = rem::code(T::*)(const argdata<T>&);
+    using callback = book::code(T::*)(const argdata<T>&);
     using type = T*;
     T*                     obj{nullptr};
     callback               cb{nullptr};
@@ -45,10 +45,10 @@ public:
     cargs() = default;
     ~cargs() { args.clear(); }
 
-    rem::code set_default_callback(argdata<T>::callback acb)
+    book::code set_default_callback(argdata<T>::callback acb)
     {
         defaults.cb = acb;
-        return rem::ok;
+        return book::code::ok;
     }
 
 
@@ -76,9 +76,9 @@ public:
  * \brief cargs::process
  * \param argc
  * \param argv
- * \return book::rem::code
+ * \return book::book::code
  */
-    rem::code process(int argc, char** argv)
+    book::code process(int argc, char** argv)
     {
         typename argdata<T>::iterator arg = args.end();
         for (int i = 1; i < argc; i++)
@@ -89,14 +89,14 @@ public:
             {
                 if ((arg != args.end()) && (arg->required > arg->count) && (arg->required > 0)) // first pass it is the same as null_arg then use the defaults args)
                 {
-                    rem::push_debug(HERE) << " adding argument '" << color::Yellow << carg << color::Reset << "' to '" << color::LighcoreateBlue << arg->name << '\'' << rem::commit;
+                   // book::code::push_debug(HERE) << " adding argument '" << color::Yellow << carg << color::Reset << "' to '" << color::LighcoreateBlue << arg->name << '\'' << book::code::commit;
                     arg->arguments.push_back(carg);
                     ++arg->count;
                     arg->uses = true;
                 }
                 else
                 {
-                    rem::push_debug(HERE) << " adding argument '" << color::Yellow << carg << color::Reset << "' to '" << color::LighcoreateBlue << "defaults"  << '\'' << rem::commit;
+                    //book::code::push_debug(HERE) << " adding argument '" << color::Yellow << carg << color::Reset << "' to '" << color::LighcoreateBlue << "defaults"  << '\'' << book::code::commit;
                     defaults.arguments.push_back(carg);
                     defaults.uses = true;
                 }
@@ -106,30 +106,30 @@ public:
                 arg = next_arg;
         }
 
-        rem::push_debug(HERE) << " Executing callbacks:" << rem::commit;
-        rem::code R{rem::rejected};
+        //book::code::push_debug(HERE) << " Executing callbacks:" << book::code::commit;
+        book::code R{book::code::rejected};
         if(!args.empty())
         {
             int b = 0;
             for(auto const& a : args ) if(a.uses) ++b;
             if(!b)
             {
-                rem::push_error() << "Expected command-line arguments :" << rem::endl << usage() << rem::commit;
+                //book::code::push_error() << "Expected command-line arguments :" << book::code::endl << usage() << book::code::commit;
                 return R;
             }
         }
         for(auto& arg: args)
         {
             if(!arg) continue;
-            rem::push_debug() << "arg '" << color::Yellow << arg.name << color::Reset << "' callback use:" << color::LighcoreateBlue << (arg.uses? " set " : " not set ") << rem::commit;
+            //book::code::push_debug() << "arg '" << color::Yellow << arg.name << color::Reset << "' callback use:" << color::LighcoreateBlue << (arg.uses? " set " : " not set ") << book::code::commit;
             if(arg.uses)
             {
                 R = (obj->*arg.cb)(arg);
-                if(R != rem::accepted) return R; // break the loop at any error.
+                if(R != book::code::accepted) return R; // break the loop at any error.
             }
         }
 
-        rem::push_debug(HERE) << " Executing defaults callbacks:" << rem::commit;
+        //book::code::push_debug(HERE) << " Executing defaults callbacks:" << book::code::commit;
         if(defaults.uses)
             R = (obj->*defaults.cb)(defaults);
 

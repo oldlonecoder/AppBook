@@ -13,56 +13,56 @@ devtest::devtest(const std::string& test_name)
 {
 }
 
-rem::code devtest::option_1(const cmd::argdata<devtest>& arg)
+book::code devtest::option_1(const cmd::argdata<devtest>& arg)
 {
-    rem::push_message(HERE) << "arguments:" << rem::commit;
+    //book::code::push_message(HERE) << "arguments:" << book::code::commit;
     for (auto const& str : arg.arguments)
     {
         //...
-        rem::out() << str << rem::commit;
+        //book::code::out() << str << book::code::commit;
         //...
     }
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code devtest::option_2(const cmd::argdata<devtest>& arg)
+book::code devtest::option_2(const cmd::argdata<devtest>& arg)
 {
-    rem::push_message(HERE) << "arguments:" << rem::commit;
+    //book::code::push_message(HERE) << "arguments:" << book::code::commit;
     for (auto const& str : arg.arguments)
     {
         //...
-        rem::out() << str << rem::commit;
+        //book::code::out() << str << book::code::commit;
         //...
     }
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code devtest::option_3(const cmd::argdata<devtest>& arg)
+book::code devtest::option_3(const cmd::argdata<devtest>& arg)
 {
-    rem::push_message(HERE) << "arguments:" << rem::commit;
+    //book::code::push_message(HERE) << "arguments:" << book::code::commit;
     for (auto const& str : arg.arguments)
     {
         //...
-        rem::out() << str << rem::commit;
+        //book::code::out() << str << book::code::commit;
         //...
     }
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code devtest::default_args(const cmd::argdata<devtest>& arg)
+book::code devtest::default_args(const cmd::argdata<devtest>& arg)
 {
-    rem::push_message(HERE) << "arguments:" << rem::commit;
+    //book::code::push_message(HERE) << "arguments:" << book::code::commit;
     for (auto const& str : arg.arguments)
     {
         //...
-        rem::out() << str << rem::commit;
+        //book::code::out() << str << book::code::commit;
         //...
     }
 
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code devtest::setup_cmdline_args(int argc, char** argv)
+book::code devtest::setup_cmdline_args(int argc, char** argv)
 {
     cmdargs << cmd::argdata<devtest>{this, &devtest::option_1,"Expression", "-e", "--expression", "evaluate expression from the command line.", 1};
     cmd::argdata<devtest>& b = cmdargs << cmd::argdata<devtest>{this, &devtest::option_2,"Source File", "-f", "--source", "source file.", 1 };
@@ -70,10 +70,10 @@ rem::code devtest::setup_cmdline_args(int argc, char** argv)
 
     cmdargs.set_default_callback(&devtest::default_args);
 
-    rem::push_debug(HERE) << " usage:" << rem::commit;
-    rem::out() << cmdargs.usage() << rem::commit;
+    //book::code::push_debug(HERE) << " usage:" << book::code::commit;
+    //book::code::out() << cmdargs.usage() << book::code::commit;
 
-    rem::push_test() << " -- Now the exec: " << rem::commit;
+    //book::code::push_test() << " -- Now the exec: " << book::code::commit;
 
     return cmdargs.process(argc, argv);
 }

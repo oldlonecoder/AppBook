@@ -17,11 +17,11 @@ public:
     ~devtest();
     devtest(const std::string& test_name);
 
-    rem::code option_1(const cmd::argdata<devtest>& arg);
-    rem::code option_2(const cmd::argdata<devtest>& arg);
-    rem::code option_3(const cmd::argdata<devtest>& arg);
-    rem::code default_args(const cmd::argdata<devtest>& arg);
-    book::rem::code setup_cmdline_args(int argc, char **argv);
+    book::code option_1(const cmd::argdata<devtest>& arg);
+    book::code option_2(const cmd::argdata<devtest>& arg);
+    book::code option_3(const cmd::argdata<devtest>& arg);
+    book::code default_args(const cmd::argdata<devtest>& arg);
+    book::code setup_cmdline_args(int argc, char **argv);
 };
 
 }
