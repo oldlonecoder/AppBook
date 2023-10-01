@@ -72,9 +72,10 @@ public:
     /*!
      * \brief The bloc class
      *
-     * \note ex.: Book["section::subject"]["bloc-id?"].error(HERE) << "...";
+     * \code // ex.:
+     *    Book["section::subject"]["section-id?"]["bloc-id"].error(HERE) << "...";
      *    //...
-     *    Book::bloc& aro = Book::address["Runtime"]["arithmetics-dev"];
+     *    Book::bloc& aro = Book::instance["Runtime"]["arithmetics-dev"];
      *    //...
      *    if(alu_fail)
      *        throw aro.except(HERE) << " alu: division by zero";
@@ -82,7 +83,11 @@ public:
      *    aro.debug(HERE)(.../xio.cc line 340; function: collapse_closepair( xio* ) ) << " debug trace...";
      *
      *    //...
-     *    Book::select("section-id/bloc-id);
+     *    Book::select("section-id/bloc-id");
+     *    auto& out = Book::select("arithmetic-dev");
+     *    out[HERE] << "messsage" << book::rem::end;
+     *    // ...
+     *
      *    Book::out() << " salutation!";
      *
      *
