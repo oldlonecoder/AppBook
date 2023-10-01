@@ -1,6 +1,7 @@
 #include "logbook/Book.h"
 
 
+<<<<<<< HEAD
 
 
 Book::section::stack::element::element(book::cat category, book::source_location &&asrc):book::object()
@@ -137,3 +138,5 @@ Book::section::stack::element& Book::section::stack::segfault     (book::source_
 }
 
 
+=======
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91

@@ -25,8 +25,67 @@
 
 namespace book
 {
+<<<<<<< HEAD
+=======
+
+enum class cat : uint8_t{
+    none, error, warning, fatal, except, message, output, debug, info, comment, syntax, status, test, interrupted, aborted, segfault
+};
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
 
+enum class code : uint8_t
+{
+    ok               , ///< Obviously;
+    accepted         ,
+    success          ,
+    rejected         ,
+    failed           ,
+    empty            ,
+    full             ,
+    notempty         ,
+    implemented      , ///< Like notimplemented or already implemented
+    notimplemented   , ///< "Please, implement"
+    untested         ,
+    eof              , ///< end of file
+    eos              , ///< end of stream or string or statement or state ( machine state )
+    null_ptr         , ///< It will happen. Trust me :)
+    notexist         , ///< does not exist
+    exist            , ///< does already exist
+    unexpected       , ///< unexpected
+    expected         , ///< expected
+    blocked          , ///< thread trying to lock a mutex has failed because the mutex is already locked in another thread...
+    locked           , ///< thread trying to lock a mutex has became the owner of the lock.
+    overflow         , ///< buffer overflow
+    oob              , ///< buffer overflow
+    reimplement      ,
+
+};
+
+enum class functions : uint8_t
+{
+    function         ,
+    endl             , ///< end of line code, input format
+    file             ,
+    line             ,
+    hour             ,
+    minute           ,
+    seconds          ,
+    weekday
+
+};
+
+enum class action : uint8_t
+{
+    enter            , ///< enter bloc or indent
+    leave            , ///< end (logger: end of entry accumulators, so do commit); end of (sel)section, attribute ( auto- color::Reset ) and unindent
+    ci               ,
+    begin            , ///< begin (sel)section or indent
+    end              ,
+    stamp             ///< fully detailed timestamp
+};
+
+}
 
 }
 
@@ -65,7 +124,11 @@ class BOOK_PUBLIC Book : public book::object
 
     static Book* _Book; ///< Pointer to the Book instance.
     chattr::format _format{chattr::format::ansi256};
+<<<<<<< HEAD
     std::string starting_path;
+=======
+
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 public:
 
     struct element_components
@@ -92,10 +155,13 @@ public:
         bool immediate;
     };
 
+<<<<<<< HEAD
 
     static std::string category_text(book::cat c);
     static std::string ccode_text(book::code c);
 
+=======
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
 
     /*!
@@ -149,16 +215,25 @@ public:
             std::string get_filename();
 
 
+<<<<<<< HEAD
             struct BOOK_PUBLIC element : public book::object
+=======
+            struct BOOK_PUBLIC element
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
             {
 
                 using memory = std::vector<Book::section::stack::element>;
                 stracc     text;
+<<<<<<< HEAD
                 book::cat  category{book::cat::none};
+=======
+                book::cat  cat{book::cat::none};
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
                 book::code code{book::code::rejected};
                 book::source_location src{};
 
                 element() = default;
+<<<<<<< HEAD
                 element(const element&) = default;
                 element(element&& e) noexcept = default;
 
@@ -166,6 +241,13 @@ public:
 
                 Book::section::stack::element& operator = (const element& e) = default;
                 Book::section::stack::element& operator = (element&& e) noexcept = default;
+=======
+                element(const element&);
+                element(element&& e) noexcept;
+
+                Book::section::stack::element& operator = (const element& e);
+                Book::section::stack::element& operator = (element&& e) noexcept;
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
                 Book::section::stack::element& operator << (Icon::Type graphem);
                 Book::section::stack::element& operator << (Accent::Type accent);
@@ -199,7 +281,14 @@ public:
 
             ~stack() override;
 
+<<<<<<< HEAD
             book::code open();///< If exist, open in append mode. or create if not exist.
+=======
+            book::code open();
+
+
+            book::expect<> open();///< If exist, open in append mode. or create if not exist.
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
             Book::section::stack::element& error        (book::source_location&& src={});
             Book::section::stack::element& out          (book::source_location&& src={});
@@ -238,8 +327,13 @@ public:
 
     config_data& config() { return conf; }
 
+<<<<<<< HEAD
     book::code open();
     book::code close();
+=======
+    book::rem::code open();
+    book::rem::code close();
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
     Book::section* operator[](std::string_view section_id);
 
@@ -261,7 +355,11 @@ public:
     //static book::rem& segfault(source_location&& src = {});
 
 
+<<<<<<< HEAD
     class BOOK_PUBLIC exception: public std::exception
+=======
+    class exception: public std::exception
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
     {
     public:
         explicit exception(const char* txt) { msg = txt; }
@@ -274,19 +372,29 @@ public:
         std::string msg;
     };
 
+<<<<<<< HEAD
     static Book& init(const std::string& book_name);
     static Book& Self();
 
 private:
+=======
+    static book::code init(const std::string& book_name);
+private:
+    Book();
+    Book(const std::string& book_id);
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
     section::list sections;
     Book::section::stack* current_stream{nullptr};
     config_data conf;
     Book::element_components ec{0};
     static Book* __Application_Book__;
+<<<<<<< HEAD
 
     Book();
     Book(const std::string& book_id);
 
+=======
+>>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 };
 
 
