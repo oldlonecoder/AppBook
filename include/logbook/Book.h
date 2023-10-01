@@ -84,8 +84,11 @@ public:
      *
      *    //...
      *    Book::select("section-id/bloc-id");
+     *    ----------------------------------------- :>
      *    auto& out = Book::select("arithmetic-dev");
-     *    out[HERE] << "messsage" << book::rem::end;
+     *    out["bloc-id"] << HERE << "messsage" << book::rem::end;
+     *    ....
+     *    out[
      *    // ...
      *
      *    Book::out() << " salutation!";
