@@ -2,6 +2,7 @@
 
 
 #include <logbook/cargs.h> // { notify, expect, rem, text  }
+#include <logbook/Book.h>
 
 
 namespace book
@@ -11,6 +12,8 @@ class devtest
 {
     cmd::cargs<devtest> cmdargs;
     std::string name;
+    Book* AppBook{nullptr};
+
 public:
 
     devtest() = default;

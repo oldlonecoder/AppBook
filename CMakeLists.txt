@@ -26,10 +26,8 @@ add_library(
         include/${TargetName}/text.h                   src/text.cc
         include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc
         include/${TargetName}/cargs.h                  src/cargs.cc
-<<<<<<< HEAD
         include/logbook/book_data.h                    src/book_data.cc
-=======
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+
 )
 
 

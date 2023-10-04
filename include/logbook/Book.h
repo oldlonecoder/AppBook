@@ -20,74 +20,10 @@
 #include <chrtools/accents.fr.h>
 #include <chrtools/Icons.h>
 #include <logbook/book_data.h>
+#include <filesystem>
 
 
 
-namespace book
-{
-<<<<<<< HEAD
-=======
-
-enum class cat : uint8_t{
-    none, error, warning, fatal, except, message, output, debug, info, comment, syntax, status, test, interrupted, aborted, segfault
-};
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
-
-
-enum class code : uint8_t
-{
-    ok               , ///< Obviously;
-    accepted         ,
-    success          ,
-    rejected         ,
-    failed           ,
-    empty            ,
-    full             ,
-    notempty         ,
-    implemented      , ///< Like notimplemented or already implemented
-    notimplemented   , ///< "Please, implement"
-    untested         ,
-    eof              , ///< end of file
-    eos              , ///< end of stream or string or statement or state ( machine state )
-    null_ptr         , ///< It will happen. Trust me :)
-    notexist         , ///< does not exist
-    exist            , ///< does already exist
-    unexpected       , ///< unexpected
-    expected         , ///< expected
-    blocked          , ///< thread trying to lock a mutex has failed because the mutex is already locked in another thread...
-    locked           , ///< thread trying to lock a mutex has became the owner of the lock.
-    overflow         , ///< buffer overflow
-    oob              , ///< buffer overflow
-    reimplement      ,
-
-};
-
-enum class functions : uint8_t
-{
-    function         ,
-    endl             , ///< end of line code, input format
-    file             ,
-    line             ,
-    hour             ,
-    minute           ,
-    seconds          ,
-    weekday
-
-};
-
-enum class action : uint8_t
-{
-    enter            , ///< enter bloc or indent
-    leave            , ///< end (logger: end of entry accumulators, so do commit); end of (sel)section, attribute ( auto- color::Reset ) and unindent
-    ci               ,
-    begin            , ///< begin (sel)section or indent
-    end              ,
-    stamp             ///< fully detailed timestamp
-};
-
-}
-
-}
 
 /*!
  * \brief The Book class
@@ -124,11 +60,8 @@ class BOOK_PUBLIC Book : public book::object
 
     static Book* _Book; ///< Pointer to the Book instance.
     chattr::format _format{chattr::format::ansi256};
-<<<<<<< HEAD
-    std::string starting_path;
-=======
 
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+    std::string starting_path;
 public:
 
     struct element_components
@@ -155,13 +88,6 @@ public:
         bool immediate;
     };
 
-<<<<<<< HEAD
-
-    static std::string category_text(book::cat c);
-    static std::string ccode_text(book::code c);
-
-=======
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
 
     /*!
@@ -199,14 +125,14 @@ public:
         *
         *
         */
-        struct BOOK_PUBLIC stack : public book::object
+        struct BOOK_PUBLIC bloc_stack : public book::object
         {
 
             std::ofstream output_file; ///< the filename and path location are implicitely set by the parent section, this bloc ID and the ouput format.
             std::string description;
 
 
-            using list = std::vector<Book::section::stack*>;
+            using list = std::vector<Book::section::bloc_stack*>;
             using iterator = list::iterator;
 
 
@@ -215,57 +141,43 @@ public:
             std::string get_filename();
 
 
-<<<<<<< HEAD
+
             struct BOOK_PUBLIC element : public book::object
-=======
-            struct BOOK_PUBLIC element
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
             {
 
-                using memory = std::vector<Book::section::stack::element>;
+                using memory = std::vector<Book::section::bloc_stack::element>;
+
+                std::vector<std::string> input_components;
+
                 stracc     text;
-<<<<<<< HEAD
-                book::cat  category{book::cat::none};
-=======
                 book::cat  cat{book::cat::none};
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+
                 book::code code{book::code::rejected};
                 book::source_location src{};
 
                 element() = default;
-<<<<<<< HEAD
+
                 element(const element&) = default;
                 element(element&& e) noexcept = default;
 
                 element(book::object* par, book::cat category, book::source_location&& asrc);
 
-                Book::section::stack::element& operator = (const element& e) = default;
-                Book::section::stack::element& operator = (element&& e) noexcept = default;
-=======
-                element(const element&);
-                element(element&& e) noexcept;
+                Book::section::bloc_stack::element& operator = (const element& e) = default;
+                Book::section::bloc_stack::element& operator = (element&& e) noexcept = default;
+                Book::section::bloc_stack::element& operator << (Icon::Type graphem);
+                Book::section::bloc_stack::element& operator << (Accent::Type accent);
+                Book::section::bloc_stack::element& operator << (const stracc& txt);
+                Book::section::bloc_stack::element& operator << (const std::string& txt);
+                Book::section::bloc_stack::element& operator << (const char* txt);
 
-                Book::section::stack::element& operator = (const element& e);
-                Book::section::stack::element& operator = (element&& e) noexcept;
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+                Book::section::bloc_stack::element& operator << (color::code c);
+                Book::section::bloc_stack::element& operator << (const rect& dd);
 
-                Book::section::stack::element& operator << (Icon::Type graphem);
-                Book::section::stack::element& operator << (Accent::Type accent);
-                Book::section::stack::element& operator << (const stracc& txt);
-                Book::section::stack::element& operator << (const std::string& txt);
-                Book::section::stack::element& operator << (const char* txt);
-
-                Book::section::stack::element& operator << (color::code c);
-                Book::section::stack::element& operator << (chattr::pair p);
-                Book::section::stack::element& operator << (const point& p);
-                Book::section::stack::element& operator << (const dim& dd);
-                Book::section::stack::element& operator << (const rect& dd);
-
-                Book::section::stack::element& operator << (book::action tr);
-                Book::section::stack::element& operator << (book::functions tr);
+                Book::section::bloc_stack::element& operator << (book::action tr);
+                Book::section::bloc_stack::element& operator << (book::functions tr);
 
 
-                template<typename other_types> Book::section::stack::element& operator << (other_types val);
+                template<typename other_types> Book::section::bloc_stack::element& operator << (other_types val);
 
                 std::string cc();
                 book::code commit();
@@ -274,47 +186,47 @@ public:
             };
 
 
-            Book::section::stack::element::memory content;
+            Book::section::bloc_stack::element::memory content;
 
-            stack(const std::string atitle);
-            stack(book::object* parent_obj /* Normally Book::section* */, const std::string& atitle);
+            bloc_stack(const std::string atitle);
+            bloc_stack(book::object* parent_obj /* Normally Book::section* */, const std::string& atitle);
 
-            ~stack() override;
+            ~bloc_stack() override;
 
-<<<<<<< HEAD
             book::code open();///< If exist, open in append mode. or create if not exist.
-=======
-            book::code open();
 
 
-            book::expect<> open();///< If exist, open in append mode. or create if not exist.
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 
-            Book::section::stack::element& error        (book::source_location&& src={});
-            Book::section::stack::element& out          (book::source_location&& src={});
-            Book::section::stack::element& warning      (book::source_location&& src={});
-            Book::section::stack::element& fatal        (book::source_location&& src={});
-            Book::section::stack::element& except       (book::source_location&& src={});
-            Book::section::stack::element& message      (book::source_location&& src={});
-            Book::section::stack::element& debug        (book::source_location&& src={});
-            Book::section::stack::element& info         (book::source_location&& src={});
-            Book::section::stack::element& comment      (book::source_location&& src={});
-            Book::section::stack::element& syntax       (book::source_location&& src={});
-            Book::section::stack::element& status       (book::source_location&& src={});
-            Book::section::stack::element& test         (book::source_location&& src={});
-            Book::section::stack::element& interrupted  (book::source_location&& src={});
-            Book::section::stack::element& aborted      (book::source_location&& src={});
-            Book::section::stack::element& segfault     (book::source_location&& src={});
+            Book::section::bloc_stack::element& error        (book::source_location&& src={});
+            Book::section::bloc_stack::element& out          (book::source_location&& src={});
+            Book::section::bloc_stack::element& warning      (book::source_location&& src={});
+            Book::section::bloc_stack::element& fatal        (book::source_location&& src={});
+            Book::section::bloc_stack::element& except       (book::source_location&& src={});
+            Book::section::bloc_stack::element& message      (book::source_location&& src={});
+            Book::section::bloc_stack::element& debug        (book::source_location&& src={});
+            Book::section::bloc_stack::element& info         (book::source_location&& src={});
+            Book::section::bloc_stack::element& comment      (book::source_location&& src={});
+            Book::section::bloc_stack::element& syntax       (book::source_location&& src={});
+            Book::section::bloc_stack::element& status       (book::source_location&& src={});
+            Book::section::bloc_stack::element& test         (book::source_location&& src={});
+            Book::section::bloc_stack::element& interrupted  (book::source_location&& src={});
+            Book::section::bloc_stack::element& aborted      (book::source_location&& src={});
+            Book::section::bloc_stack::element& segfault     (book::source_location&& src={});
         };
 
         std::string title;
         std::string description;
 
-        section(const std::string& section_id);
+        section(object* par, const std::string& section_id);
         ~section() override;
 
-        stack* create_bloc(const std::string& bloc_id);
-        stack::list blocs;
+        Book::section& open();
+
+
+        bloc_stack* create_stack(const std::string& stack_id);
+        bloc_stack::list blocs;
+
+        Book::section::bloc_stack& operator[](const std::string& bloc_id);
 
     };
 
@@ -327,39 +239,36 @@ public:
 
     config_data& config() { return conf; }
 
-<<<<<<< HEAD
+
     book::code open();
     book::code close();
-=======
-    book::rem::code open();
-    book::rem::code close();
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+
 
     Book::section* operator[](std::string_view section_id);
+    Book::section& create_section(const std::string& section_id);
+
+    static chattr::format format();
 
     // held back :
-    //static book::rem& error(source_location&& src = {});
-    //static book::rem& out(source_location&& src = {});
-    //static book::rem& warning(source_location&& src = {});
-    //static book::rem& fatal(source_location&& src = {});
-    //static book::rem& except(source_location&& src = {});
-    //static book::rem& message(source_location&& src = {});
-    //static book::rem& debug(source_location&& src = {});
-    //static book::rem& info(source_location&& src = {});
-    //static book::rem& comment(source_location&& src = {});
-    //static book::rem& syntax(source_location&& src = {});
-    //static book::rem& status(source_location&& src = {});
-    //static book::rem& test(source_location&& src = {});
-    //static book::rem& interrupted(source_location&& src = {});
-    //static book::rem& aborted(source_location&& src = {});
-    //static book::rem& segfault(source_location&& src = {});
+    //static Book::section::stack::element& error(source_location&& src = {});
+    //static Book::section::stack::element& out(source_location&& src = {});
+    //static Book::section::stack::element& warning(source_location&& src = {});
+    //static Book::section::stack::element& fatal(source_location&& src = {});
+    //static Book::section::stack::element& except(source_location&& src = {});
+    //static Book::section::stack::element& message(source_location&& src = {});
+    //static Book::section::stack::element& debug(source_location&& src = {});
+    //static Book::section::stack::element& info(source_location&& src = {});
+    //static Book::section::stack::element& comment(source_location&& src = {});
+    //static Book::section::stack::element& syntax(source_location&& src = {});
+    //static Book::section::stack::element& status(source_location&& src = {});
+    //static Book::section::stack::element& test(source_location&& src = {});
+    //static Book::section::stack::element& interrupted(source_location&& src = {});
+    //static Book::section::stack::element& aborted(source_location&& src = {});
+    //static Book::section::stack::element& segfault(source_location&& src = {});
 
 
-<<<<<<< HEAD
+
     class BOOK_PUBLIC exception: public std::exception
-=======
-    class exception: public std::exception
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
     {
     public:
         explicit exception(const char* txt) { msg = txt; }
@@ -372,29 +281,19 @@ public:
         std::string msg;
     };
 
-<<<<<<< HEAD
+
     static Book& init(const std::string& book_name);
     static Book& Self();
-
+    static std::filesystem::path location;
 private:
-=======
-    static book::code init(const std::string& book_name);
-private:
-    Book();
     Book(const std::string& book_id);
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
+    Book();
     section::list sections;
-    Book::section::stack* current_stream{nullptr};
+    Book::section::bloc_stack* current_stream{nullptr};
     config_data conf;
     Book::element_components ec{0};
     static Book* __Application_Book__;
-<<<<<<< HEAD
 
-    Book();
-    Book(const std::string& book_id);
-
-=======
->>>>>>> 1561d168332079b45d8ad16fb3928d3e2e14cd91
 };
 
 

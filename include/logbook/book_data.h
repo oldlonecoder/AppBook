@@ -94,6 +94,10 @@ enum class action : uint8_t
 
 
 std::string category_text(book::cat c);
+std::string code_text(book::code c);
 
+std::pair<Icon::Type, chattr::pair> category_attributes(book::cat cat);
+std::pair<Icon::Type, chattr::pair> code_attributes(book::code c);
+std::pair<Icon::Type, chattr::pair> function_attributes(book::functions f);
 
 }
