@@ -162,8 +162,29 @@ code Book::section::bloc_stack::commit()
 }
 
 
+
+
+/*!
+ * \brief Book::section::open open/select or create the location of the section identified by the section's name/id.
+ * \return reference to the section instance.
+ * \author &copy; 2023, oldlonecoder (sergre.lussier@oldlonecoder.club).
+ */
 Book::section &Book::section::open()
 {
-    fs::path p = Book::Self().location; // Provoke exception throw if not set.
+    // Get the Book (root) location.
+    fs::path p = Book::Self().location; // Provoke exception throw if the Book singleton instance is not created yet.
 
+    if(fs::exists(p))
+    {
+        ;
+    }
+
+    return *this;
+
+}
+
+Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_id)
+{
+    blocs.push_back(new Book::section::bloc_stack(this, stack_id));
+    return *blocs.back();
 }

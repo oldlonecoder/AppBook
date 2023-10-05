@@ -217,13 +217,16 @@ public:
         std::string title;
         std::string description;
 
+        std::filesystem::path location;
+
+
         section(object* par, const std::string& section_id);
         ~section() override;
 
         Book::section& open();
 
 
-        bloc_stack* create_stack(const std::string& stack_id);
+        bloc_stack& create_stack(const std::string& stack_id);
         bloc_stack::list blocs;
 
         Book::section::bloc_stack& operator[](const std::string& bloc_id);
