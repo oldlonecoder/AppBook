@@ -1,6 +1,7 @@
 #include "logbook/Book.h"
 
 #include <exception>
+
 //#include <filesystem>
 
 
@@ -13,7 +14,7 @@ namespace fs = std::filesystem;
 
 
 
-
+std::filesystem::path Book::location;
 
 
 Book& Book::init(const std::string &book_name)
@@ -140,6 +141,11 @@ std::string Book::section::bloc_stack::get_filename()
     return id() + (Book::__Application_Book__->_format ==  chattr::format::html ? ".html" : ".log");
 }
 
+
+Book::section::bloc_stack::bloc_stack(const std::string atitle)
+{
+}
+
 Book::section::bloc_stack::bloc_stack(object *parent_obj, const std::string &atitle): object(parent_obj, atitle)
 {
 
@@ -153,12 +159,37 @@ Book::section::bloc_stack::~bloc_stack()
 
 book::code Book::section::bloc_stack::open()
 {
+    if(output_file.is_open())
+        return book::code::rejected;
+
+    output_file.open(get_filename(),std::ios_base::out);
+    if(!output_file.is_open())
+    {
+        stracc str = "bloc_stack : cannot open file '";
+        str << get_filename() << "' for output!'";
+        throw Book::exception(str());
+    }
     return code::notimplemented;
 }
 
+
+
+/*!
+ * \brief Book::section::bloc_stack::commit  - or flush and clear.
+ * \return accepted or rejected;
+ */
 code Book::section::bloc_stack::commit()
 {
-    return book::code::notimplemented;
+
+    for(auto& elem: content)
+    {
+        output_file << elem.text();
+        elem.text.clear();
+    }
+    if(!content.empty())
+        content.clear(); // Don't call it if empty...
+
+    return book::code::accepted;
 }
 
 
@@ -169,16 +200,26 @@ code Book::section::bloc_stack::commit()
  * \return reference to the section instance.
  * \author &copy; 2023, oldlonecoder (sergre.lussier@oldlonecoder.club).
  */
+Book::section::section(object *par, const std::string &section_id):book::object(par, section_id)
+{
+
+}
+
+Book::section::~section()
+{
+    for(auto* b : blocs) delete b;
+    blocs.clear();
+}
+
 Book::section &Book::section::open()
 {
     // Get the Book (root) location.
     fs::path p = Book::Self().location; // Provoke exception throw if the Book singleton instance is not created yet.
+    stracc loc = p.c_str();
 
-    if(fs::exists(p))
-    {
-        ;
-    }
-
+    if(!fs::exists(p))
+        fs::create_directory(loc());
+    location = loc();
     return *this;
 
 }
@@ -186,5 +227,13 @@ Book::section &Book::section::open()
 Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_id)
 {
     blocs.push_back(new Book::section::bloc_stack(this, stack_id));
+    Book::section::bloc_stack& bs = *blocs.back();
+    stracc file = location.c_str();
+    file << bs.get_filename();
+    if(!fs::exists(file()))
+    {
+        bs.open();
+    }
+
     return *blocs.back();
 }
