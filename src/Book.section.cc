@@ -69,3 +69,11 @@ Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_
 
     return *blocs.back();
 }
+
+Book::section::bloc_stack &Book::section::operator[](const std::string &bloc_id)
+{
+    for(auto* blk : blocs) if( blk->id() == bloc_id ) return *blk;
+    stracc e;
+    e << "bloc stack identified by '" << color::Yellow << bloc_id << color::Reset << "' not found.";
+    throw Book::exception(e());
+}

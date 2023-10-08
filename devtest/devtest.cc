@@ -96,7 +96,10 @@ auto main(int argc, char** argv) -> int
         std::cout << "\\O/ - " <<  lbdev.id() << " has been  successfuly created !!\n";
         lbdev.open();
         auto& bstack = lbdev.create_stack("stackdev");
-        std::cout << "\\O/ - " <<  bstack.id() << " has been  successfuly created !!\n -- now closing the section:";
+        std::cout << " Prepare to use the instance of the bloc 'stackdev ( intentionnaly mispelled hihihihihi!@) ...:\n";
+        auto & stackdev = AppBook["logbook.dev"]["stckdev"];
+
+
         lbdev.close();
     }
     catch(Book::exception e)

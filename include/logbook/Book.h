@@ -241,7 +241,7 @@ public:
     book::code close();
 
 
-    Book::section* operator[](std::string_view section_id);
+    Book::section& operator[](std::string_view section_id);
     Book::section& create_section(const std::string& section_id);
 
     static chattr::format format();

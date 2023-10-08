@@ -140,6 +140,14 @@ book::code Book::close()
     return book::code::success;
 }
 
+Book::section &Book::operator[](std::string_view section_id)
+{
+    for(auto* s : sections) if( s->id() == section_id ) return *s;
+    stracc e;
+    e << "section identified by '" << color::Yellow << section_id << color::Reset << "' not found.";
+    throw Book::exception(e());
+}
+
 
 
 /*!
