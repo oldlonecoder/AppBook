@@ -11,10 +11,14 @@ Book::section::bloc_stack::element::element(object* par, book::cat category, boo
 }
 
 
-
-std::string Book::section::bloc_stack::element::cc()
+/*!
+ * \brief Book::section::bloc_stack::element::cc_header -- build the header contents of this element.
+ *
+ * \author &copy;2023, oldlonecoder (serge.lussier@oldlonecoder.club).
+ */
+void Book::section::bloc_stack::element::cc_header()
 {
-   //guard.lock();
+    //guard.lock();
     auto [icon, p] = book::category_attributes(cat);
     text= "";
     if(cat != book::cat::output)
@@ -53,8 +57,20 @@ std::string Book::section::bloc_stack::element::cc()
             text , color::SteelBlue1 , Icon::Function , src.function_sig , color::White , ": ";
         }
     }
+
+}
+
+
+
+book::code Book::section::bloc_stack::element::cc()
+{
     //guard.unlock();
-    return text();
+    cc_header();
+    for(auto const& comp: input_components)
+        text << comp;
+
+
+    return book::code::ok;
 }
 
 book::code Book::section::bloc_stack::element::commit()
@@ -170,13 +186,67 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::segfault     (boo
 
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (Icon::Type graphem_code)  { text << graphem_code; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (Accent::Type accent_code) {text << accent_code; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const stracc& txt)   {text << txt; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const std::string& txt) {text << txt; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const char* txt) {text << txt; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (color::code c){text << c; input_components.push_back(text()); text.clear(); return *this;}
-Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const rect& dd){text << dd; input_components.push_back(text()); text.clear(); return *this;}
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (Icon::Type graphem_code)
+{
+    text << graphem_code;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (Accent::Type accent_code)
+{
+    text << accent_code;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const stracc& txt)
+{
+    text << txt;
+    input_components.push_back(text());
+    text.clear(); return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const std::string& txt)
+{
+    text << txt;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const char* txt)
+{
+    text << txt;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (color::code c)
+{
+    text << c;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (const rect& dd)
+{
+    text << dd;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
 
 
 Book::section::bloc_stack::element &Book::section::bloc_stack::element::operator <<(book::action tr)
@@ -186,10 +256,9 @@ Book::section::bloc_stack::element &Book::section::bloc_stack::element::operator
     case book::action::begin:
         break;
     case book::action::ci:
-        parent<Book::section::bloc_stack>()->output_file << cc() ;
-
-        break;
     case book::action::end:
+        cc();
+        parent<Book::section::bloc_stack>()->output_file << text();
         break;
     case book::action::enter:
         break;

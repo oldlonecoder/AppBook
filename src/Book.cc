@@ -91,6 +91,8 @@ book::code Book::open()
     fs::file_time_type htime;
     auto Path = fs::current_path();
 
+    std::cout << "current path: " << Path.c_str() << ":\n";
+
     for(const auto& item : fs::directory_iterator(fs::current_path()))
     {
         if(item.is_directory())
@@ -104,9 +106,14 @@ book::code Book::open()
             }
         }
     }
-    if(!last_entry.is_set) return code::rejected;
+    if(!last_entry.is_set)
+    {
+        std::cout << "This book has no contents ( no subdirs. ) - reject open request. \n";
+        return code::rejected;
+    }
 
     starting_path = fs::current_path().c_str();
+    std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
     //...
     return code::success;
 }
@@ -232,7 +239,8 @@ Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_
     file << bs.get_filename();
     if(!fs::exists(file()))
     {
-        bs.open();
+        if(bs.open() == book::code::accepted)
+            ;
     }
 
     return *blocs.back();

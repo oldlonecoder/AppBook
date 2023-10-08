@@ -48,7 +48,7 @@ target_include_directories(${TargetName} PUBLIC
         $<INSTALL_INTERFACE:include/${TargetName}>
         )
 
-target_link_libraries(${TargetName} ${CMAKE_DL_LIBS} chrtools)
+target_link_libraries(${TargetName} ${CMAKE_DL_LIBS} chrtools sqlite3)
 
 
 install(DIRECTORY

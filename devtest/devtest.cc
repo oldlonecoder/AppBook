@@ -88,7 +88,7 @@ auto main(int argc, char** argv) -> int
 {
     book::devtest test;
     test.setup_cmdline_args(argc, argv);
-    Book& AppBook = Book::init("Test the book");
+    Book& AppBook = Book::init("logbook");
     AppBook.open();
     return 0;
 }

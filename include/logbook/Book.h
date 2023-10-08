@@ -27,29 +27,9 @@
 
 /*!
  * \brief The Book class
- *
- *  <p>
- *      <u> structure: </u>
- *      <ul>
- *          <li> book </li>
- *          <p>
- *              <ul>
- *                  <li>section : represented as (sub-)directory in the filesystem </li>
- *                  <ul>
- *                      <li>content-bloc: represented by file content under the section (sub-)directory</li>
- *                  </ul>
- *              <ul>
- *          </p>
- *      </ul>
- *  </P>
- *
- *
- * \code
- * Book;
- * //...
- * Book::error(HERE) << " Fonctionnement usuel de rem... " << rem::commit;
- * //...
- * \endcode
+
+
+
  * \author &copy;2023, oldlonecoder
  */
 
@@ -87,8 +67,6 @@ public:
         chattr::format output_fmt;
         bool immediate;
     };
-
-
 
     /*!
      * \brief The section class
@@ -179,7 +157,9 @@ public:
 
                 template<typename other_types> Book::section::bloc_stack::element& operator << (other_types val);
 
-                std::string cc();
+                void cc_header();
+
+                book::code cc();
                 book::code commit();
 
 
@@ -233,6 +213,20 @@ public:
 
     };
 
+    class BOOK_PUBLIC exception: public std::exception
+    {
+    public:
+        explicit exception(const char* txt) { msg = txt; }
+        explicit exception(const std::string& txt) { msg = txt; }
+        ~exception() noexcept { msg.clear(); }
+
+        const char* what() const noexcept override { return msg.c_str(); }
+
+    private:
+        std::string msg;
+    };
+
+
 
 
 
@@ -252,42 +246,33 @@ public:
 
     static chattr::format format();
 
-    // held back :
-    //static Book::section::stack::element& error(source_location&& src = {});
-    //static Book::section::stack::element& out(source_location&& src = {});
-    //static Book::section::stack::element& warning(source_location&& src = {});
-    //static Book::section::stack::element& fatal(source_location&& src = {});
-    //static Book::section::stack::element& except(source_location&& src = {});
-    //static Book::section::stack::element& message(source_location&& src = {});
-    //static Book::section::stack::element& debug(source_location&& src = {});
-    //static Book::section::stack::element& info(source_location&& src = {});
-    //static Book::section::stack::element& comment(source_location&& src = {});
-    //static Book::section::stack::element& syntax(source_location&& src = {});
-    //static Book::section::stack::element& status(source_location&& src = {});
-    //static Book::section::stack::element& test(source_location&& src = {});
-    //static Book::section::stack::element& interrupted(source_location&& src = {});
-    //static Book::section::stack::element& aborted(source_location&& src = {});
-    //static Book::section::stack::element& segfault(source_location&& src = {});
-
-
-
-    class BOOK_PUBLIC exception: public std::exception
-    {
-    public:
-        explicit exception(const char* txt) { msg = txt; }
-        explicit exception(const std::string& txt) { msg = txt; }
-        ~exception() noexcept { msg.clear(); }
-
-        const char* what() const noexcept override { return msg.c_str(); }
-
-    private:
-        std::string msg;
-    };
-
 
     static Book& init(const std::string& book_name);
     static Book& Self();
     static std::filesystem::path location;
+
+
+    // held back :
+    //static Book::section::stack::element& error(book::source_location&& src = {});
+    //static Book::section::stack::element& out(book::source_location&& src = {});
+    //static Book::section::stack::element& warning(book::source_location&& src = {});
+    //static Book::section::stack::element& fatal(book::source_location&& src = {});
+    //static Book::section::stack::element& except(book::source_location&& src = {});
+    //static Book::section::stack::element& message(book::source_location&& src = {});
+    //static Book::section::stack::element& debug(book::source_location&& src = {});
+    //static Book::section::stack::element& info(book::source_location&& src = {});
+    //static Book::section::stack::element& comment(book::source_location&& src = {});
+    //static Book::section::stack::element& syntax(book::source_location&& src = {});
+    //static Book::section::stack::element& status(book::source_location&& src = {});
+    //static Book::section::stack::element& test(book::source_location&& src = {});
+    //static Book::section::stack::element& interrupted(book::source_location&& src = {});
+    //static Book::section::stack::element& aborted(book::source_location&& src = {});
+    //static Book::section::stack::element& segfault(book::source_location&& src = {});
+
+
+
+
+
 private:
     Book(const std::string& book_id);
     Book();
