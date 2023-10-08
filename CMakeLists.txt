@@ -27,6 +27,8 @@ add_library(
         include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc
         include/${TargetName}/cargs.h                  src/cargs.cc
         include/logbook/book_data.h                    src/book_data.cc
+        src/Book.section.cc
+        src/Book.secton.bloc_stack.cc
 
 )
 

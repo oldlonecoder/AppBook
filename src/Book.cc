@@ -1,5 +1,5 @@
 #include "logbook/Book.h"
-
+#include <chrtools/textattr.h>
 #include <exception>
 
 //#include <filesystem>
@@ -93,16 +93,28 @@ book::code Book::open()
 
     std::cout << "current path: " << Path.c_str() << ":\n";
 
-    for(const auto& item : fs::directory_iterator(fs::current_path()))
+    for(const auto& item : fs::directory_iterator(location))
     {
         if(item.is_directory())
         {
+            stracc dir;
             auto const& tp = item.last_write_time();
-            if(htime < tp)
+            dir << " subdir : '" << color::Yellow << item.path().c_str() << color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch())  << "\n";
+            std::cout << dir();
+            if(!last_entry.is_set)
             {
                 last_entry.is_set = true;
                 last_entry.entry = item;
                 last_entry.htime = tp;
+            }
+            else
+            {
+                if(tp > last_entry.htime)
+                {
+                    last_entry.is_set = true;
+                    last_entry.entry = item;
+                    last_entry.htime = tp;
+                }
             }
         }
     }
@@ -120,14 +132,60 @@ book::code Book::open()
 
 book::code Book::close()
 {
-    return book::code::notimplemented;
+    for(auto* s: sections)
+    {
+        s->close();
+        delete s;
+    }
+    return book::code::success;
 }
 
+
+
+/*!
+ * \brief Book::create_section
+ * \param section_id
+ * \return ref to the new section instance.
+ *
+ * \author &copy; oldlonecoder ( serge.lussier@oldlonecoder.club )
+ */
 Book::section &Book::create_section(const std::string &section_id)
 {
-    sections.push_back(new Book::section(this, section_id));
+    fs::path check_location;
+    check_location = location;
+    check_location += '/';
+    check_location += section_id;
 
-    return *sections.back();
+    std::cout << " checking '" << check_location << ":\n";
+
+
+    // -- Check instance os section identified by section_id first:
+    auto sit = sections.begin();
+    for(;sit != sections.end(); sit++) if((*sit)->id() == section_id) break;
+    if(sit != sections.end()) return *(*sit);
+    //-------------------------------------------------------------------------
+
+    // -- Check if the section already exists in the filesytem:
+    std::cout << " creating section identified by  '" << id() << ":\n";
+    sections.push_back(new Book::section(this, section_id));
+    Book::section& s = *sections.back();
+    s.location = check_location;
+    if(fs::exists(check_location))
+    {
+        stracc err;
+        err << "Section location '" << color::Yellow << check_location.c_str() << color::Reset << "' already exists... Openning it.";
+        std::cout << err() << "\n";
+        return s;
+    }
+    //------------------------------------------------------------------------------------
+
+    // Then create the section location in filesystem :
+    std::cout << " creating '" <<  id() << "' location:\n";
+    fs::create_directory(s.location);
+    //------------------------------------------------------------------------------------
+    std::cout << __FUNCTION__ << " done.\n";
+
+    return s;
 }
 
 
@@ -140,108 +198,6 @@ chattr::format Book::format()
 }
 
 
-std::string Book::section::bloc_stack::get_filename()
-{
-    if(!Book::__Application_Book__)
-        throw Book::exception("Attempt to use unitialized Book!");
-
-    return id() + (Book::__Application_Book__->_format ==  chattr::format::html ? ".html" : ".log");
-}
-
-
-Book::section::bloc_stack::bloc_stack(const std::string atitle)
-{
-}
-
-Book::section::bloc_stack::bloc_stack(object *parent_obj, const std::string &atitle): object(parent_obj, atitle)
-{
-
-}
-
-Book::section::bloc_stack::~bloc_stack()
-{
-    content.clear();
-}
-
-
-book::code Book::section::bloc_stack::open()
-{
-    if(output_file.is_open())
-        return book::code::rejected;
-
-    output_file.open(get_filename(),std::ios_base::out);
-    if(!output_file.is_open())
-    {
-        stracc str = "bloc_stack : cannot open file '";
-        str << get_filename() << "' for output!'";
-        throw Book::exception(str());
-    }
-    return code::notimplemented;
-}
 
 
 
-/*!
- * \brief Book::section::bloc_stack::commit  - or flush and clear.
- * \return accepted or rejected;
- */
-code Book::section::bloc_stack::commit()
-{
-
-    for(auto& elem: content)
-    {
-        output_file << elem.text();
-        elem.text.clear();
-    }
-    if(!content.empty())
-        content.clear(); // Don't call it if empty...
-
-    return book::code::accepted;
-}
-
-
-
-
-/*!
- * \brief Book::section::open open/select or create the location of the section identified by the section's name/id.
- * \return reference to the section instance.
- * \author &copy; 2023, oldlonecoder (sergre.lussier@oldlonecoder.club).
- */
-Book::section::section(object *par, const std::string &section_id):book::object(par, section_id)
-{
-
-}
-
-Book::section::~section()
-{
-    for(auto* b : blocs) delete b;
-    blocs.clear();
-}
-
-Book::section &Book::section::open()
-{
-    // Get the Book (root) location.
-    fs::path p = Book::Self().location; // Provoke exception throw if the Book singleton instance is not created yet.
-    stracc loc = p.c_str();
-
-    if(!fs::exists(p))
-        fs::create_directory(loc());
-    location = loc();
-    return *this;
-
-}
-
-Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_id)
-{
-    blocs.push_back(new Book::section::bloc_stack(this, stack_id));
-    Book::section::bloc_stack& bs = *blocs.back();
-    stracc file = location.c_str();
-    file << bs.get_filename();
-    if(!fs::exists(file()))
-    {
-        if(bs.open() == book::code::accepted)
-            ;
-    }
-
-    return *blocs.back();
-}

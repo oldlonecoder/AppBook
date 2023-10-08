@@ -108,8 +108,8 @@ public:
 
             std::ofstream output_file; ///< the filename and path location are implicitely set by the parent section, this bloc ID and the ouput format.
             std::string description;
-
-
+            std::string filename;
+            std::filesystem::path location;
             using list = std::vector<Book::section::bloc_stack*>;
             using iterator = list::iterator;
 
@@ -174,7 +174,7 @@ public:
             ~bloc_stack() override;
 
             book::code open();///< If exist, open in append mode. or create if not exist.
-
+            book::code close();
 
 
             Book::section::bloc_stack::element& error        (book::source_location&& src={});
@@ -202,7 +202,7 @@ public:
 
         section(object* par, const std::string& section_id);
         ~section() override;
-
+        book::code close();
         Book::section& open();
 
 

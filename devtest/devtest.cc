@@ -90,5 +90,20 @@ auto main(int argc, char** argv) -> int
     test.setup_cmdline_args(argc, argv);
     Book& AppBook = Book::init("logbook");
     AppBook.open();
+
+    try {
+        auto & lbdev  = AppBook.create_section("logbook.dev");
+        std::cout << "\\O/ - " <<  lbdev.id() << " has been  successfuly created !!\n";
+        lbdev.open();
+        auto& bstack = lbdev.create_stack("stackdev");
+        std::cout << "\\O/ - " <<  bstack.id() << " has been  successfuly created !!\n -- now closing the section:";
+        lbdev.close();
+    }
+    catch(Book::exception e)
+    {
+        std::cout << "Book::exception chatched:\n[" << e.what() << "]\n";
+    }
+
+    AppBook.close();
     return 0;
 }
