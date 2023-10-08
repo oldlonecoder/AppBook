@@ -72,7 +72,16 @@ Book::section::bloc_stack &Book::section::create_stack(const std::string &stack_
 
 Book::section::bloc_stack &Book::section::operator[](const std::string &bloc_id)
 {
-    for(auto* blk : blocs) if( blk->id() == bloc_id ) return *blk;
+    for(auto* blk : blocs)
+    {
+        if( blk->id() == bloc_id )
+        {
+            Book::Self().current_stream = blk;
+            Book::Self().out_stream = &blk->output_file;
+            std::cout << " bloc stack " << bloc_id << " is now set as current stream at the Book scope.\n";
+            return *blk;
+        }
+    }
     stracc e;
     e << "bloc stack identified by '" << color::Yellow << bloc_id << color::Reset << "' not found.";
     throw Book::exception(e());
