@@ -38,8 +38,8 @@ class BOOK_PUBLIC Book : public book::object
 
     std::ostream* out_stream{nullptr}; ///< Pointer to the address of the currently selected output stream.
 
-    static Book* _Book; ///< Pointer to the Book instance.
-    chattr::format _format{chattr::format::ansi256};
+    //static Book* _Book; ///< Pointer to the Book instance.
+    chattr::format _format{chattr::format::html};
 
     std::string starting_path;
 public:
@@ -253,23 +253,23 @@ public:
 
 
     // held back :
-    //static Book::section::stack::element& error(book::source_location&& src = {});
-    //static Book::section::stack::element& out(book::source_location&& src = {});
-    //static Book::section::stack::element& warning(book::source_location&& src = {});
-    //static Book::section::stack::element& fatal(book::source_location&& src = {});
-    //static Book::section::stack::element& except(book::source_location&& src = {});
-    //static Book::section::stack::element& message(book::source_location&& src = {});
-    //static Book::section::stack::element& debug(book::source_location&& src = {});
-    //static Book::section::stack::element& info(book::source_location&& src = {});
-    //static Book::section::stack::element& comment(book::source_location&& src = {});
-    //static Book::section::stack::element& syntax(book::source_location&& src = {});
-    //static Book::section::stack::element& status(book::source_location&& src = {});
-    //static Book::section::stack::element& test(book::source_location&& src = {});
-    //static Book::section::stack::element& interrupted(book::source_location&& src = {});
-    //static Book::section::stack::element& aborted(book::source_location&& src = {});
-    //static Book::section::stack::element& segfault(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& error(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& out(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& warning(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& fatal(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& except(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& message(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& debug(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& info(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& comment(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& syntax(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& status(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& test(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& interrupted(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& aborted(book::source_location&& src = {});
+    static Book::section::bloc_stack::element& segfault(book::source_location&& src = {});
 
-
+    static book::code commit();
 
 
 

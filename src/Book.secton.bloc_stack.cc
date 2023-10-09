@@ -23,6 +23,7 @@ Book::section::bloc_stack::bloc_stack(object *parent_obj, const std::string &ati
 
 Book::section::bloc_stack::~bloc_stack()
 {
+    close();
     content.clear();
 }
 
@@ -58,6 +59,7 @@ code Book::section::bloc_stack::close()
     if(!output_file.is_open())
         return book::code::rejected;
 
+    commit();
     output_file.flush();
     output_file.close();
     std::cout << " file '" << chattr::ansi(color::Yellow) << filename << chattr::ansi(color::Reset) << "' is closed.\n";
@@ -72,14 +74,15 @@ code Book::section::bloc_stack::close()
  */
 code Book::section::bloc_stack::commit()
 {
-
+    if(!output_file.is_open()) throw Book::exception("Book::section::bloc_stack::commit() : no output file.");
     for(auto& elem: content)
     {
-        output_file << elem.text();
+        elem.cc();
+        output_file << elem.text() << std::endl;
         elem.text.clear();
     }
-    if(!content.empty())
-        content.clear(); // Don't call it if empty...
+
+    if(!content.empty()) content.clear(); // Don't call it if empty...
 
     return code::accepted;
 }

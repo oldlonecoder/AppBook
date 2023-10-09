@@ -93,18 +93,20 @@ auto main(int argc, char** argv) -> int
 
     try {
         auto & lbdev  = AppBook.create_section("logbook.dev");
-        std::cout << "\\O/ - " <<  lbdev.id() << " has been  successfuly created !!\n";
+        std::cout << "\\O/ - " <<  lbdev.id() << " has been created and/or openned.\n";
         lbdev.open();
         auto& bstack = lbdev.create_stack("stackdev");
-        std::cout << " Prepare to use the instance of the bloc 'stackdev ( intentionnaly mispelled hihihihihi!@) ...:\n";
-        auto & stackdev = AppBook["logbook.dev"]["stckdev"];
+        std::cout << " Prepare to use the instance of the bloc 'stackdev:\n";
+        auto & stackdev = AppBook["logbook.dev"]["stackdev"];
 
-
-        lbdev.close();
+        std::cout << "\n\n  Testing Book inputs with no components:\n";
+        Book::message(HERE) << color::Yellow << " This is the first '" << color::LighcoreateBlue << "hello world!" << color::Yellow << "' in The Book API!";
+        Book::out() << " That's all folks!";
+        Book::commit();
     }
     catch(Book::exception e)
     {
-        std::cout << "Book::exception chatched:\n[" << e.what() << "]\n";
+        std::cout << "Book::exception caugh:\n[" << e.what() << "]\n";
     }
 
     AppBook.close();
