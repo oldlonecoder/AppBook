@@ -69,7 +69,7 @@ book::code Book::section::bloc_stack::element::cc()
     for(auto const& comp: input_components)
         text << comp;
 
-
+    input_components.clear();
     return book::code::ok;
 }
 
