@@ -39,7 +39,7 @@ class BOOK_PUBLIC Book : public book::object
     std::ostream* out_stream{nullptr}; ///< Pointer to the address of the currently selected output stream.
 
     //static Book* _Book; ///< Pointer to the Book instance.
-    chattr::format _format{chattr::format::html};
+    chattr::format _format{chattr::format::ansi256};
 
     std::string starting_path;
 public:
