@@ -21,7 +21,7 @@
 #include <chrtools/Icons.h>
 #include <logbook/book_data.h>
 #include <filesystem>
-
+#include <memory> //< Check if a smart pointer could delete Book::__APplication_Book__ preperly.
 
 
 
@@ -238,7 +238,7 @@ public:
 
 
     book::code open();
-    book::code close();
+    static book::code close();
 
 
     Book::section& operator[](std::string_view section_id);
@@ -272,10 +272,10 @@ public:
     static book::code commit();
 
 
-
 private:
     Book(const std::string& book_id);
     Book();
+
     section::list sections;
     Book::section::bloc_stack* current_stream{nullptr};
     config_data conf;

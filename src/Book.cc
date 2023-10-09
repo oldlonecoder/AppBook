@@ -2,11 +2,13 @@
 #include <chrtools/textattr.h>
 #include <exception>
 
+
 //#include <filesystem>
 
 
 using book::code;
 using book::cat;
+
 
 Book* Book::__Application_Book__{nullptr};
 
@@ -134,11 +136,16 @@ book::code Book::open()
 
 book::code Book::close()
 {
-    for(auto* s: sections)
+    if(!Book::__Application_Book__) return book::code::rejected;
+
+    for(auto* s: Book::__Application_Book__->sections)
     {
         s->close();
         delete s;
     }
+    Book::__Application_Book__->sections.clear();
+    delete Book::__Application_Book__;
+
     return book::code::success;
 }
 
