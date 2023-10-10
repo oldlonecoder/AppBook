@@ -12,7 +12,7 @@
 
 #include <logbook/text.h>
 #include <map>
-
+#include <logbook/Book.h>
 
 
 
@@ -31,6 +31,7 @@ text::token_data::list text::token_data::Referential =
     {text::token_data::type::Punctuation,    text::token_data::mnemonic::ArgSeq,      text::token_data::ArgSeq,0},
     {text::token_data::type::Punctuation,    text::token_data::mnemonic::ArgSep,      text::token_data::ArgSep,0},
     {text::token_data::type::Punctuation,    text::token_data::mnemonic::Eos,         text::token_data::EoSt,0},
+    {text::token_data::type::Punctuation,    text::token_data::mnemonic::Reset,       text::token_data::Reset,0},
     {text::token_data::type::AttrCmd,        text::token_data::mnemonic::Color,       text::token_data::ColorPair,2},
     {text::token_data::type::AttrCmd,        text::token_data::mnemonic::Fg,          text::token_data::Fg,1},
     {text::token_data::type::AttrCmd,        text::token_data::mnemonic::Bg,          text::token_data::Bg,1},
@@ -71,7 +72,7 @@ text::~text()
 
 text::token_data text::token_data::scan(const char* Start)
 {
-    //book::code::Debug(SourceLocation) << " Entering with Start :[" << *Start << "] -> '" << Start << "':";
+    ////Book::debug(HERE) << " Entering with Start :[" << *Start << "] -> '" << Start << "':";
     if (!*Start)
         return {};
 
@@ -87,7 +88,7 @@ text::token_data text::token_data::scan(const char* Start)
         if (toupper(*crs) != toupper(*rtxt)) continue;
 
         while (*rtxt && *crs && (toupper(*crs) == toupper(*rtxt))) { ++crs; ++rtxt; }
-        //// book::code::push_debug(HERE) << "Token.L = [" << color::Yellow << TokenRef.L << color::Reset << "]:";
+        ////Book::debug(HERE) << "Token.L = [" << color::Yellow << TokenRef.L << color::Reset << "]:";
         if (!*rtxt)
         {   // fin de Token.L :
             if (TokenRef.T == token_data::type::AttrCmd)
@@ -135,10 +136,9 @@ std::string text::token_data::mark(const char* Stream)
     while ((B >= Stream) && (*B != '\n')) --B;
     ++B;
     while (*E && (*E != '\n')) ++E;
-    --E;
+    if(!E) --E;
 
     std::string MStr = std::string(_location.begin - Stream, ' ');
-
     MStr += Icon::CArrowUp;
     stracc Str;
     Str << color::Grey78 << std::string(B, E - B) << '\n' << color::Yellow << MStr << color::Reset;
@@ -147,12 +147,19 @@ std::string text::token_data::mark(const char* Stream)
 
 book::code text::compile()
 {
+    ////Book::debug(HERE) << " :";
     text::compiler Parse{ *this };
     return Parse.execute();
 }
 
 book::code text::operator>>(std::string& Out)
 {
+    ////Book::debug(HERE) << " Building the text using the processed data:";
+    if(state == text::err)
+    {
+        Book::error(HERE) << " Bad state error.";
+        return book::code::failed;
+    }
 
     const char* r = _d.c_str();
     auto l = _d.length();
@@ -162,20 +169,25 @@ book::code text::operator>>(std::string& Out)
 
     for (auto const& A : _attributes)
     {
-
+        //Book::debug(HERE) << " Looping Attributes: '" << A() << "' length:" << A().length();
         while (r != A._begin)
         {
             Out += *r;
-            auto R = output_hook(*r);
-            if(!R)
-                return R();
+            if(!output_hook.empty())
+            {
+                auto R = output_hook(*r);
+                if(*R != book::code::accepted) return *R;
+            }
             r++;
         }
         r += A().length();
-        auto R = attr_hook(A);
-        if(!R)
-            return R();
+        if(!attr_hook.empty())
+        {
+            auto R = attr_hook(A);
+            if(*R != book::code::accepted) return *R;
+        }
 
+        // ----------- Foreground and background assign colors: -----------------------------
         if(A._assign.foreground && A._assign.background)
         {
             chattr::pair{A._fg, A._bg} >> AttrStr;
@@ -192,11 +204,14 @@ book::code text::operator>>(std::string& Out)
             else
             if (A._assign.foreground)
             {
+                //Book::debug(HERE) << " foreground color #: " << static_cast<int>(A._fg);
                 AttrStr = _f == chattr::format::ansi256 ? attr<chattr::format::ansi256>::fg(A._fg) : attr<chattr::format::html>::fg(A._fg);
                 Out += AttrStr;
             }
         }
+        // ----------- Foreground and background assign colors end -----------------------------
 
+        // ----------- Graphens and Accents: -----------------------------
         if (A._assign.accent)
         {
             AttrStr = Accent::Data[A._accnt];
@@ -211,13 +226,17 @@ book::code text::operator>>(std::string& Out)
             }
             //...
         }
+        // ------------------------------------------------------------------
+
+        //--------- Text commands : -------------------------------------------------
+        //...To be continued...
     }
     while (static_cast<size_t>(r - b) < l)
     {
         output_hook(*r);
         Out += *r++;
     }
-    return book::code::ok;
+    return book::code::success;
 }
 
 book::code text::operator()()
@@ -250,11 +269,18 @@ book::code text::operator()()
     return book::code::accepted;
 }
 
-std::string text::operator<<(const std::string& input_str)
+book::text& text::operator<<(const std::string& input_str)
 {
     clear();
     _d = input_str;
-    return _d;
+    //Book::debug(HERE) << " calling text::compile():";
+    auto c = compile();
+    if(c != book::code::accepted)
+    {
+        Book::error(HEREF) << c;
+        state = text::err;
+    }
+    return *this;
 }
 
 void text::clear()
@@ -360,14 +386,14 @@ text::token_data text::compiler::scan()
 */
 book::code text::compiler::execute()
 {
-    // Build tokens stream:
+    //Book::debug(HERE) << ":";
     while (!eof())
     {
 
         auto Token = skip_to_attribute();
         text::attribute Attr;
         text::attribute A;
-        if (!Token) return book::code::eof;
+        if (!Token) return book::code::accepted;
         if (Token.M == text::token_data::mnemonic::AccentSeq)
         {
             Attr._begin = Token._location.begin;
@@ -413,6 +439,7 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
         {text::token_data::mnemonic::Ic, &text::compiler::parse_icon},
         //... Plus tard, on aura les Grilles et Fenetres
         {text::token_data::mnemonic::ClosingTag, &text::compiler::close_attribute},
+        {text::token_data::mnemonic::Br, &text::compiler::parse_br},
     };
     while (!eof())
     {
@@ -423,7 +450,7 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
         Token = text::token_data::scan(C);
         if (!Token)
         {
-            // book::code::push_syntax() << " Expected ACM (Attribute Command mnemonic) Token.";
+            Book::syntax(HERE) << " Expected ACM (Attribute Command mnemonic) Token - Returning empty Attribute.";
             return {};
         }
         // Ici c'est obligatoire de faire une boucle qui teste explicitement les mnemonics sp&eacute;cifiques
@@ -434,16 +461,18 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
             eat_token(Token);
             ER = (this->*Fn)(Attr);
             if (!ER) return {};
+            ////Book::debug(HERE) << " Token : '" << Token.L  << "' - attribute-contruct[" << Attr() << color::White << "]";
             break;
         }
+
         if (Token.M == text::token_data::mnemonic::ClosingTag)
         {
-            eat_token(Token);
+            //eat_token(Token);
             Attr._end = Token._location.end;
             return Attr; // Peut &ecirc;tre vide si on es sur "<>"
         }
     }
-    // book::code::push_syntax() << " Unexpected end of stream in Attribute parsing";
+    Book::syntax(HERE) << " Unexpected end of stream in Attribute parsing - Returning empty Attribute";
     return {};
 }
 
@@ -558,17 +587,32 @@ book::code text::compiler::parse_fg(text::attribute& A)
     // Attendus :  ':' , 'ColorID', '; | >';
 
     auto Token = text::token_data::scan(C);
+    //Book::debug(HERE) << Token();
+    if(Token.L == text::token_data::Reset)
+    {
+       //Book::debug(HERE) << " Explicit assign fg:Reset to attribute.";
+       eat_token(Token);
+       A._assign.foreground = 1;
+       A._fg = color::Reset; return book::code::accepted;
+    }
+
     if ((Token.T != token_data::type::Punctuation) || (Token.L != text::token_data::ArgSeq))
     {
-        // book::code::push_syntax({}) << " Expected token ':' " << book::code::endl << mark();
+        Book::syntax(HERE) << " Expected token ':' " << book::functions::endl << mark();
         return book::code::unexpected;
+    }
+    if(Token.L == text::token_data::Reset)
+    {
+        //Book::debug(HERE) << "Reset: check...";
+        eat_token(Token);
+        return book::code::accepted;
     }
 
     eat_token(Token);
     Token = scan_identifier();
     if (!Token)
     {
-        // book::code::push_syntax({}) << " Expected Identifier token." << book::code::endl << mark();
+        Book::syntax(HERE) << " Expected Identifier token." << book::functions::endl << mark();
         return book::code::expected;
     }
 
@@ -576,7 +620,7 @@ book::code text::compiler::parse_fg(text::attribute& A)
     if (cid==color::Reset ) return book::code::accepted;
     A._fg = cid;
     A._assign.foreground = 1;
-    //book::code::out() << " Compiler::ParseFg - Token:" << book::code::endl << Token.mark(B);
+    //Book::out() << " Compiler::ParseFg - Token:" << book::functions::endl << Token.mark(B);
     return check_eos(A);
 }
 
@@ -585,6 +629,15 @@ book::code text::compiler::ParseBg(text::attribute& A)
     // C sur 'Fg'; ( Consomm&eacute; )
     // Attendus :  ':' , 'ColorID', '; | >';
     auto Token = text::token_data::scan(C);
+    if(Token.L == text::token_data::Reset)
+    {
+        //Book::debug(HERE) << " Explicit assign fg:Reset to attribute.";
+        eat_token(Token);
+        A._assign.background = 1;
+        A._bg = color::Reset;
+        return book::code::accepted;
+    }
+
     if ((Token.T != token_data::type::Punctuation) || (Token.L != text::token_data::ArgSeq))
     {
         // book::code::push_syntax({}) << book::code::rejected << " Expected token ':'" << book::code::endl << mark();
@@ -636,7 +689,7 @@ book::code text::compiler::parse_color(text::attribute& A)
 
     if (Token.M != text::token_data::mnemonic::ArgSeq)
     {
-        // book::code::push_syntax(HERE) << book::code::unexpected << book::code::endl << Token.mark(B);
+        Book::syntax(HERE) << book::code::unexpected << book::functions::endl << Token.mark(B);
         return book::code::unexpected;
     }
 
@@ -645,7 +698,7 @@ book::code text::compiler::parse_color(text::attribute& A)
     Token = scan_identifier();
     if(!Token)
     {
-        // book::code::push_syntax(HERE) << book::code::expected << " Expected Identifier token." << book::code::endl << mark();
+        Book::syntax(HERE) << book::code::expected << " Expected Identifier token." << book::functions::endl << mark();
         return book::code::expected;
     }
 
@@ -694,8 +747,9 @@ book::code text::compiler::parse_color(text::attribute& A)
 @param A
 @return book::code
  */
-book::code text::compiler::parse_br(text::attribute& )
+book::code text::compiler::parse_br(text::attribute& A)
 {
+    Book::warning(HERE) << " 'line-break' ( <br> ) are not handled as of now.";
 
     return book::code::notimplemented;
 }
@@ -719,7 +773,7 @@ book::code text::compiler::check_eos(text::attribute& A)
     auto Token = text::token_data::scan(C);
     if ( (!Token) || ((Token.M != text::token_data::mnemonic::Eos) && (Token.M != text::token_data::mnemonic::ClosingTag)))
     {
-        // book::code::push_warning(HERE) << book::code::expected << ":" << book::code::endl << Token.mark(B);
+        Book::warning(HERE) << book::code::expected << ":" << book::functions::endl << Token.mark(B);
         return book::code::rejected;
     }
     if (Token.M == text::token_data::mnemonic::ClosingTag)
@@ -740,7 +794,7 @@ text::token_data text::compiler::scan_identifier()
     C = Sc;
     if (!isalpha(*Sc) && (*Sc != '_'))
     {
-        // book::code::push_syntax() << book::code::expected << " Identifier, got " << *Sc << " insbookd." << book::code::endl << mark();
+        Book::syntax() << book::functions::function << ": " << book::code::expected << " Identifier, got " << *Sc << " insbookd." << book::functions::endl << mark();
         return {};
     }
 
@@ -758,19 +812,27 @@ book::code text::compiler::eat_token(text::token_data& Token)
 {
     C = Token._location.end;
     C++;
+    //Book::debug(HERE) << (int)(*C) << " Cursor on '" << color::Yellow << *C << color::Reset << '\'';
+
     return book::code::accepted;
 }
 
 
 color::code text::compiler::color_id(token_data& Token)
 {
+    if(std::string(Token.L)  == text::token_data::Reset)
+    {
+        eat_token(Token);
+        return color::Reset;
+    }
+
     auto Str = Token();
     color::code Colr = chattr::scan(Str);
     if (Colr == color::Reset)
     {
         if (Str != "Reset")
         {
-            // book::code::push_error() << " Expected color::code name (strict case match). Got '" << color::Yellow << Str << color::White << "' insbookd:" << book::code::endl <<Token.mark(B);
+            Book::error(HERE) << " Expected color::code name (strict case match). Got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl <<Token.mark(B);
             return color::Reset;
         }
     }
@@ -786,7 +848,7 @@ Icon::Type text::compiler::icon_id(token_data& Token)
     Icon::Type IconId = Icon::Scan(Str);
     if (IconId == 0)
     {
-        // book::code::push_error({}) << " Expected Icon::type name, got '" << color::Yellow << Str << color::White << "' insbookd:" << book::code::endl << Token.mark(B);
+        Book::error(HERE) << " Expected Icon::type name, got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl << Token.mark(B);
         return 0;
     }
     eat_token(Token);
@@ -802,11 +864,11 @@ std::string text::attribute::operator()() const
         std::string Str{ _begin, size_t(_end - _begin) + 1 };
         return Str;
     }
-    else
-    {
-        std::string Str{ _begin };
-        return Str;
-    }
+
+    Book::warning() << book::functions::function << " : Incomplete ( unclosed ) attribute data : ";
+    std::string Str{ _begin };
+    return Str;
+
 }
 
 std::string text::attribute::informations()

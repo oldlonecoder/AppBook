@@ -111,7 +111,7 @@ public:
     //// Calls all connected functions.
     expect<> operator()(Args... p) {
         if (_slots.empty())
-            return book::code::notexist;
+            return book::code::empty;
 
         expect<> R;
         for (auto const&fn : _slots) {

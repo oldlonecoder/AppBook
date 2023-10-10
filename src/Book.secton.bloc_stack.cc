@@ -41,7 +41,7 @@ code Book::section::bloc_stack::open()
     filename = file(); // Keep the copy of the filename
 
     std::cout << __PRETTY_FUNCTION__ << " - checking for existsing '"<< filename << "' :\n";
-    output_file.open(file(),std::ios_base::app);
+    output_file.open(file(),std::ios_base::out);
     if(!output_file.is_open())
     {
         stracc str = "bloc_stack : cannot open file '";

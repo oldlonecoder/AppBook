@@ -19,6 +19,8 @@ Book::section::bloc_stack::element::element(object* par, book::cat category, boo
 void Book::section::bloc_stack::element::cc_header()
 {
     //guard.lock();
+    if(ec.icon){;} // ...
+
     auto [icon, p] = book::category_attributes(cat);
     text= "";
     if(cat != book::cat::output)
@@ -230,6 +232,32 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
     return *this;
 }
 
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (char c)
+{
+    text << c;
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (book::code c)
+{
+    text << book::code_text(c);
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+}
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (book::cat c)
+{
+    text << book::category_text(c);
+    input_components.push_back(text());
+    text.clear();
+    return *this;
+
+}
+
 
 Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (color::code c)
 {
@@ -270,6 +298,11 @@ Book::section::bloc_stack::element &Book::section::bloc_stack::element::operator
 }
 
 
+Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (Book::element_components cfg)
+{
+    ec = cfg;
+    return *this;
+}
 
 
 Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator << (book::functions tr)
@@ -291,6 +324,9 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
         text << src.filename;
         break;
     case book::functions::weekday:
+        break;
+    case book::functions::function:
+        text << src.function_sig;
         break;
     default: break;
     }

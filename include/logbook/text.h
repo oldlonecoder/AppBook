@@ -80,6 +80,12 @@ class  BOOK_PUBLIC text
 {
     std::string _d;
     chattr::format _f = chattr::format::ansi256;
+    enum status : char
+    {
+        ok,
+        err
+        //...
+    }state{text::ok};
 
 public:
     text();
@@ -93,11 +99,12 @@ public:
     ~text();
     book::code compile();
 
+    text& operator << (const std::string& input_str);
     book::code operator >> (std::string&);
     book::code operator()();
 
     std::string text_str() { return _d; }
-    std::string operator << (const std::string& input_str);
+
     void clear();
 
     struct  BOOK_PUBLIC token_data
@@ -116,7 +123,7 @@ public:
         enum class mnemonic : uint16_t
         {
             Fg, Bg, Color, Ic, ArgSeq, ArgSep,
-            Identifier, OpenTag, ClosingTag, Br,
+            Identifier, OpenTag, Reset, ClosingTag, Br,
             Eos, AccentSeq, JustifySeq, Left, Top,
             Right, Bottom, Center, HVCenter, Null
             /* ... */
@@ -132,11 +139,12 @@ public:
 
         // non-case-sensitive keywords/lexems:
         using Lexem                       = const char*;
-        static constexpr Lexem Fg        = "FG";
-        static constexpr Lexem Bg        = "BG";
+        static constexpr Lexem Fg         = "FG";
+        static constexpr Lexem Bg         = "BG";
         static constexpr Lexem ColorPair  = "COLOR";
-        static constexpr Lexem Icon      = "ICON";
+        static constexpr Lexem Icon       = "ICON";
         static constexpr Lexem OpenSeq    = "<";
+        static constexpr Lexem Reset      = "/";
         static constexpr Lexem CloseSeq   = ">";
         static constexpr Lexem ArgSeq     = ":";
         static constexpr Lexem ArgSep     = ",";

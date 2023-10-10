@@ -1,4 +1,35 @@
-    #include "devtest.h"
+#include "devtest.h"
+#include <source_location>
+#include <logbook/text.h>
+#include <signal.h>
+
+
+void sig_int( int s )
+{
+    //rem::push_interrupted() << " dump messages stream and exit:";
+    //rem::clear(nullptr);
+    std::cerr << "\n---------------------------------------\n sig interrupt caugh - flushing Book contents.\n ";
+    Book::close();
+    exit(3);
+}
+
+void sig_fault( int s)
+{
+    //rem::push_segfault() << " dump messages stream and exit:";
+    //rem::clear(nullptr);
+    std::cerr << " sigfault caught...\n";
+    Book::close();
+    exit(127);
+}
+
+void sig_abort( int s)
+{
+    //rem::push_aborted() << " dump messages stream and exit:";
+    //rem::clear(nullptr);
+    std::cerr << s << '\n';
+    Book::close();
+    exit(127);
+}
 
 
 
@@ -79,6 +110,7 @@ book::code devtest::setup_cmdline_args(int argc, char** argv)
 }
 
 
+
 }
 
 
@@ -86,22 +118,35 @@ book::code devtest::setup_cmdline_args(int argc, char** argv)
 
 auto main(int argc, char** argv) -> int
 {
+
+    ::signal(SIGINT, sig_int);
+    ::signal(SIGSEGV, sig_fault);
+    ::signal(SIGABRT, sig_abort);
     book::devtest test;
     test.setup_cmdline_args(argc, argv);
     Book& AppBook = Book::init("logbook");
     AppBook.open();
+    AppBook.descriptions =
+R"(<Icon:School; fg:Yellow>Application Book API development:<fg/>
+----------------------------------------
+)";
 
+    std::string head;
+
+    book::text description;
     try {
         auto & lbdev  = AppBook.create_section("logbook.dev");
-        std::cout << "\\O/ - " <<  lbdev.id() << " has been created and/or openned.\n";
-        lbdev.open();
-        auto& bstack = lbdev.create_stack("stackdev");
-        std::cout << " Prepare to use the instance of the bloc 'stackdev:\n";
-        auto & stackdev = AppBook["logbook.dev"]["stackdev"];
+        lbdev.open().create_stack("text-processor-dev");
+        /*auto & stackdev =*/
+        AppBook["logbook.dev"]["text-processor-dev"];
 
-        std::cout << "\n\n  Testing Book inputs with no components:\n";
-        Book::message(HERE) << color::Yellow << " This is the first '" << color::LighcoreateBlue << "hello world!" << color::Yellow << "' in The Book API!";
-        Book::out() << " That's all folks!";
+        book::code c = description << AppBook.descriptions >> head;
+        if(c != book::code::success)
+            std::cout << " main: the description text failed to compile: " << book::code_text(c) << "\n";
+        else
+            Book::out() << head;
+
+        Book::out() << "Last line, committing blocstack and closing the book:";
         Book::commit();
     }
     catch(Book::exception e)

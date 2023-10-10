@@ -37,11 +37,9 @@ class BOOK_PUBLIC Book : public book::object
 {
 
     std::ostream* out_stream{nullptr}; ///< Pointer to the address of the currently selected output stream.
-
-    //static Book* _Book; ///< Pointer to the Book instance.
     chattr::format _format{chattr::format::ansi256};
-
     std::string starting_path;
+
 public:
 
     struct element_components
@@ -58,8 +56,11 @@ public:
         uint16_t month    : 1;
         uint16_t year     : 1;
         //...
-
+        using list = std::map<std::string, Book::element_components>;
     };
+
+    static Book::element_components::list header_components_db;
+
 
     struct BOOK_PUBLIC config_data
     {
@@ -133,6 +134,7 @@ public:
                 book::code code{book::code::rejected};
                 book::source_location src{};
 
+                Book::element_components  ec;
                 element() = default;
 
                 element(const element&) = default;
@@ -142,27 +144,31 @@ public:
 
                 Book::section::bloc_stack::element& operator = (const element& e) = default;
                 Book::section::bloc_stack::element& operator = (element&& e) noexcept = default;
+
                 Book::section::bloc_stack::element& operator << (Icon::Type graphem);
                 Book::section::bloc_stack::element& operator << (Accent::Type accent);
                 Book::section::bloc_stack::element& operator << (const stracc& txt);
                 Book::section::bloc_stack::element& operator << (const std::string& txt);
                 Book::section::bloc_stack::element& operator << (const char* txt);
-
+                Book::section::bloc_stack::element& operator << (char c);
+                Book::section::bloc_stack::element& operator << (book::code c);
+                Book::section::bloc_stack::element& operator << (book::cat c);
                 Book::section::bloc_stack::element& operator << (color::code c);
                 Book::section::bloc_stack::element& operator << (const rect& dd);
-
                 Book::section::bloc_stack::element& operator << (book::action tr);
                 Book::section::bloc_stack::element& operator << (book::functions tr);
+                Book::section::bloc_stack::element& operator << (Book::element_components cfg);
 
-
-                template<typename other_types> Book::section::bloc_stack::element& operator << (other_types val);
-
+                template<typename other_types> Book::section::bloc_stack::element& operator << (other_types val)
+                {
+                    text << val;
+                    input_components.push_back(text());
+                    text.clear();
+                    return *this;
+                }
                 void cc_header();
-
                 book::code cc();
                 book::code commit();
-
-
             };
 
 
@@ -240,6 +246,7 @@ public:
     book::code open();
     static book::code close();
 
+    std::string descriptions;
 
     Book::section& operator[](std::string_view section_id);
     Book::section& create_section(const std::string& section_id);
@@ -252,7 +259,7 @@ public:
     static std::filesystem::path location;
 
 
-    // held back :
+
     static Book::section::bloc_stack::element& error(book::source_location&& src = {});
     static Book::section::bloc_stack::element& out(book::source_location&& src = {});
     static Book::section::bloc_stack::element& warning(book::source_location&& src = {});

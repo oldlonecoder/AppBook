@@ -14,6 +14,26 @@ Book* Book::__Application_Book__{nullptr};
 
 namespace fs = std::filesystem;
 
+/*
+        uint16_t icon     : 1; // Icon/Grapen on element components
+        uint16_t filename : 1; // filename ...
+        uint16_t line     : 1; // line number
+        uint16_t column   : 1; // column number
+        uint16_t funcname : 1; // function name ( short )
+        uint16_t funcsig  : 1; // __PRETTY_FUNCTION__  ( full function sisgnature }
+        uint16_t stamp    : 1; // time stamp ( full calendar details ( excepted second's floating precisions)
+        uint16_t time     : 1; // Time of the day
+        uint16_t day      : 1; // day of the month
+        uint16_t month    : 1; // month of the year
+        uint16_t year     : 1; // year...
+ */
+Book::element_components::list Book::header_components_db = {
+{
+     // [icon | filename | line | column | funcname | time]
+     {"defaults", {1,1,1,1,1,0,0,1,0,0,0}},
+}
+};
+
 
 
 std::filesystem::path Book::location;
