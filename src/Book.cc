@@ -241,21 +241,21 @@ chattr::format Book::format()
 if(!Book::__Application_Book__  || !Book::__Application_Book__->current_stream || !Book::__Application_Book__->out_stream) \
     throw Book::exception("Using unset or uninitialized Book components.");
 
-Book::section::bloc_stack::element& Book::error(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->error(std::move(src)); }
-Book::section::bloc_stack::element& Book::out(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->out(std::move(src)); }
-Book::section::bloc_stack::element& Book::warning(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->warning(std::move(src)); }
-Book::section::bloc_stack::element& Book::fatal(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->fatal(std::move(src)); }
-Book::section::bloc_stack::element& Book::except(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->except(std::move(src)); }
-Book::section::bloc_stack::element& Book::message(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->message(std::move(src)); }
-Book::section::bloc_stack::element& Book::debug(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->debug(std::move(src)); }
-Book::section::bloc_stack::element& Book::info(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->info(std::move(src)); }
-Book::section::bloc_stack::element& Book::comment(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->comment(std::move(src)); }
-Book::section::bloc_stack::element& Book::syntax(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->syntax(std::move(src)); }
-Book::section::bloc_stack::element& Book::status(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->status(std::move(src)); }
-Book::section::bloc_stack::element& Book::test(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->test(std::move(src)); }
-Book::section::bloc_stack::element& Book::interrupted(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->interrupted(std::move(src)); }
-Book::section::bloc_stack::element& Book::aborted(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->aborted(std::move(src)); }
-Book::section::bloc_stack::element& Book::segfault(book::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->segfault(std::move(src)); }
+Book::section::bloc_stack::element& Book::error       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->error(std::move(src)); }
+Book::section::bloc_stack::element& Book::out         (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->out(std::move(src)); }
+Book::section::bloc_stack::element& Book::warning     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->warning(std::move(src)); }
+Book::section::bloc_stack::element& Book::fatal       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->fatal(std::move(src)); }
+Book::section::bloc_stack::element& Book::except      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->except(std::move(src)); }
+Book::section::bloc_stack::element& Book::message     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->message(std::move(src)); }
+Book::section::bloc_stack::element& Book::debug       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->debug(std::move(src)); }
+Book::section::bloc_stack::element& Book::info        (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->info(std::move(src)); }
+Book::section::bloc_stack::element& Book::comment     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->comment(std::move(src)); }
+Book::section::bloc_stack::element& Book::syntax      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->syntax(std::move(src)); }
+Book::section::bloc_stack::element& Book::status      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->status(std::move(src)); }
+Book::section::bloc_stack::element& Book::test        (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->test(std::move(src)); }
+Book::section::bloc_stack::element& Book::interrupted (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->interrupted(std::move(src)); }
+Book::section::bloc_stack::element& Book::aborted     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->aborted(std::move(src)); }
+Book::section::bloc_stack::element& Book::segfault    (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->segfault(std::move(src)); }
 
 book::code Book::commit() { CHECK_BOOK return Book::Self().current_stream->commit(); }
 

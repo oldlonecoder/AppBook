@@ -127,7 +127,8 @@ auto main(int argc, char** argv) -> int
     Book& AppBook = Book::init("logbook");
     AppBook.open();
     AppBook.descriptions =
-R"(<Icon:School; fg:Yellow>Application Book API development:<fg/>
+R"(
+<Icon:School; fg:Yellow>Application Book API development:<fg/>
 ----------------------------------------
 )";
 
@@ -146,7 +147,7 @@ R"(<Icon:School; fg:Yellow>Application Book API development:<fg/>
         else
             Book::out() << head;
 
-        Book::out() << "Last line, committing blocstack and closing the book:";
+        Book::info() << "Last line, committing blocstack and closing the book:";
         Book::commit();
     }
     catch(Book::exception e)

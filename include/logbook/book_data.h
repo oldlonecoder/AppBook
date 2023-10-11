@@ -13,24 +13,25 @@
 
 #include <chrtools/stracc.h>
 #include <logbook/public.h>
+#include <source_location>
 
 namespace book
 {
 
 
-struct  BOOK_PUBLIC source_location
-{
-    int line = 0;
-    std::string_view filename = "";
-    std::string_view function_sig = "";
-    explicit operator bool()const { return !((line == 0) && filename.empty() && function_sig.empty()); }
-};
+//struct  BOOK_PUBLIC source_location
+//{
+//    int line = 0;
+//    std::string_view filename = "";
+//    std::string_view function_sig = "";
+//    explicit operator bool()const { return !((line == 0) && filename.empty() && function_sig.empty()); }
+//};
 
-//#define sfnl    {__LINE__,__FILE__,__FUNCTION__}
-//#define sfnll   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
-//#define sfl     {__LINE__, "", __FUNCTION__}
-#define HERE    {__LINE__,__FILE__,__FUNCTION__}
-#define HEREF   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
+////#define sfnl    {__LINE__,__FILE__,__FUNCTION__}
+////#define sfnll   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
+////#define sfl     {__LINE__, "", __FUNCTION__}
+//#define HERE    {__LINE__,__FILE__,__FUNCTION__}
+//#define HEREF   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
 
 
 

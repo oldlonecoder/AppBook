@@ -7,7 +7,7 @@
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
- *   Copyrights from authors other than Serge Lussier also apply here      *
+ *   Copyrights from authors other than Serge Lussier also apply       *
  ***************************************************************************/
 
 #include <logbook/text.h>
@@ -72,7 +72,7 @@ text::~text()
 
 text::token_data text::token_data::scan(const char* Start)
 {
-    ////Book::debug(HERE) << " Entering with Start :[" << *Start << "] -> '" << Start << "':";
+    ////Book::debug() << " Entering with Start :[" << *Start << "] -> '" << Start << "':";
     if (!*Start)
         return {};
 
@@ -88,7 +88,7 @@ text::token_data text::token_data::scan(const char* Start)
         if (toupper(*crs) != toupper(*rtxt)) continue;
 
         while (*rtxt && *crs && (toupper(*crs) == toupper(*rtxt))) { ++crs; ++rtxt; }
-        ////Book::debug(HERE) << "Token.L = [" << color::Yellow << TokenRef.L << color::Reset << "]:";
+        ////Book::debug() << "Token.L = [" << color::Yellow << TokenRef.L << color::Reset << "]:";
         if (!*rtxt)
         {   // fin de Token.L :
             if (TokenRef.T == token_data::type::AttrCmd)
@@ -101,14 +101,14 @@ text::token_data text::token_data::scan(const char* Start)
                 }
             } // Il reste les autres non-espace comme les ponctuations, symboles...
             --crs; // Replacer crs sur le dernier caractere du Token.
-            //// book::code::push_debug(HERE) << " Scanned to :'" << color::Yellow << *crs << color::Reset << '\'';
+            //// book::code::push_debug() << " Scanned to :'" << color::Yellow << *crs << color::Reset << '\'';
             TokenRef._location.begin = Start;
             TokenRef._location.end = crs; // Fin du Token
 
             return TokenRef; // On le retourne.... doh!
         }
     }
-    // book::code::push_debug(HERE) << " '" << *Start << "' not a TokenRef";
+    // book::code::push_debug() << " '" << *Start << "' not a TokenRef";
     return {}; // crs ( ou Start )  n'est pas sur un token du referentiel.
 }
 
@@ -147,17 +147,17 @@ std::string text::token_data::mark(const char* Stream)
 
 book::code text::compile()
 {
-    ////Book::debug(HERE) << " :";
+    ////Book::debug() << " :";
     text::compiler Parse{ *this };
     return Parse.execute();
 }
 
 book::code text::operator>>(std::string& Out)
 {
-    ////Book::debug(HERE) << " Building the text using the processed data:";
+    ////Book::debug() << " Building the text using the processed data:";
     if(state == text::err)
     {
-        Book::error(HERE) << " Bad state error.";
+        Book::error() << " Bad state error.";
         return book::code::failed;
     }
 
@@ -169,7 +169,7 @@ book::code text::operator>>(std::string& Out)
 
     for (auto const& A : _attributes)
     {
-        //Book::debug(HERE) << " Looping Attributes: '" << A() << "' length:" << A().length();
+        //Book::debug() << " Looping Attributes: '" << A() << "' length:" << A().length();
         while (r != A._begin)
         {
             Out += *r;
@@ -204,7 +204,7 @@ book::code text::operator>>(std::string& Out)
             else
             if (A._assign.foreground)
             {
-                //Book::debug(HERE) << " foreground color #: " << static_cast<int>(A._fg);
+                //Book::debug() << " foreground color #: " << static_cast<int>(A._fg);
                 AttrStr = _f == chattr::format::ansi256 ? attr<chattr::format::ansi256>::fg(A._fg) : attr<chattr::format::html>::fg(A._fg);
                 Out += AttrStr;
             }
@@ -273,11 +273,11 @@ book::text& text::operator<<(const std::string& input_str)
 {
     clear();
     _d = input_str;
-    //Book::debug(HERE) << " calling text::compile():";
+    //Book::debug() << " calling text::compile():";
     auto c = compile();
     if(c != book::code::accepted)
     {
-        Book::error(HEREF) << c;
+        Book::error() << c;
         state = text::err;
     }
     return *this;
@@ -386,7 +386,7 @@ text::token_data text::compiler::scan()
 */
 book::code text::compiler::execute()
 {
-    //Book::debug(HERE) << ":";
+    //Book::debug() << ":";
     while (!eof())
     {
 
@@ -450,7 +450,7 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
         Token = text::token_data::scan(C);
         if (!Token)
         {
-            Book::syntax(HERE) << " Expected ACM (Attribute Command mnemonic) Token - Returning empty Attribute.";
+            Book::syntax() << " Expected ACM (Attribute Command mnemonic) Token - Returning empty Attribute.";
             return {};
         }
         // Ici c'est obligatoire de faire une boucle qui teste explicitement les mnemonics sp&eacute;cifiques
@@ -461,7 +461,7 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
             eat_token(Token);
             ER = (this->*Fn)(Attr);
             if (!ER) return {};
-            ////Book::debug(HERE) << " Token : '" << Token.L  << "' - attribute-contruct[" << Attr() << color::White << "]";
+            ////Book::debug() << " Token : '" << Token.L  << "' - attribute-contruct[" << Attr() << color::White << "]";
             break;
         }
 
@@ -472,7 +472,7 @@ text::attribute text::compiler::compile_attribute(text::attribute& Attr)
             return Attr; // Peut &ecirc;tre vide si on es sur "<>"
         }
     }
-    Book::syntax(HERE) << " Unexpected end of stream in Attribute parsing - Returning empty Attribute";
+    Book::syntax() << " Unexpected end of stream in Attribute parsing - Returning empty Attribute";
     return {};
 }
 
@@ -516,7 +516,7 @@ text::attribute text::compiler::compile_accent(text::attribute& Attr)
     //Mandatory expect ';'
     (void)eat_token(Token);
     if(check_eos(Attr) != book::code::accepted) return Attr;
-    // book::code::push_syntax(HERE) << " Expected Eos ';' (End Of Statement token)." << book::code::endl << mark();
+    // book::code::push_syntax() << " Expected Eos ';' (End Of Statement token)." << book::code::endl << mark();
     return {};
 }
 
@@ -563,7 +563,7 @@ book::code text::compiler::parse_icon(text::attribute& A)
    auto Token = text::token_data::scan(C);
    if (Token.T != text::token_data::type::Punctuation)
    {
-       // book::code::push_syntax(HERE) << " Expected Punctuation token ':'" << book::code::endl << mark();
+       // book::code::push_syntax() << " Expected Punctuation token ':'" << book::code::endl << mark();
        return book::code::rejected;
    }
    eat_token(Token);
@@ -587,10 +587,10 @@ book::code text::compiler::parse_fg(text::attribute& A)
     // Attendus :  ':' , 'ColorID', '; | >';
 
     auto Token = text::token_data::scan(C);
-    //Book::debug(HERE) << Token();
+    //Book::debug() << Token();
     if(Token.L == text::token_data::Reset)
     {
-       //Book::debug(HERE) << " Explicit assign fg:Reset to attribute.";
+       //Book::debug() << " Explicit assign fg:Reset to attribute.";
        eat_token(Token);
        A._assign.foreground = 1;
        A._fg = color::Reset; return book::code::accepted;
@@ -598,12 +598,12 @@ book::code text::compiler::parse_fg(text::attribute& A)
 
     if ((Token.T != token_data::type::Punctuation) || (Token.L != text::token_data::ArgSeq))
     {
-        Book::syntax(HERE) << " Expected token ':' " << book::functions::endl << mark();
+        Book::syntax() << " Expected token ':' " << book::functions::endl << mark();
         return book::code::unexpected;
     }
     if(Token.L == text::token_data::Reset)
     {
-        //Book::debug(HERE) << "Reset: check...";
+        //Book::debug() << "Reset: check...";
         eat_token(Token);
         return book::code::accepted;
     }
@@ -612,7 +612,7 @@ book::code text::compiler::parse_fg(text::attribute& A)
     Token = scan_identifier();
     if (!Token)
     {
-        Book::syntax(HERE) << " Expected Identifier token." << book::functions::endl << mark();
+        Book::syntax() << " Expected Identifier token." << book::functions::endl << mark();
         return book::code::expected;
     }
 
@@ -631,7 +631,7 @@ book::code text::compiler::ParseBg(text::attribute& A)
     auto Token = text::token_data::scan(C);
     if(Token.L == text::token_data::Reset)
     {
-        //Book::debug(HERE) << " Explicit assign fg:Reset to attribute.";
+        //Book::debug() << " Explicit assign fg:Reset to attribute.";
         eat_token(Token);
         A._assign.background = 1;
         A._bg = color::Reset;
@@ -689,7 +689,7 @@ book::code text::compiler::parse_color(text::attribute& A)
 
     if (Token.M != text::token_data::mnemonic::ArgSeq)
     {
-        Book::syntax(HERE) << book::code::unexpected << book::functions::endl << Token.mark(B);
+        Book::syntax() << book::code::unexpected << book::functions::endl << Token.mark(B);
         return book::code::unexpected;
     }
 
@@ -698,7 +698,7 @@ book::code text::compiler::parse_color(text::attribute& A)
     Token = scan_identifier();
     if(!Token)
     {
-        Book::syntax(HERE) << book::code::expected << " Expected Identifier token." << book::functions::endl << mark();
+        Book::syntax() << book::code::expected << " Expected Identifier token." << book::functions::endl << mark();
         return book::code::expected;
     }
 
@@ -749,7 +749,7 @@ book::code text::compiler::parse_color(text::attribute& A)
  */
 book::code text::compiler::parse_br(text::attribute& A)
 {
-    Book::warning(HERE) << " 'line-break' ( <br> ) are not handled as of now.";
+    Book::warning() << " 'line-break' ( <br> ) are not handled as of now.";
 
     return book::code::notimplemented;
 }
@@ -773,7 +773,7 @@ book::code text::compiler::check_eos(text::attribute& A)
     auto Token = text::token_data::scan(C);
     if ( (!Token) || ((Token.M != text::token_data::mnemonic::Eos) && (Token.M != text::token_data::mnemonic::ClosingTag)))
     {
-        Book::warning(HERE) << book::code::expected << ":" << book::functions::endl << Token.mark(B);
+        Book::warning() << book::code::expected << ":" << book::functions::endl << Token.mark(B);
         return book::code::rejected;
     }
     if (Token.M == text::token_data::mnemonic::ClosingTag)
@@ -812,7 +812,7 @@ book::code text::compiler::eat_token(text::token_data& Token)
 {
     C = Token._location.end;
     C++;
-    //Book::debug(HERE) << (int)(*C) << " Cursor on '" << color::Yellow << *C << color::Reset << '\'';
+    //Book::debug() << (int)(*C) << " Cursor on '" << color::Yellow << *C << color::Reset << '\'';
 
     return book::code::accepted;
 }
@@ -832,7 +832,7 @@ color::code text::compiler::color_id(token_data& Token)
     {
         if (Str != "Reset")
         {
-            Book::error(HERE) << " Expected color::code name (strict case match). Got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl <<Token.mark(B);
+            Book::error() << " Expected color::code name (strict case match). Got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl <<Token.mark(B);
             return color::Reset;
         }
     }
@@ -848,7 +848,7 @@ Icon::Type text::compiler::icon_id(token_data& Token)
     Icon::Type IconId = Icon::Scan(Str);
     if (IconId == 0)
     {
-        Book::error(HERE) << " Expected Icon::type name, got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl << Token.mark(B);
+        Book::error() << " Expected Icon::type name, got '" << color::Yellow << Str << color::White << "' insbookd:" << book::functions::endl << Token.mark(B);
         return 0;
     }
     eat_token(Token);

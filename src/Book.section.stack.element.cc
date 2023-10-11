@@ -3,7 +3,7 @@
 
 
 
-Book::section::bloc_stack::element::element(object* par, book::cat category, book::source_location &&asrc):book::object(par,"q-anon element!")
+Book::section::bloc_stack::element::element(object* par, book::cat category, std::source_location &&asrc):book::object(par,"q-anon element!")
 {
     src = std::move(asrc);
     cat = category;
@@ -35,29 +35,28 @@ void Book::section::bloc_stack::element::cc_header()
             text , color::White , '[' , p ,  Icon::Data[icon] ,  book::category_text(cat), color::White , "] ";
     }
 
-    if(src)
-    {
-        if(!src.filename.empty())
-        {
-            strbrk txt;
-            strbrk::config_data data = { src.filename.data(),"/",strbrk::discard};
-            auto cnt = txt(data);
-            ///@todo check cnt....
+    auto const& header_components = Book::header_components_db["defaults"];
 
-            text , color::White , '[';
-            text , color::CadetBlue2 , Icon::Folder;
-            if(cnt>1)
-                text , ".../";
-            text , data.words.back()() , color::White , ']';
-        }
-        if(src.line > 0)
-        {
-            text , color::White , '|' , color::Lime , Icon::Baseline , src.line , color::White , "|";
-        }
-        if(!src.function_sig.empty())
-        {
-            text , color::SteelBlue1 , Icon::Function , src.function_sig , color::White , ": ";
-        }
+    if(header_components.filename)
+    {
+        strbrk txt;
+        strbrk::config_data data = { src.file_name(),"/",strbrk::discard};
+        auto cnt = txt(data);
+        ///@todo check cnt....
+
+        text , color::White , '[';
+        text , color::CadetBlue2 , Icon::Folder;
+        if(cnt>1)
+            text , ".../";
+        text , data.words.back()() , color::White , ']';
+    }
+    if(header_components.line)
+    {
+        text , color::White , '|' , color::Lime , Icon::Baseline , src.line() , color::White , "|";
+    }
+    if(header_components.funcname || header_components.funcsig)
+    {
+        text , color::SteelBlue1 , Icon::Function , src.function_name() , color::White , ": ";
     }
 
 }
@@ -81,103 +80,103 @@ book::code Book::section::bloc_stack::element::commit()
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::error        (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::error        (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::error, std::move(asrc)});
     return content.back();
 }
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::out          (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::out          (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::output, std::move(asrc)});
     return content.back();
 }
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::warning      (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::warning      (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::warning, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::fatal        (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::fatal        (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::fatal, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::except       (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::except       (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::except, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::message      (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::message      (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::message, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::debug        (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::debug        (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::debug, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::info         (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::info         (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::info, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::comment      (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::comment      (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::comment, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::syntax       (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::syntax       (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::syntax, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::status       (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::status       (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::status, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::test         (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::test         (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::test, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::interrupted  (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::interrupted  (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::interrupted, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::aborted      (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::aborted      (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::aborted, std::move(asrc)});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::segfault     (book::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::segfault     (std::source_location&& asrc)
 {
     content.push_back({this, book::cat::segfault, std::move(asrc)});
     return content.back();
@@ -320,13 +319,12 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
         text << stracc::now("%H:%M:%DS");
         break;
     case book::functions::file:
-        if(!src) break;
-        text << src.filename;
+        text << src.file_name();
         break;
     case book::functions::weekday:
         break;
     case book::functions::function:
-        text << src.function_sig;
+        text << src.function_name();
         break;
     default: break;
     }
