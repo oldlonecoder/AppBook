@@ -146,7 +146,7 @@ R"(<Icon:School; fg:Yellow>Application Book API development:<fg/>
         else
             Book::out() << head;
 
-        Book::out() << "Last line, committing blocstack and closing the book:";
+        Book::info(HERE) << "Last line, committing blocstack and closing the book:";
         Book::commit();
     }
     catch(Book::exception e)
