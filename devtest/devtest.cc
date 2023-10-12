@@ -101,11 +101,8 @@ book::code devtest::setup_cmdline_args(int argc, char** argv)
 
     cmdargs.set_default_callback(&devtest::default_args);
 
-    //book::code::push_debug(HERE) << " usage:" << book::code::commit;
-    //book::code::out() << cmdargs.usage() << book::code::commit;
-
-    //book::code::push_test() << " -- Now the exec: " << book::code::commit;
-
+    //Book::out() << " usage:";
+    Book::info() << cmdargs.usage();
     return cmdargs.process(argc, argv);
 }
 
@@ -122,14 +119,13 @@ auto main(int argc, char** argv) -> int
     ::signal(SIGINT, sig_int);
     ::signal(SIGSEGV, sig_fault);
     ::signal(SIGABRT, sig_abort);
-    book::devtest test;
-    test.setup_cmdline_args(argc, argv);
+
     Book& AppBook = Book::init("logbook");
     AppBook.open();
     AppBook.descriptions =
 R"(
-<Icon:School; fg:Yellow>Application Book API development:<fg/>
-----------------------------------------
+<Icon:School; fg:Yellow>This is the development of the <fg:White>[Application Book API]<fg/>
+--------------------------------------------------------
 )";
 
     std::string head;
@@ -147,7 +143,11 @@ R"(
         else
             Book::out() << book::functions::weekday << ' ' << book::functions::stamp << book::functions::endl << head;
 
+
         Book::info() << "Last line, committing blocstack and closing the book:";
+        Book::out() << "-----------------------------------------------------------------";
+        book::devtest test;
+        test.setup_cmdline_args(argc, argv);
         Book::commit();
     }
     catch(Book::exception e)

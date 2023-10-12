@@ -2,6 +2,11 @@
 #include <cstdlib>
 #include <vector>
 
+// All the code below is borrowed from :
+// https://github.com/TheWisp/signals
+// Only the namespaces changed.
+// copyrighted to the author {github.com/TheWisp}.
+
 namespace book
 {
     namespace inner

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <logbook/notify.h>
+#include <logbook/Book.h>
 
 
 
@@ -144,13 +145,12 @@ public:
         str << "--------------------------------------------------------------------------\n";
         for (auto const& arg : args)
         {
-            str << "%-2s | %-20s | %s" << arg.sw_char << arg.sw_text << arg.description << "\n";
+            str << "%-2s | %-20s | %s" << arg.sw_char << arg.sw_text << arg.description << '\n';
             str << "--------------------------------------------------------------------------\n";
         }
         return str();
 
     }
-
 };
 
 }

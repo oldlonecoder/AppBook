@@ -278,6 +278,13 @@ public:
 
     static book::code commit();
 
+//    --- held back ...
+//    static std::string today();
+//    static std::string date();
+//    static std::string time(const std::string& tz="America/Toronto"); ///< Just for testing
+//    static std::string year();
+//    ------------------------------
+
 
 private:
     Book(const std::string& book_id);

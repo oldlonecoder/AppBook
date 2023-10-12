@@ -37,28 +37,30 @@ void Book::section::bloc_stack::element::cc_header()
     }
 
     auto const& header_components = Book::header_components_db["defaults"];
+    if(cat != book::cat::output) // Bypass output category.
+    {
+        if(header_components.filename)
+        {
+            strbrk txt;
+            strbrk::config_data data = { src.file_name(),"/",strbrk::discard};
+            auto cnt = txt(data);
+            ///@todo check cnt....
 
-    if(header_components.filename)
-    {
-        strbrk txt;
-        strbrk::config_data data = { src.file_name(),"/",strbrk::discard};
-        auto cnt = txt(data);
-        ///@todo check cnt....
-
-        text , color::White , '[';
-        text , color::CadetBlue2 , Icon::Folder;
-        if(cnt>1)
-            text , ".../";
-        text , data.words.back()() , color::White , ']';
-    }
-    if(header_components.line)
-    {
-        text , color::White , '|' , color::Lime , Icon::Baseline , src.line() , color::White , "|";
-    }
-    if(header_components.funcname || header_components.funcsig)
-    {
-        text , color::SteelBlue1 , Icon::Function , src.function_name() , color::White , ": ";
-    }
+            text , color::White , '[';
+            text , color::CadetBlue2 , Icon::Folder;
+            if(cnt>1)
+                text , ".../";
+            text , data.words.back()() , color::White , ']';
+        }
+        if(header_components.line)
+        {
+            text , color::White , '|' , color::Lime , Icon::Baseline , src.line() , color::White , "|";
+        }
+        if(header_components.funcname || header_components.funcsig)
+        {
+            text , color::SteelBlue1 , Icon::Function , src.function_name() , color::White , ": ";
+        }
+    } // Bypass output category.
 
 }
 
