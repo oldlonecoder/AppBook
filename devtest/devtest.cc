@@ -134,18 +134,18 @@ R"(
 
     std::string head;
 
-    book::text description;
+    book::text ml_description;
     try {
         auto & lbdev  = AppBook.create_section("logbook.dev");
         lbdev.open().create_stack("text-processor-dev");
         /*auto & stackdev =*/
         AppBook["logbook.dev"]["text-processor-dev"];
 
-        book::code c = description << AppBook.descriptions >> head;
+        book::code c = ml_description << AppBook.descriptions >> head;
         if(c != book::code::success)
             std::cout << " main: the description text failed to compile: " << book::code_text(c) << "\n";
         else
-            Book::out() << head;
+            Book::out() << book::functions::weekday << ' ' << book::functions::stamp << book::functions::endl << head;
 
         Book::info() << "Last line, committing blocstack and closing the book:";
         Book::commit();

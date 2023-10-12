@@ -1,6 +1,7 @@
 #include "logbook/Book.h"
 #include <chrtools/strbrk.h>
-
+#include <chrono>
+#include <format>
 
 
 Book::section::bloc_stack::element::element(object* par, book::cat category, std::source_location &&asrc):book::object(par,"q-anon element!")
@@ -316,12 +317,31 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
         }
         break;
     case book::functions::stamp:
-        text << stracc::now("%H:%M:%DS");
-        break;
+    {
+        /*
+             * %D %F ou %d %m %Y
+             * %R %T %H %M %S
+             * %A {Monday} %a {mon}
+             * %B {June}   %b {jun}
+        */
+
+
+        std::chrono::zoned_time date{"America/Toronto", std::chrono::system_clock::now()};
+        //const auto tp{std::chrono::system_clock::now()};
+        //auto txt{std::format("{:%H:%M:%S}", tp)};
+        auto [ic,a] = book::function_attributes(book::functions::stamp);
+        text << a.fg << Icon::Data[ic] << color::Reset << std::format("{:%T}", std::chrono::floor<std::chrono::seconds>(date.get_local_time()));
+    }
+    break;
     case book::functions::file:
         text << src.file_name();
         break;
     case book::functions::weekday:
+    {
+        auto [ic,a] = book::function_attributes(book::functions::weekday);
+        auto today{std::chrono::system_clock::now()};
+        text << Icon::Data[ic] << a.fg << std::format("{:%A}", today);
+    }
         break;
     case book::functions::function:
         text << src.function_name();

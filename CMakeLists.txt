@@ -22,6 +22,7 @@ add_library(
                 # ...Will grow...
         include/${TargetName}/expect.h
         include/${TargetName}/notify.h
+        include/${TargetName}/notify2.h
         include/${TargetName}/object.h                 src/object.cc
         include/${TargetName}/text.h                   src/text.cc
         include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc

@@ -75,12 +75,13 @@ enum class functions : uint8_t
     endl             , ///< end of line code, input format
     file             ,
     line             ,
-    stamp            ,
+    stamp            , ///< fully detailed timestamp
     hour             ,
     minute           ,
     seconds          ,
-    weekday
-
+    weekday          ,
+    dayname          ,
+    monthname
 };
 
 enum class action : uint8_t
@@ -89,8 +90,7 @@ enum class action : uint8_t
     leave            , ///< end (logger: end of entry accumulators, so do commit); end of (sel)section, attribute ( auto- color::Reset ) and unindent
     ci               ,
     begin            , ///< begin (sel)section or indent
-    end              ,
-    ///< fully detailed timestamp
+    end
 };
 
 

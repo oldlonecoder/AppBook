@@ -74,9 +74,9 @@ std::map<functions, const char*> functions_dictionary= {
     {functions::hour,           "hour"},
     {functions::minute,         "minute"},
     {functions::seconds,        "seconds"},
-    {functions::weekday,        "weekday"}
-
-
+    {functions::weekday,        "weekday"},
+    {functions::monthname,      "monthname"},
+    {functions::dayname,        "dayname"}
 };
 
 
@@ -137,15 +137,17 @@ std::map<code, std::pair<Icon::Type, chattr::pair>> codes_database={
 
 std::map<functions, std::pair<Icon::Type, chattr::pair>> functions_database={
 
-    {functions::stamp     ,      {Icon::Chronos ,        {color::SkyBlue3          ,color::Reset }}},
-    {functions::function  ,      {Icon::Function ,       {color::SkyBlue3          ,color::Reset }}},
-    {functions::file      ,      {Icon::File ,           {color::White             ,color::Reset }}},
-    {functions::line      ,      {Icon::Baseline ,       {color::White             ,color::Reset }}},
-    {functions::stamp     ,      {Icon::Chronos ,        {color::Yellow            ,color::Reset }}},
-    {functions::hour      ,      {Icon::Chronos ,        {color::White             ,color::Reset }}},
-    {functions::minute    ,      {Icon::Chronos ,        {color::White             ,color::Reset }}},
-    {functions::seconds   ,      {Icon::Chronos ,        {color::White             ,color::Reset }}},
-    {functions::weekday   ,      {Icon::Chronos ,        {color::White             ,color::Reset }}}
+    {functions::stamp     ,      {Icon::Chronos  ,   {color::SkyBlue3          ,color::Reset }}},
+    {functions::function  ,      {Icon::Function ,   {color::SkyBlue3          ,color::Reset }}},
+    {functions::file      ,      {Icon::File     ,   {color::White             ,color::Reset }}},
+    {functions::line      ,      {Icon::Baseline ,   {color::White             ,color::Reset }}},
+    {functions::stamp     ,      {Icon::Chronos  ,   {color::Yellow            ,color::Reset }}},
+    {functions::hour      ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
+    {functions::minute    ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
+    {functions::seconds   ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
+    {functions::weekday   ,      {Icon::Fabric   ,   {color::Yellow            ,color::Reset }}},
+    {functions::monthname ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
+    {functions::dayname   ,      {Icon::Star5    ,   {color::White             ,color::Reset }}}
 };
 
 
