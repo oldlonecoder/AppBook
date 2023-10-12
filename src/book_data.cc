@@ -76,7 +76,10 @@ std::map<functions, const char*> functions_dictionary= {
     {functions::seconds,        "seconds"},
     {functions::weekday,        "weekday"},
     {functions::monthname,      "monthname"},
-    {functions::dayname,        "dayname"}
+    {functions::dayname,        "dayname"},
+    {functions::day,            "day"},
+    {functions::month,          "month"},
+    {functions::year,           "year"}
 };
 
 
@@ -147,7 +150,11 @@ std::map<functions, std::pair<Icon::Type, chattr::pair>> functions_database={
     {functions::seconds   ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
     {functions::weekday   ,      {Icon::Fabric   ,   {color::Yellow            ,color::Reset }}},
     {functions::monthname ,      {Icon::Chronos  ,   {color::White             ,color::Reset }}},
-    {functions::dayname   ,      {Icon::Star5    ,   {color::White             ,color::Reset }}}
+    {functions::dayname   ,      {Icon::Star5    ,   {color::White             ,color::Reset }}},
+    {functions::day       ,      {Icon::Star5    ,   {color::White             ,color::Reset }}},
+    {functions::month     ,      {Icon::Star5    ,   {color::White             ,color::Reset }}},
+    {functions::year      ,      {Icon::Star5    ,   {color::White             ,color::Reset }}}
+
 };
 
 

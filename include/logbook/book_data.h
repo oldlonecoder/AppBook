@@ -81,7 +81,10 @@ enum class functions : uint8_t
     seconds          ,
     weekday          ,
     dayname          ,
-    monthname
+    monthname        ,
+    day              ,
+    month            ,
+    year
 };
 
 enum class action : uint8_t

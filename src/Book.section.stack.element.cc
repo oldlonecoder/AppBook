@@ -342,9 +342,40 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
     {
         auto [ic,a] = book::function_attributes(book::functions::weekday);
         auto today{std::chrono::system_clock::now()};
-        text << Icon::Data[ic] << a.fg << std::format("{:%A}", today);
+        text << /*Icon::Data[ic] <<*/ a.fg << std::format("{:%A}", today);
     }
         break;
+    case book::functions::day :
+    {
+        auto [ic,a] = book::function_attributes(book::functions::day);
+        auto today{std::chrono::system_clock::now()};
+        text << /*Icon::Data[ic] <<*/ a.fg << std::format("{:%d}", today);
+    }
+        break;
+    case book::functions::month:
+    {
+        auto [ic,a] = book::function_attributes(book::functions::month);
+        auto today{std::chrono::system_clock::now()};
+        text << /*Icon::Data[ic] <<*/ a.fg << std::format("{:%m}", today);
+    }
+
+    break;
+    case book::functions::monthname:
+    {
+        auto [ic,a] = book::function_attributes(book::functions::month);
+        auto today{std::chrono::system_clock::now()};
+        text << /*Icon::Data[ic] <<*/ a.fg << std::format("{:%B}", today);
+    }
+
+    break;
+
+    case book::functions::year:
+    {
+        auto [ic,a] = book::function_attributes(book::functions::year);
+        auto today{std::chrono::system_clock::now()};
+        text << /*Icon::Data[ic] <<*/ a.fg << std::format("{:%Y}", today);
+    }
+    break;
     case book::functions::function:
         text << src.function_name();
         break;
