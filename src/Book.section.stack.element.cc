@@ -328,7 +328,7 @@ Book::section::bloc_stack::element& Book::section::bloc_stack::element::operator
         */
 
 
-        std::chrono::zoned_time date{"America/Toronto", std::chrono::system_clock::now()};
+        //std::chrono::zoned_time date{"America/Toronto", std::chrono::system_clock::now()};
         //const auto tp{std::chrono::system_clock::now()};
         //auto txt{stracc::now("{:%H:%M:%S}", tp)};
         auto [ic,a] = book::function_attributes(book::functions::stamp);
