@@ -65,8 +65,8 @@ public:
     struct BOOK_PUBLIC config_data
     {
         std::string filename;
-        chattr::format output_fmt;
-        bool immediate;
+        [[maybe_unused]] chattr::format output_fmt;
+        [[maybe_unused]] bool immediate;
     };
 
     /*!
@@ -76,7 +76,7 @@ public:
     {
 
         using list = std::vector<Book::section*>;
-        using iterator = list::iterator;
+        using iterator [[maybe_unused]] = list::iterator;
 
         /*!
         * \brief The bloc class
@@ -134,13 +134,13 @@ public:
                 book::code code{book::code::rejected};
                 std::source_location src{};
 
-                Book::element_components  ec;
+                Book::element_components  ec{0};
                 element() = default;
 
                 element(const element&) = default;
                 element(element&& e) noexcept = default;
 
-                element(book::object* par, book::cat category, std::source_location&& asrc);
+                element(book::object* par, book::cat category, std::source_location asrc);
 
                 Book::section::bloc_stack::element& operator = (const element& e) = default;
                 Book::section::bloc_stack::element& operator = (element&& e) noexcept = default;
@@ -171,10 +171,8 @@ public:
                 book::code commit();
             };
 
-
+            bloc_stack() = default;
             Book::section::bloc_stack::element::memory content;
-
-            bloc_stack(const std::string atitle);
             bloc_stack(book::object* parent_obj /* Normally Book::section* */, const std::string& atitle);
 
             ~bloc_stack() override;
@@ -183,21 +181,21 @@ public:
             book::code close();
 
 
-            Book::section::bloc_stack::element& error        (std::source_location&& src);
-            Book::section::bloc_stack::element& out          (std::source_location&& src);
-            Book::section::bloc_stack::element& warning      (std::source_location&& src);
-            Book::section::bloc_stack::element& fatal        (std::source_location&& src);
-            Book::section::bloc_stack::element& except       (std::source_location&& src);
-            Book::section::bloc_stack::element& message      (std::source_location&& src);
-            Book::section::bloc_stack::element& debug        (std::source_location&& src);
-            Book::section::bloc_stack::element& info         (std::source_location&& src);
-            Book::section::bloc_stack::element& comment      (std::source_location&& src);
-            Book::section::bloc_stack::element& syntax       (std::source_location&& src);
-            Book::section::bloc_stack::element& status       (std::source_location&& src);
-            Book::section::bloc_stack::element& test         (std::source_location&& src);
-            Book::section::bloc_stack::element& interrupted  (std::source_location&& src);
-            Book::section::bloc_stack::element& aborted      (std::source_location&& src);
-            Book::section::bloc_stack::element& segfault     (std::source_location&& src);
+            Book::section::bloc_stack::element& error        (std::source_location src);
+            Book::section::bloc_stack::element& out          (std::source_location src);
+            Book::section::bloc_stack::element& warning      (std::source_location src);
+            Book::section::bloc_stack::element& fatal        (std::source_location src);
+            Book::section::bloc_stack::element& except       (std::source_location src);
+            Book::section::bloc_stack::element& message      (std::source_location src);
+            Book::section::bloc_stack::element& debug        (std::source_location src);
+            Book::section::bloc_stack::element& info         (std::source_location src);
+            Book::section::bloc_stack::element& comment      (std::source_location src);
+            Book::section::bloc_stack::element& syntax       (std::source_location src);
+            Book::section::bloc_stack::element& status       (std::source_location src);
+            Book::section::bloc_stack::element& test         (std::source_location src);
+            Book::section::bloc_stack::element& interrupted  (std::source_location src);
+            Book::section::bloc_stack::element& aborted      (std::source_location src);
+            Book::section::bloc_stack::element& segfault     (std::source_location src);
         };
 
         std::string title;
@@ -224,9 +222,9 @@ public:
     public:
         explicit exception(const char* txt) { msg = txt; }
         explicit exception(const std::string& txt) { msg = txt; }
-        ~exception() noexcept { msg.clear(); }
+        ~exception() noexcept  override { msg.clear(); }
 
-        const char* what() const noexcept override { return msg.c_str(); }
+        [[nodiscard]] const char* what() const noexcept override { return msg.c_str(); }
 
     private:
         std::string msg;
@@ -260,21 +258,21 @@ public:
 
 
 
-    static Book::section::bloc_stack::element& error       (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& out         (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& warning     (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& fatal       (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& except      (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& message     (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& debug       (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& info        (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& comment     (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& syntax      (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& status      (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& test        (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& interrupted (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& aborted     (std::source_location&& src=std::source_location::current());
-    static Book::section::bloc_stack::element& segfault    (std::source_location&& src=std::source_location::current());
+    static Book::section::bloc_stack::element& error       (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& out         (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& warning     (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& fatal       (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& except      (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& message     (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& debug       (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& info        (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& comment     (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& syntax      (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& status      (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& test        (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& interrupted (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& aborted     (std::source_location src=std::source_location::current());
+    static Book::section::bloc_stack::element& segfault    (std::source_location src=std::source_location::current());
 
     static book::code commit();
 
@@ -287,14 +285,14 @@ public:
 
 
 private:
-    Book(const std::string& book_id);
+    explicit Book(const std::string& book_id);
     Book();
 
     section::list sections;
     Book::section::bloc_stack* current_stream{nullptr};
     config_data conf;
     Book::element_components ec{0};
-    static Book* __Application_Book__;
+    static Book* Application_Book;
 
 };
 

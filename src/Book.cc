@@ -10,7 +10,7 @@ using book::code;
 using book::cat;
 
 
-Book* Book::__Application_Book__{nullptr};
+Book* Book::Application_Book{nullptr};
 
 namespace fs = std::filesystem;
 
@@ -31,6 +31,9 @@ Book::element_components::list Book::header_components_db = {
 {
      // [icon | filename | line | column | funcname | time]
      {"defaults", {1,1,1,1,1,0,0,1,0,0,0}},
+     // [icon  | time | day | month | year]
+     {"section_header",{1,0,0,0,0,1,1,1,1}},
+
 }
 };
 
@@ -41,54 +44,54 @@ std::filesystem::path Book::location;
 
 Book& Book::init(const std::string &book_name)
 {
-    if(Book::__Application_Book__)
-        throw Book::exception("Book instance alredy created!");
+    if(Book::Application_Book)
+        throw Book::exception("Book instance already created!");
 
-    Book::__Application_Book__ = new Book(book_name);
+    Book::Application_Book = new Book(book_name);
 
     // --- Initialise env and filesystem / or the future sqlite database. Create it if not exists, open if exists.
     stracc loc = fs::current_path().c_str();
-    loc << '/' << Book::__Application_Book__->id() <<".Book";
+    loc << '/' << Book::Application_Book->id() << ".Book";
     if(! fs::exists(loc()) )
         fs::create_directory(loc());
     fs::current_path(loc());
 
     // Set the "root-" location of this application book; [ until the switch to sqlite ].
-    Book::__Application_Book__->location = fs::current_path();
+    Book::Application_Book->location = fs::current_path();
 
     // By default we set our out_stream to the address of the console's stdout. Subsequent creations of stack of elements will
     // set it to the given output stream file / or not,  so out_stream always points to a valid output file :
-    Book::__Application_Book__->out_stream = &std::cout;
+    Book::Application_Book->out_stream = &std::cout;
 
     // Return the ref to the (singleton) instance of the Book  :
-    return *Book::__Application_Book__;
+    return *Book::Application_Book;
 }
 
 Book &Book::Self()
 {
-    if(!Book::__Application_Book__)
+    if(!Book::Application_Book)
         throw Book::exception("No Book instance yet! - Use `Book& Book::init(const std::string &book_name)` prior to use the `Book`");
 
-    return *Book::__Application_Book__;
+    return *Book::Application_Book;
 }
 
 
 Book::Book()
 {
-    if(Book::__Application_Book__)
+    if(Book::Application_Book)
         throw Book::exception(" Cannot re-instanciate a new Book!");
 }
 
 Book::Book(const std::string &book_id):book::object(nullptr,book_id)
 {
-    if(Book::__Application_Book__)
+    if(Book::Application_Book)
         throw Book::exception(" Cannot re-instanciate a new Book!");
 }
 
 
 Book::~Book()
 {
-    Book::__Application_Book__ = nullptr;
+    Book::Application_Book = nullptr;
     //... Sections Chaining clear...
     //...
     for(auto* s: sections) delete s;
@@ -156,15 +159,15 @@ book::code Book::open()
 
 book::code Book::close()
 {
-    if(!Book::__Application_Book__) return book::code::rejected;
+    if(!Book::Application_Book) return book::code::rejected;
 
-    for(auto* s: Book::__Application_Book__->sections)
+    for(auto* s: Book::Application_Book->sections)
     {
         s->close();
         delete s;
     }
-    Book::__Application_Book__->sections.clear();
-    delete Book::__Application_Book__;
+    Book::Application_Book->sections.clear();
+    delete Book::Application_Book;
 
     return book::code::success;
 }
@@ -229,33 +232,33 @@ Book::section &Book::create_section(const std::string &section_id)
 
 chattr::format Book::format()
 {
-    if(!Book::__Application_Book__)
+    if(!Book::Application_Book)
         return chattr::format::ansi256;
-    return Book::__Application_Book__->_format;
+    return Book::Application_Book->_format;
 }
 
 
 
 // ---------------------- inputs ---------------------------------------------------------------
 #define CHECK_BOOK \
-if(!Book::__Application_Book__  || !Book::__Application_Book__->current_stream || !Book::__Application_Book__->out_stream) \
+if(!Book::Application_Book  || !Book::Application_Book->current_stream || !Book::Application_Book->out_stream) \
     throw Book::exception("Using unset or uninitialized Book components.");
 
-Book::section::bloc_stack::element& Book::error       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->error(std::move(src)); }
-Book::section::bloc_stack::element& Book::out         (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->out(std::move(src)); }
-Book::section::bloc_stack::element& Book::warning     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->warning(std::move(src)); }
-Book::section::bloc_stack::element& Book::fatal       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->fatal(std::move(src)); }
-Book::section::bloc_stack::element& Book::except      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->except(std::move(src)); }
-Book::section::bloc_stack::element& Book::message     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->message(std::move(src)); }
-Book::section::bloc_stack::element& Book::debug       (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->debug(std::move(src)); }
-Book::section::bloc_stack::element& Book::info        (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->info(std::move(src)); }
-Book::section::bloc_stack::element& Book::comment     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->comment(std::move(src)); }
-Book::section::bloc_stack::element& Book::syntax      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->syntax(std::move(src)); }
-Book::section::bloc_stack::element& Book::status      (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->status(std::move(src)); }
-Book::section::bloc_stack::element& Book::test        (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->test(std::move(src)); }
-Book::section::bloc_stack::element& Book::interrupted (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->interrupted(std::move(src)); }
-Book::section::bloc_stack::element& Book::aborted     (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->aborted(std::move(src)); }
-Book::section::bloc_stack::element& Book::segfault    (std::source_location&& src) { CHECK_BOOK return Book::__Application_Book__->current_stream->segfault(std::move(src)); }
+Book::section::bloc_stack::element& Book::out         (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->out(src); }
+Book::section::bloc_stack::element& Book::warning     (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->warning(src); }
+Book::section::bloc_stack::element& Book::error       (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->error(src); }
+Book::section::bloc_stack::element& Book::fatal       (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->fatal(src); }
+Book::section::bloc_stack::element& Book::except      (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->except(src); }
+Book::section::bloc_stack::element& Book::message     (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->message(src); }
+Book::section::bloc_stack::element& Book::debug       (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->debug(src); }
+Book::section::bloc_stack::element& Book::info        (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->info(src); }
+Book::section::bloc_stack::element& Book::comment     (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->comment(src); }
+Book::section::bloc_stack::element& Book::syntax      (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->syntax(src); }
+Book::section::bloc_stack::element& Book::status      (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->status(src); }
+Book::section::bloc_stack::element& Book::test        (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->test(src); }
+Book::section::bloc_stack::element& Book::interrupted (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->interrupted(src); }
+Book::section::bloc_stack::element& Book::aborted     (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->aborted(src); }
+Book::section::bloc_stack::element& Book::segfault    (std::source_location src) { CHECK_BOOK return Book::Application_Book->current_stream->segfault(src); }
 
 book::code Book::commit() { CHECK_BOOK return Book::Self().current_stream->commit(); }
 

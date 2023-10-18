@@ -4,9 +4,9 @@
 //#include <format>
 
 
-Book::section::bloc_stack::element::element(object* par, book::cat category, std::source_location &&asrc):book::object(par,"q-anon element!")
+Book::section::bloc_stack::element::element(object* par, book::cat category, std::source_location asrc):book::object(par,"q-anon element!")
 {
-    src = std::move(asrc);
+    src = asrc;
     cat = category;
     code = book::code::rejected;
 }
@@ -83,105 +83,105 @@ book::code Book::section::bloc_stack::element::commit()
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::error        (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::error        (std::source_location asrc)
 {
-    content.push_back({this, book::cat::error, std::move(asrc)});
+    content.push_back({this, book::cat::error, asrc});
     return content.back();
 }
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::out          (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::out          (std::source_location asrc)
 {
-    content.push_back({this, book::cat::output, std::move(asrc)});
+    content.push_back({this, book::cat::output, asrc});
     return content.back();
 }
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::warning      (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::warning      (std::source_location asrc)
 {
-    content.push_back({this, book::cat::warning, std::move(asrc)});
-    return content.back();
-}
-
-
-Book::section::bloc_stack::element& Book::section::bloc_stack::fatal        (std::source_location&& asrc)
-{
-    content.push_back({this, book::cat::fatal, std::move(asrc)});
+    content.push_back({this, book::cat::warning, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::except       (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::fatal        (std::source_location asrc)
 {
-    content.push_back({this, book::cat::except, std::move(asrc)});
+    content.push_back({this, book::cat::fatal, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::message      (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::except       (std::source_location asrc)
 {
-    content.push_back({this, book::cat::message, std::move(asrc)});
+    content.push_back({this, book::cat::except, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::debug        (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::message      (std::source_location asrc)
 {
-    content.push_back({this, book::cat::debug, std::move(asrc)});
+    content.push_back({this, book::cat::message, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::info         (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::debug        (std::source_location asrc)
 {
-    content.push_back({this, book::cat::info, std::move(asrc)});
+    content.push_back({this, book::cat::debug, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::comment      (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::info         (std::source_location asrc)
 {
-    content.push_back({this, book::cat::comment, std::move(asrc)});
+    content.push_back({this, book::cat::info, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::syntax       (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::comment      (std::source_location asrc)
 {
-    content.push_back({this, book::cat::syntax, std::move(asrc)});
+    content.push_back({this, book::cat::comment, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::status       (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::syntax       (std::source_location asrc)
 {
-    content.push_back({this, book::cat::status, std::move(asrc)});
+    content.push_back({this, book::cat::syntax, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::test         (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::status       (std::source_location asrc)
 {
-    content.push_back({this, book::cat::test, std::move(asrc)});
+    content.push_back({this, book::cat::status, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::interrupted  (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::test         (std::source_location asrc)
 {
-    content.push_back({this, book::cat::interrupted, std::move(asrc)});
+    content.push_back({this, book::cat::test, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::aborted      (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::interrupted  (std::source_location asrc)
 {
-    content.push_back({this, book::cat::aborted, std::move(asrc)});
+    content.push_back({this, book::cat::interrupted, asrc});
     return content.back();
 }
 
 
-Book::section::bloc_stack::element& Book::section::bloc_stack::segfault     (std::source_location&& asrc)
+Book::section::bloc_stack::element& Book::section::bloc_stack::aborted      (std::source_location asrc)
 {
-    content.push_back({this, book::cat::segfault, std::move(asrc)});
+    content.push_back({this, book::cat::aborted, asrc});
+    return content.back();
+}
+
+
+Book::section::bloc_stack::element& Book::section::bloc_stack::segfault     (std::source_location asrc)
+{
+    content.push_back({this, book::cat::segfault, asrc});
     return content.back();
 }
 

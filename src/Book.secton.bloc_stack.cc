@@ -5,16 +5,13 @@ namespace fs = std::filesystem;
 
 std::string Book::section::bloc_stack::get_filename()
 {
-    if(!Book::__Application_Book__)
+    if(!Book::Application_Book)
         throw Book::exception("Attempt to use unitialized Book!");
 
-    return id() + (Book::__Application_Book__->_format ==  chattr::format::html ? ".html" : ".log");
+    return id() + (Book::Application_Book->_format == chattr::format::html ? ".html" : ".log");
 }
 
 
-Book::section::bloc_stack::bloc_stack(const std::string atitle)
-{
-}
 
 Book::section::bloc_stack::bloc_stack(object *parent_obj, const std::string &atitle): object(parent_obj, atitle)
 {
