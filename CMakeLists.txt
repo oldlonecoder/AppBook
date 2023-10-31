@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13..3.26 FATAL_ERROR)
 ## Project name
 
-project(logbook VERSION 0.1.0 LANGUAGES CXX)
+project(AppBook VERSION 0.1.0 LANGUAGES CXX)
 
 message("Entering ${PROJECT_NAME} project configuration:")
 
@@ -17,19 +17,34 @@ add_library(
 
         ${TargetName}
         SHARED
-        include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
-        #include/${TargetName}/rem.h                    src/rem.cc
-                # ...Will grow...
-        include/${TargetName}/expect.h
-        include/${TargetName}/notify.h
-        include/${TargetName}/notify2.h
-        include/${TargetName}/object.h                 src/object.cc
-        include/${TargetName}/text.h                   src/text.cc
-        include/${TargetName}/Book.h                   src/Book.cc src/Book.section.stack.element.cc
-        include/${TargetName}/cargs.h                  src/cargs.cc
-        include/logbook/book_data.h                    src/book_data.cc
-        src/Book.section.cc
-        src/Book.secton.bloc_stack.cc
+        include/${TargetName}/Exports.h                              #global framework-wide macros definitions and dll export and import macros for MSVC.
+        include/${TargetName}/Core/StrAcc.h src/Core/StrAcc.cc
+        include/AppBook/Core/ChAttr.h src/Core/ChAttr.cc
+        include/AppBook/Utf/Glyphes.h src/Utf/Glyphes.cc
+        include/AppBook/Core/StrBreak.h src/Core/StrBreak.cc
+        include/AppBook/Book/BookEnums.h src/Book/BookEnums.cc
+        include/AppBook/Core/Object.h src/Core/Object.cc
+        include/AppBook/Core/Geometry.h src/Core/Geometry.cc
+        include/AppBook/Book/StmlText.h src/Book/StmlText.cc
+        include/AppBook/Book/AppBook.h src/Book/AppBook.cc
+                                                        src/Book/Book.Section.cc
+                                                        src/Book/Book.Section.Contents.cc
+                                                        src/Book/Book.Section.Contents.Element.cc
+        include/AppBook/Core/Delegate.h src/Core/Delegate.cc
+        include/AppBook/Core/CArgs.h src/Core/CArgs.cc
+
+
+        # ...Will grow...
+#        include/${TargetName}/expect.H
+#        include/${TargetName}/Delegate.H
+#        include/${TargetName}/notify2.H
+#        include/${TargetName}/Object.H                 src/Object.cc
+#        include/${TargetName}/STMLText.H                   src/STMLText.cc
+#        include/${TargetName}/Book.H                   src/Book.cc src/Book.Section.Stack.element.cc
+#        include/${TargetName}/cargs.H                  src/cargs.cc
+#        include/logbook/book_data.H                    src/book_data.cc
+#        src/Book.Section.cc
+#        src/Book.secton.Contents.cc
 
 )
 
@@ -51,7 +66,7 @@ target_include_directories(${TargetName} PUBLIC
         $<INSTALL_INTERFACE:include/${TargetName}>
         )
 
-target_link_libraries(${TargetName} ${CMAKE_DL_LIBS} chrtools sqlite3)
+target_link_libraries(${TargetName} ${CMAKE_DL_LIBS} sqlite3)
 
 
 install(DIRECTORY
@@ -77,4 +92,4 @@ add_custom_command(
 )
 
 
-add_subdirectory(devtest)
+add_subdirectory(Test)
