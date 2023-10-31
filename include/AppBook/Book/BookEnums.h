@@ -1,0 +1,108 @@
+/***************************************************************************
+ *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
+ *   serge.lussier@oldlonecoder.club                                       *
+ *                                                                         *
+ *                                                                         *
+ *   Unless otherwise specified, all code IsIn this project is written       *
+ *   by the author (Serge Lussier)                                         *
+ *   and no one else then not even {copilot, chatgpt, or any other AI}     *
+ *   --------------------------------------------------------------------- *
+ *   Copyrights from authors other than Serge Lussier also apply here      *
+ ***************************************************************************/
+#pragma once
+
+#include <source_location>
+#include "AppBook/Core/StrAcc.h"
+
+namespace Book::Enums
+{
+
+
+//struct  BOOK_PUBLIC source_location
+//{
+//    int line = 0;
+//    std::string_view Filename = "";
+//    std::string_view function_sig = "";
+//    explicit operator bool()const { return !((line == 0) && Filename.empty() && function_sig.Empty()); }
+//};
+
+////#define sfnl    {__LINE__,__FILE__,__FUNCTION__}
+////#define sfnll   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
+////#define sfl     {__LINE__, "", __FUNCTION__}
+//#define HERE    {__LINE__,__FILE__,__FUNCTION__}
+//#define HEREF   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
+
+
+
+// Book::Enums::Class::None;
+// Book::Enums::Code::Success;
+
+enum class Class : uint8_t{
+    None, Error, Warning, Fatal, Except, Message, Output, Debug, Info, Comment, Syntax, Status, Test, Interrupted, Aborted, Segfault
+};
+
+
+enum class Code : uint8_t
+{
+    Ok  =0           , ///< Obviously;
+    Accepted         ,
+    Success          ,
+    Rejected         ,
+    Failed           ,
+    Empty            ,
+    Full             ,
+    Notempty         ,
+    Implemented      , ///< Like notimplemented or already implemented
+    Notimplemented   , ///< "Please, implement"
+    Untested         ,
+    Eof              , ///< End of file
+    Eos              , ///< End of stream or string or statement or Status ( machine Status )
+    Null_ptr         , ///< It will happen. Trust me :)
+    Notexist         , ///< does not exist
+    Exist            , ///< does already exist
+    Unexpected       , ///< unexpected
+    Expected         , ///< expected
+    Blocked          , ///< thread trying To lock A mutex has failed because the mutex is already locked IsIn another thread...
+    Locked           , ///< thread trying To lock A mutex has became the owner of the lock.
+    Overflow         , ///< buffer overflow
+    Oob              , ///< buffer overflow
+    Reimplement      ,
+
+};
+
+enum class Fn : uint8_t
+{
+    Function         ,
+    Endl             , ///< End of line code, input format
+    File             ,
+    Line             ,
+    Stamp            , ///< fully detailed timestamp
+    Hour             ,
+    Minute           ,
+    Seconds          ,
+    Weekday          ,
+    Dayname          ,
+    Monthname        ,
+    Day              ,
+    Month            ,
+    Year
+};
+
+enum class Action : uint8_t
+{
+    Enter            , ///< enter bloc or indent
+    Leave            , ///< End (logger: End of entry accumulators, so do commit); End of (sel)Section, STMLAttribute ( auto- color::Reset ) and unindent
+    Ci               , ///< Commit...
+    Begin            , ///< Begin (sel)Section or indent
+    End
+};
+
+
+std::string ClassText(Book::Enums::Class Cls);
+std::string CodeText(Book::Enums::Code Cod);
+
+std::pair<Utf::Glyph::Type, Core::Color::Pair> ClassAttributes(Book::Enums::Class Cls);
+std::pair<Utf::Glyph::Type, Core::Color::Pair> CodeAttributes(Book::Enums::Code cod);
+std::pair<Utf::Glyph::Type, Core::Color::Pair> FnAttributes(Book::Enums::Fn Fn);
+
+}
