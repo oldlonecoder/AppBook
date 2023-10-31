@@ -1,6 +1,7 @@
-#logbook
-#### Depends on [chrtools](https://github.com/oldlonecoder/chrtools)
+#AppBook
 
-My personal c++ not modern touch to log book and support tools.
+My personal not so modern C++ approach to an Application Book API.
+-------------------------------------------------------------
 
-###
+
+(to be continued)
