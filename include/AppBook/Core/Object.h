@@ -12,6 +12,7 @@
 
 #pragma once
 #include "AppBook/Core/StrAcc.h"
+#include "AppBook/Book/BookEnums.h"
 
 
 namespace Core {
@@ -33,9 +34,13 @@ public:
     Object& operator = (Object&& obj) noexcept = default;
     Object& operator = (const Object& obj) = default;
 
-    void set_id(const std::string& oid) { _Id = oid; }
-    Object::Iterator QueryChild(Object* obj);
-    Object::Iterator QueryChild(const std::string& aid);
+    void SetId(const std::string& oid) { _Id = oid; }
+    Object::Iterator GetChildIterator(Object* obj);
+    Object::Iterator GetChildIteratorByID(const std::string& aid);
+
+
+    //Book::Enums::Code Detach();
+    Book::Enums::Code Detach(Object* ObjPtr=nullptr);
     template<typename T> T* To() { return dynamic_cast<T*>(this); }
     template<typename T> T* As() { return dynamic_cast<T*>(this); }
     template<typename T> T* Parent() {

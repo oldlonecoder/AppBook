@@ -27,7 +27,7 @@ Object::~Object()
     _Children.clear();
 }
 
-Object::Iterator Object::QueryChild(Object *obj)
+Object::Iterator Object::GetChildIterator(Object *obj)
 {
     if(_Children.empty()) return _Children.end();
     auto ot = _Children.begin();
@@ -39,7 +39,7 @@ Object::Iterator Object::QueryChild(Object *obj)
     return _Children.end();
 }
 
-Object::Iterator Object::QueryChild(const std::string &aid)
+Object::Iterator Object::GetChildIteratorByID(const std::string &aid)
 {
     //std::cerr << __PRETTY_FUNCTION__ << " - " << Id() << "::" << aid << ":\n";
     if(_Children.empty())
@@ -66,9 +66,24 @@ Object::Object(const Object &obj): _Children(obj._Children), _Id(obj._Id), _Pare
 
 void Object::AppenChild(Object *o)
 {
-    if(QueryChild(o) != _Children.end()) return;
+    if(GetChildIterator(o) != _Children.end()) return;
     _Children.push_back(o);
     o->_Parent = this;
+}
+
+Book::Enums::Code Object::Detach(Object *ObjPtr)
+{
+    if(ObjPtr)
+    {
+        auto O = GetChildIterator(ObjPtr);
+        if(O == _Children.end() ) return Book::Enums::Code::Rejected;
+        _Children.erase(O);
+        return Book::Enums::Code::Accepted;
+    }
+    auto* P = Parent<Object>();
+    if(!P) return Book::Enums::Code::Rejected;
+    P->Detach(this);
+    return Book::Enums::Code::Accepted;
 }
 
 

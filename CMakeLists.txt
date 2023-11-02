@@ -32,20 +32,6 @@ add_library(
                                                         src/Book/Book.Section.Contents.Element.cc
         include/AppBook/Core/Delegate.h src/Core/Delegate.cc
         include/AppBook/Core/CArgs.h src/Core/CArgs.cc
-
-
-        # ...Will grow...
-#        include/${TargetName}/expect.H
-#        include/${TargetName}/Delegate.H
-#        include/${TargetName}/notify2.H
-#        include/${TargetName}/Object.H                 src/Object.cc
-#        include/${TargetName}/STMLText.H                   src/STMLText.cc
-#        include/${TargetName}/Book.H                   src/Book.cc src/Book.Section.Stack.element.cc
-#        include/${TargetName}/cargs.H                  src/cargs.cc
-#        include/logbook/book_data.H                    src/book_data.cc
-#        src/Book.Section.cc
-#        src/Book.secton.Contents.cc
-
 )
 
 
