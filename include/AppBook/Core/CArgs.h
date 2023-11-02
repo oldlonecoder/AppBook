@@ -74,7 +74,7 @@ public:
 
     ArgumentData& operator [] (const std::string& ArgName);
 
-    Book::Enums::Code InitCmdLineData(int argc, char** argv);
+    Book::Enums::Code InputCmdLineData(int argc, char** argv);
     Book::Enums::Code Execute();
 
     std::string Usage()

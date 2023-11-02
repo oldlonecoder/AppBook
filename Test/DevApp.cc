@@ -115,7 +115,7 @@ Book::Enums::Code DevApp::CmdArgs(int argc, char **argv)
 
     AppBook::Out() << " usage:";
     AppBook::Info() << Args.Usage();
-    Args.InitCmdLineData(argc, argv);
+    Args.InputCmdLineData(argc, argv);
 
     //...
 

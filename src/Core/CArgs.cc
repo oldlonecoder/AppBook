@@ -66,7 +66,7 @@ ArgumentData *CArgs::operator<<(const ArgumentData &Arg)
      * \param argv
      * \return Status code
      */
-Book::Enums::Code CArgs::InitCmdLineData(int argc, char **argv)
+Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
 {
 
     auto CurArg = Args.end();
