@@ -10,6 +10,9 @@
 using Book::Enums::Code;
 using Book::Enums::Class;
 
+#define CHECK_BOOK \
+if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || !AppBook::Application_Book->out_stream) \
+    throw AppBook::Exception("Using unset or uninitialized Book components.");
 
 
 AppBook* AppBook::Application_Book{nullptr};
@@ -153,7 +156,7 @@ Book::Enums::Code AppBook::Open()
         return Book::Enums::Code::Rejected;
     }
 
-    starting_path = Fs::current_path().c_str();
+    AppBook::Self().starting_path = Fs::current_path().c_str();
     std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
     //...
     return Book::Enums::Code::Success;
@@ -202,15 +205,16 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
 
 
     // -- Check instance os Section identified by section_id first:
-    auto sit = Sections.begin();
-    for(;sit != Sections.end(); sit++) if((*sit)->Id() == section_id) break;
-    if(sit != Sections.end()) return *(*sit);
+    CHECK_BOOK
+    auto sit =  AppBook::Application_Book->Sections.begin();
+    for(;sit !=  AppBook::Application_Book->Sections.end(); sit++) if((*sit)->Id() == section_id) break;
+    if(sit !=  AppBook::Application_Book->Sections.end()) return *(*sit);
     //-------------------------------------------------------------------------
 
     // -- Check if the Section already exists in the filesytem:
-    std::cout << " creating Section identified by  '" << Id() << ":\n";
-    Sections.push_back(new AppBook::Section(this, section_id));
-    AppBook::Section& s = *Sections.back();
+    std::cout << " creating Section identified by  '" <<  AppBook::Application_Book->Id() << ":\n";
+    AppBook::Application_Book->Sections.push_back(new AppBook::Section( AppBook::Application_Book, section_id));
+    AppBook::Section& s = * AppBook::Application_Book->Sections.back();
     s.Location = check_location;
     if(Fs::exists(check_location))
     {
@@ -222,7 +226,7 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     //------------------------------------------------------------------------------------
 
     // Then create the Section Location in filesystem :
-    std::cout << " creating '" <<  Id() << "' Location:\n";
+    std::cout << " creating '" <<   AppBook::Application_Book->Id() << "' Location:\n";
     Fs::create_directory(s.Location);
     //------------------------------------------------------------------------------------
     std::cout << __FUNCTION__ << " done.\n";
@@ -242,9 +246,6 @@ Core::Color::Format AppBook::Format()
 
 
 // ---------------------- inputs ---------------------------------------------------------------
-#define CHECK_BOOK \
-if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || !AppBook::Application_Book->out_stream) \
-    throw AppBook::Exception("Using unset or uninitialized Book components.");
 
 AppBook::Section::Contents::Element& AppBook::Out         (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Out(src); }
 AppBook::Section::Contents::Element& AppBook::Warning     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Warning(src); }

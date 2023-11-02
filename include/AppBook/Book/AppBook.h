@@ -244,13 +244,13 @@ public:
 
     ~AppBook() override;
     config_data &config(){ return Conf; }
-    Book::Enums::Code Open();
+    static Book::Enums::Code Open();
     static Book::Enums::Code Close();
 
     std::string Descriptions;
 
     AppBook::Section &operator[](std::string_view section_id);
-    AppBook::Section &CreateSection(const std::string &section_id);
+    static AppBook::Section &CreateSection(const std::string &section_id);
     static Core::Color::Format Format();
     static AppBook &Init(const std::string &book_name);
 
