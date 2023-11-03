@@ -70,6 +70,8 @@ enum class Code : uint8_t
 
 };
 
+
+
 enum class Fn : uint8_t
 {
     Function         ,
@@ -105,4 +107,11 @@ std::pair<Utf::Glyph::Type, Core::Color::Pair> ClassAttributes(Book::Enums::Clas
 std::pair<Utf::Glyph::Type, Core::Color::Pair> CodeAttributes(Book::Enums::Code cod);
 std::pair<Utf::Glyph::Type, Core::Color::Pair> FnAttributes(Book::Enums::Fn Fn);
 
+using Return  = Enums::Code;
+using Fn      = Enums::Fn;
+using Action  = Enums::Action;
+using Class   = Enums::Class;
+
 }
+
+

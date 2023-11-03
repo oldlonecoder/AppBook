@@ -63,7 +63,7 @@ public:
 
     template<typename T> void SetDefaultCallback(T* Obj, Book::Enums::Code (T::*Fn)(ArgumentData&))
     {
-        return Defaults.DelegateCB.Connect(Obj, Fn);
+        (void)Defaults.DelegateCB.Connect(Obj, Fn);
     }
 
 
