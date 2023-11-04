@@ -10,9 +10,11 @@
  *   Copyrights from authors other than Serge Lussier also apply here      *
  ***************************************************************************/
 #pragma once
+#include <AppBook/Exports.h>
+#include <AppBook/Utf/Glyphes.h>
+#include <AppBook/Core/ChAttr.h>
 
-#include <source_location>
-#include "AppBook/Core/StrAcc.h"
+#include <string>
 
 namespace Book::Enums
 {
@@ -107,11 +109,15 @@ std::pair<Utf::Glyph::Type, Core::Color::Pair> ClassAttributes(Book::Enums::Clas
 std::pair<Utf::Glyph::Type, Core::Color::Pair> CodeAttributes(Book::Enums::Code cod);
 std::pair<Utf::Glyph::Type, Core::Color::Pair> FnAttributes(Book::Enums::Fn Fn);
 
-using Return  = Enums::Code;
-using Fn      = Enums::Fn;
-using Action  = Enums::Action;
-using Class   = Enums::Class;
+
 
 }
 
 
+namespace Book
+{
+using Result  = Book::Enums::Code;
+using Fn      = Book::Enums::Fn;
+using Action  = Book::Enums::Action;
+using Class   = Book::Enums::Class;
+}

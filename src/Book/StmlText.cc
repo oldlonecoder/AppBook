@@ -512,7 +512,7 @@ STMLText::STMLAttribute STMLText::Compiler::CompileAccent(STMLText::STMLAttribut
     Attr = STMLText::STMLAttribute(Token);
     Attr.Accent = T;
     Attr._Assigned.a = 1;
-    //Mandatory expect ';'
+    //Mandatory Expect ';'
     (void) EatToken(Token);
     if(CheckEofStream(Attr) != Book::Enums::Code::Accepted) return Attr;
     // Book::Enums::Code::push_syntax() << " Expected Eos ';' (End Of Statement token)." << Book::Enums::Code::endl << Mark();

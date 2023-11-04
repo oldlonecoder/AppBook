@@ -2,6 +2,7 @@
 #include "AppBook/Book/StmlText.h"
 
 #include <exception>
+#include <utility>
 
 
 //#include <filesystem>
@@ -68,7 +69,7 @@ AppBook& AppBook::Init(const std::string &book_name)
     // set it to the given output stream file / or not,  so out_stream always points to a valid output file :
     AppBook::Application_Book->out_stream = &std::cout;
 
-    // Return the ref to the (singleton) instance of the Book  :
+    // Result the ref to the (singleton) instance of the Book  :
     return *AppBook::Application_Book;
 }
 
@@ -266,3 +267,19 @@ AppBook::Section::Contents::Element& AppBook::Segfault    (std::source_location 
 Book::Enums::Code AppBook::Commit() { CHECK_BOOK return AppBook::Self().current_stream->Commit(); }
 
 // -------------------------------------------------------------------------------------
+AppBook::Exception AppBook::Exception::operator[](AppBook::Section::Contents::Element El)
+{
+    Element = std::move(El);
+    return *this;
+}
+
+const char *AppBook::Exception::what() const noexcept
+{
+    if(E)
+    {
+        AppBook::Section::Contents::Element EE = Element;
+        EE.Compile();
+        return EE.Text().c_str();
+    }
+    return msg.c_str();
+}

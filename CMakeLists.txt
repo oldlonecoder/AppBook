@@ -32,6 +32,7 @@ add_library(
                                                         src/Book/Book.Section.Contents.Element.cc
         include/AppBook/Core/Delegate.h src/Core/Delegate.cc
         include/AppBook/Core/CArgs.h src/Core/CArgs.cc
+        include/AppBook/Book/Expect.h
 )
 
 

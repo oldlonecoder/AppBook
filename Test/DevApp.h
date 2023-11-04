@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "AppBook/Book/AppBook.h" // { notify, expect, rem, text  }
+#include "AppBook/Book/AppBook.h" // { notify, Expect, rem, text  }
 #include "AppBook/Core/CArgs.h"
 
 

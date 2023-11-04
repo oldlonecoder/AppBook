@@ -225,71 +225,70 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const std::string& txt)
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const std::string& Txt)
 {
-    Text << txt;
+    InputComponents.push_back(Txt);
+
+    return *this;
+}
+
+
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const char* Txt)
+{
+
+    InputComponents.emplace_back(Txt);
+
+    return *this;
+}
+
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (char C)
+{
+    Text <<C;
+    InputComponents.emplace_back(Text());
+    Text.Clear();
+    return *this;
+}
+
+
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Book::Enums::Code E)
+{
+    Text << Book::Enums::CodeText(E);
+    InputComponents.push_back(Text());
+    Text.Clear();
+    return *this;
+}
+
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Book::Enums::Class C)
+{
+    Text << ClassText(C);
+    InputComponents.push_back(Text());
+    Text.Clear();
+    return *this;
+
+}
+
+
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Color::code C)
+{
+    Text << C;
     InputComponents.push_back(Text());
     Text.Clear();
     return *this;
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const char* txt)
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const Core::Rect& R)
 {
-    Text << txt;
-    InputComponents.push_back(Text());
-    Text.Clear();
-    return *this;
-}
-
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (char c)
-{
-    Text << c;
+    Text << R;
     InputComponents.push_back(Text());
     Text.Clear();
     return *this;
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Book::Enums::Code c)
+AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator <<(Book::Enums::Action A)
 {
-    Text << Book::Enums::CodeText(c);
-    InputComponents.push_back(Text());
-    Text.Clear();
-    return *this;
-}
-
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Book::Enums::Class c)
-{
-    Text << ClassText(c);
-    InputComponents.push_back(Text());
-    Text.Clear();
-    return *this;
-
-}
-
-
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Color::code c)
-{
-    Text << c;
-    InputComponents.push_back(Text());
-    Text.Clear();
-    return *this;
-}
-
-
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const Core::Rect& dd)
-{
-    Text << dd;
-    InputComponents.push_back(Text());
-    Text.Clear();
-    return *this;
-}
-
-
-AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator <<(Book::Enums::Action tr)
-{
-    switch(tr)
+    switch(A)
     {
     case Book::Enums::Action::Begin:
         break;

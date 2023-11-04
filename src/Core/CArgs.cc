@@ -22,7 +22,8 @@ namespace Core::Cmd
 
 ArgumentData::Iterator CArgs::Query(const std::string &Switch)
 {
-    for (auto It = Args.begin(); It != Args.end(); It++)
+    auto It = Args.begin();
+    for (; It != Args.end(); It++)
     {
         if ((Switch == (*It)->SwitchText ) || (Switch == (*It)->SwitchChar))
             return It;
@@ -46,7 +47,7 @@ CArgs::~CArgs()
  * that there will be NO move/copy of the instances. We may instantiate directly into the Args using emplace_back tho. -
  * to be considered...
  */
-ArgumentData *CArgs::operator<<(const ArgumentData &Arg)
+ArgumentData &CArgs::operator<<(const ArgumentData &Arg)
 {
     Args.push_back(new ArgumentData);
     ArgumentData* A = Args.back();
@@ -56,7 +57,37 @@ ArgumentData *CArgs::operator<<(const ArgumentData &Arg)
     A->Description = Arg.Description;
     A->Required = Arg.Required;
 
-    return A;
+    return *A;
+}
+
+Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArray)
+{
+    auto CurArg = Args.end();
+    for(auto Sv : StrArray)
+    {
+        auto const* Str = Sv.data();
+        auto NextArg = Query(Str);
+        if(NextArg == Args.end())
+        {
+            if((CurArg != Args.end()) && ((*CurArg)->Required > (*CurArg)->Count) && ((*CurArg)->Required > 0))
+            {
+                (*CurArg)->Arguments.emplace_back(Str);
+                ++(*CurArg)->Count;
+                (*CurArg)->CanUse = true;
+                AppBook::Out() << Core::Color::Yellow << (*CurArg)->Name << Core::Color::Reset << " Arg: '"<< Str;
+            }
+            else
+            {
+                Defaults.Arguments.emplace_back(Str);
+                Defaults.CanUse = true;
+            }
+            continue;
+        }
+        else
+            CurArg = NextArg;
+    }
+
+    return Book::Enums::Code::Ok;
 }
 
 
@@ -141,6 +172,21 @@ ArgumentData &CArgs::operator[](const std::string &ArgName)
     }
     return Defaults;
 }
+
+std::string CArgs::Usage()
+{
+    StrAcc Str;
+    Str << "usage:\n";
+    Str << "--------------------------------------------------------------------------\n";
+    for (auto* Arg : Args)
+    {
+        Str << "%-2s | %-20s | %s" << Arg->SwitchChar << Arg->SwitchText << Arg->Description << '\n';
+        Str << "--------------------------------------------------------------------------\n";
+    }
+    return Str();
+
+}
+
 
 
 ArgumentData::~ArgumentData()

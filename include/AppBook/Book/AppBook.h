@@ -21,7 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory> //< Check if a smart pointer could delete Book::__APplication_Book__ preperly.
-
+#include <source_location>
 #include <map>
 
 /*!
@@ -136,29 +136,17 @@ public:
             AppBook::Section::Contents::Element &operator=(const AppBook::Section::Contents::Element &e) = default;
             AppBook::Section::Contents::Element &operator=(AppBook::Section::Contents::Element && e) noexcept = default;
             AppBook::Section::Contents::Element &operator<<(Utf::Glyph::Type graphem);
-            
             AppBook::Section::Contents::Element &operator<<(Utf::AccentFR::Type accent);
-            
             AppBook::Section::Contents::Element &operator<<(const Core::StrAcc &txt);
-            
             AppBook::Section::Contents::Element &operator<<(const std::string &txt);
-            
             AppBook::Section::Contents::Element &operator<<(const char *txt);
-            
             AppBook::Section::Contents::Element &operator<<(char c);
-            
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Code c);
-            
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Class c);
-            
             AppBook::Section::Contents::Element &operator<<(Core::Color::code c);
-            
-            AppBook::Section::Contents::Element &operator<<(const Core::Rect &dd);
-            
-            AppBook::Section::Contents::Element &operator<<(Book::Enums::Action tr);
-            
+            AppBook::Section::Contents::Element &operator<<(const Core::Rect &R);
+            AppBook::Section::Contents::Element &operator<<(Book::Enums::Action A);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Fn tr);
-            
             AppBook::Section::Contents::Element &operator<<(AppBook::ElementComponents cfg);
             
             template<typename other_types> AppBook::Section::Contents::Element &operator<<(other_types val)
@@ -170,9 +158,7 @@ public:
             }
             
             void CompileHeader();
-            
             Book::Enums::Code Compile();
-            
             Book::Enums::Code Commit();
         };
 
@@ -227,20 +213,23 @@ public:
     {
     public:
 
-        explicit Exception(const char *txt) { msg = txt; }
-        explicit Exception(const std::string &txt) { msg = txt; }
+        explicit Exception():std::exception() { E = true; }
+        explicit Exception(const char *txt) { msg = txt; E = false; }
+        explicit Exception(const std::string &txt) { msg = txt; E = false; }
 
         ~Exception() noexcept override {
             msg.clear();
         }
 
-        [[nodiscard]] const char *what() const noexcept override {
-            return msg.c_str();
-        }
+        [[nodiscard]] const char *what() const noexcept override;
 
+        AppBook::Exception operator[](AppBook::Section::Contents::Element El);
     private:
+        bool E;
         std::string msg;
+        AppBook::Section::Contents::Element Element;
     };
+
 
     ~AppBook() override;
     config_data &config(){ return Conf; }
