@@ -73,13 +73,13 @@ Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArr
             {
                 (*CurArg)->Arguments.emplace_back(Str);
                 ++(*CurArg)->Count;
-                (*CurArg)->CanUse = true;
+                (*CurArg)->Enabled = true;
                 AppBook::Out() << Core::Color::Yellow << (*CurArg)->Name << Core::Color::Reset << " Arg: '"<< Str;
             }
             else
             {
                 Defaults.Arguments.emplace_back(Str);
-                Defaults.CanUse = true;
+                Defaults.Enabled = true;
             }
             continue;
         }
@@ -111,13 +111,13 @@ Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
             {
                 (*CurArg)->Arguments.emplace_back(Str);
                 ++(*CurArg)->Count;
-                (*CurArg)->CanUse = true;
+                (*CurArg)->Enabled = true;
                 AppBook::Out() << Core::Color::Yellow << (*CurArg)->Name << Core::Color::Reset << " Arg: '"<< Str;
             }
             else
             {
                 Defaults.Arguments.emplace_back(Str);
-                Defaults.CanUse = true;
+                Defaults.Enabled = true;
             }
             continue;
         }
@@ -135,15 +135,16 @@ Book::Enums::Code CArgs::Execute()
     if(!Args.empty())
     {
         int b = 0;
-        for(auto const& A : Args)if(A->CanUse) ++b;
+        for(auto const& A : Args)if(A->Enabled) ++b;
         if(!b)
         {
+            AppBook::Debug() << " No addressed arguments";
             return Book::Enums::Code::Empty;
         }
         for(auto* Arg : Args)
         {
             if(!(*Arg)) continue; // No callback.
-            if(Arg->CanUse)
+            if(Arg->Enabled)
             {
                 R = Arg->DelegateCB(*Arg);
                 if(R != Book::Enums::Code::Accepted)
@@ -154,7 +155,7 @@ Book::Enums::Code CArgs::Execute()
     }
     if(!Defaults.Arguments.empty())
     {
-        if(Defaults.CanUse)
+        if(Defaults.Enabled)
         {
             R = Defaults.DelegateCB(Defaults);
             if(R != Book::Enums::Code::Accepted)
@@ -177,11 +178,17 @@ std::string CArgs::Usage()
 {
     StrAcc Str;
     Str << "usage:\n";
-    Str << "--------------------------------------------------------------------------\n";
+    Str << "------------------------------------------------------------------------------\n";
     for (auto* Arg : Args)
     {
-        Str << "%-2s | %-20s | %s" << Arg->SwitchChar << Arg->SwitchText << Arg->Description << '\n';
-        Str << "--------------------------------------------------------------------------\n";
+        Str << "%-2s | %-20s | %-45s %s" <<
+            Arg->SwitchChar <<
+            Arg->SwitchText <<
+            Arg->Description <<
+            (Arg->Enabled ? Utf::Glyph::Success : Utf::Glyph::Err1) <<
+            Color::Reset << '\n';
+
+        Str << "------------------------------------------------------------------------------\n";
     }
     return Str();
 

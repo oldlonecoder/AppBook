@@ -39,7 +39,7 @@ struct APPBOOK_EXPORTS ArgumentData
 
 
     Data                   Arguments{};
-    bool                   CanUse{ false };
+    bool                   Enabled{ false };
     Delegate<ArgumentData&> DelegateCB;
 
     bool operator !() { return DelegateCB.Empty(); }
