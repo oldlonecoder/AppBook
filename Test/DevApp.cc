@@ -136,7 +136,7 @@ int main(int argc, char** argv)
     std::signal(SIGSEGV, sig_fault);
     std::signal(SIGABRT, sig_abort);
 
-    AppBook& Livre = AppBook::Init("ApplicationBook");
+    AppBook& Livre = AppBook::Init("Application");
     Livre.Open();
     Livre.Descriptions =
 R"(

@@ -21,7 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory> //< Check if a smart pointer could delete Book::__APplication_Book__ preperly.
-#include <source_location>
+
 #include <map>
 
 /*!

@@ -13,7 +13,7 @@
 #include <AppBook/Exports.h>
 #include <AppBook/Utf/Glyphes.h>
 #include <AppBook/Core/ChAttr.h>
-
+#include <source_location>
 #include <string>
 
 namespace Book::Enums

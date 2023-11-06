@@ -186,7 +186,7 @@ AppBook::Section &AppBook::operator[](std::string_view section_id)
     throw AppBook::Exception(e());
 }
 
-
+using Core::Color;
 
 /*!
  * \brief Book::create_section
@@ -202,11 +202,11 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     check_location += '/';
     check_location += section_id;
 
-    std::cout << " checking '" << check_location << ":\n";
+    std::cout << " checking '" << Color::Ansi(Color::Yellow) << check_location << Color::Ansi(Color::Reset) << "':\n";
 
 
     // -- Check instance os Section identified by section_id first:
-    CHECK_BOOK
+    //CHECK_BOOK
     auto sit =  AppBook::Application_Book->Sections.begin();
     for(;sit !=  AppBook::Application_Book->Sections.end(); sit++) if((*sit)->Id() == section_id) break;
     if(sit !=  AppBook::Application_Book->Sections.end()) return *(*sit);
