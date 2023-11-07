@@ -76,6 +76,7 @@ public:
     ~Expect() =default;
 
     Expect& operator = (Expect&& e) noexcept{
+        if(this==&e) return *this;
         good = e.good;
         if(!good)
             Fail = std::move(e.fail);
@@ -85,6 +86,7 @@ public:
     }
 
     Expect& operator =(const Expect& e){
+        if(this == &e) return *this;
         good = e.good;
         if(!good)
             Fail = e.fail;
