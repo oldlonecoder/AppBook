@@ -303,7 +303,7 @@ std::string Color::Ansi(Color::Pair Pair)
 {
     std::ostringstream Out;
     Out << "\033[";
-    if ((Pair.Fg == Color::Reset) || (Pair.Bg == Color::Reset)) Out << "0";
+    if ((Pair.Fg == Color::Reset) && (Pair.Bg == Color::Reset)) Out << "0";
     if(Pair.Fg != Color::Reset)  Out << "38;5;" << static_cast<int>(Pair.Fg);
     if(Pair.Bg != Color::Reset) Out <<  ";48;5;" << static_cast<int>(Pair.Bg);
     Out << 'm';
