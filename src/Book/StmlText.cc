@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -20,7 +20,7 @@
 namespace Book
 {
 
-using ::Core::Color;
+
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -87,7 +87,7 @@ STMLText::STMLToken STMLText::STMLToken::ScanToToken(const char* Start)
         if (toupper(*crs) != toupper(*rtxt)) continue;
 
         while (*rtxt && *crs && (toupper(*crs) == toupper(*rtxt))) { ++crs; ++rtxt; }
-        ////Book::debug() << "Token.L = [" << Core::Color::Yellow << TokenRef.L << Core::Color::Reset << "]:";
+        ////Book::debug() << "Token.L = [" << Color::Yellow << TokenRef.L << Color::Reset << "]:";
         if (!*rtxt)
         {   // fin de Token.L :
             if (TokenRef.T == STMLToken::Type::AttrCmd)
@@ -100,7 +100,7 @@ STMLText::STMLToken STMLText::STMLToken::ScanToToken(const char* Start)
                 }
             } // Il reste les autres non-espace comme les ponctuations, symboles...
             --crs; // Replacer crs sur le dernier caractere du Token.
-            //// Book::Enums::Code::push_debug() << " Scanned to :'" << Core::Color::Yellow << *crs << Core::Color::Reset << '\'';
+            //// Book::Enums::Code::push_debug() << " Scanned to :'" << Color::Yellow << *crs << Color::Reset << '\'';
             TokenRef._Location.Begin = Start;
             TokenRef._Location.End = crs; // Fin du Token
 
@@ -139,8 +139,8 @@ std::string STMLText::STMLToken::mark(const char* Stream)
 
     std::string MStr = std::string(_Location.Begin - Stream, ' ');
     MStr += Utf::Glyph::CArrowUp;
-    Core::StrAcc Str;
-    Str << Core::Color::Grey78 << std::string(B, E - B) << '\n' << Core::Color::Yellow << MStr << Core::Color::Reset;
+    StrAcc Str;
+    Str << Color::Grey78 << std::string(B, E - B) << '\n' << Color::Yellow << MStr << Color::Reset;
     return Str();
 }
 
@@ -189,7 +189,7 @@ Book::Enums::Code STMLText::operator>>(std::string& Out)
         // ----------- Foreground and b assign colors: -----------------------------
         if(A._Assigned.f && A._Assigned.b)
         {
-            Core::Color::Pair{A.FG, A.BG} >> AttrStr;
+            Color::Pair{A.FG, A.BG} >> AttrStr;
             Out += AttrStr;
         }
         else
@@ -197,14 +197,14 @@ Book::Enums::Code STMLText::operator>>(std::string& Out)
 
             if (A._Assigned.b)
             {
-                AttrStr = _Format == Core::Color::Format::ansi256 ? Color::AnsiBg(A.BG) : "Color::Format::html>::bg(A.BG)";
+                AttrStr = _Format == Color::Format::ansi256 ? Color::AnsiBg(A.BG) : "Color::Format::html>::bg(A.BG)";
                 Out += AttrStr;
             }
             else
             if (A._Assigned.f)
             {
                 //Book::debug() << " f color #: " << static_cast<int>(A.FG);
-                AttrStr = _Format == Core::Color::Format::ansi256 ? Color::Ansi(A.FG) : "attr<Core::Color::Format::html>::fg(A.FG)";
+                AttrStr = _Format == Color::Format::ansi256 ? Color::Ansi(A.FG) : "attr<Color::Format::html>::fg(A.FG)";
                 Out += AttrStr;
             }
         }
@@ -334,7 +334,7 @@ bool STMLText::Compiler::operator ++(int)
 
 //Book::Enums::Code STMLText::Compiler::Skip()
 //{
-//    //Book::Enums::Code::Debug() << " STMLText::TextParser::Skip(" << Core::Color::Yellow << *C << Core::Color::Reset << "):";
+//    //Book::Enums::Code::Debug() << " STMLText::TextParser::Skip(" << Color::Yellow << *C << Color::Reset << "):";
 //    while (C <= E)
 //    {
 //        ++C;
@@ -460,7 +460,7 @@ STMLText::STMLAttribute STMLText::Compiler::CompileAttribute(STMLText::STMLAttri
             EatToken(Token);
             ER = (this->*Fn)(Attr);
             if (ER != Book::Enums::Code::Accepted) return {};
-            ////Book::debug() << " Token : '" << Token.L  << "' - STMLAttribute-contruct[" << Attr() << Core::Color::White << "]";
+            ////Book::debug() << " Token : '" << Token.L  << "' - STMLAttribute-contruct[" << Attr() << Color::White << "]";
             break;
         }
 
@@ -592,7 +592,7 @@ Book::Enums::Code STMLText::Compiler::CompileFG(STMLText::STMLAttribute& A)
         //Book::debug() << " Explicit assign fg:Reset to STMLAttribute.";
         EatToken(Token);
         A._Assigned.f = 1;
-        A.FG = Core::Color::Reset; return Book::Enums::Code::Accepted;
+        A.FG = Color::Reset; return Book::Enums::Code::Accepted;
     }
 
     if ((Token.T != STMLToken::Type::Punctuation) || (Token.L != STMLText::STMLToken::ArgSeq))
@@ -616,7 +616,7 @@ Book::Enums::Code STMLText::Compiler::CompileFG(STMLText::STMLAttribute& A)
     }
 
     auto cid = ColorID(Token);
-    if (cid==Core::Color::Reset ) return Book::Enums::Code::Accepted;
+    if (cid == Color::Reset ) return Book::Enums::Code::Accepted;
     A.FG = cid;
     A._Assigned.f = 1;
     //Book::out() << " Compiler::ParseFg - Token:" << Book::Enums::Fn::Endl << Token.Mark(B);
@@ -633,7 +633,7 @@ Book::Enums::Code STMLText::Compiler::CompileBG(STMLText::STMLAttribute& A)
         //Book::debug() << " Explicit assign fg:Reset to STMLAttribute.";
         EatToken(Token);
         A._Assigned.b = 1;
-        A.BG = Core::Color::Reset;
+        A.BG = Color::Reset;
         return Book::Enums::Code::Accepted;
     }
 
@@ -651,7 +651,7 @@ Book::Enums::Code STMLText::Compiler::CompileBG(STMLText::STMLAttribute& A)
     }
 
     auto cid = ColorID(Token);
-    if (cid == Core::Color::Reset) return Book::Enums::Code::Accepted;
+    if (cid == Color::Reset) return Book::Enums::Code::Accepted;
     A.BG = cid;
     A._Assigned.b = 1;
     //Book::Enums::Code::out() << " Compiler::ParseFg - Token:" << Book::Enums::Code::endl << Token.Mark(B);
@@ -671,8 +671,8 @@ std::string STMLText::Compiler::Mark()
     std::string MStr = std::string(Right - Left, ' ');
 
     MStr += Utf::Glyph::CArrowUp;
-    Core::StrAcc Str;
-    Str << Core::Color::Grey78 << std::string(Left, Right - Left) << '\n' << Core::Color::Yellow << MStr << Core::Color::Reset;
+    StrAcc Str;
+    Str << Color::Grey78 << std::string(Left, Right - Left) << '\n' << Color::Yellow << MStr << Color::Reset;
     return Str();
 }
 
@@ -702,7 +702,7 @@ Book::Enums::Code STMLText::Compiler::CompileColor(STMLText::STMLAttribute& A)
     }
 
     auto cid = ColorID(Token);
-    if (cid==Core::Color::Reset) return Book::Enums::Code::Accepted;
+    if (cid == Color::Reset) return Book::Enums::Code::Accepted;
 
     A.FG = cid;
     A._Assigned.f = 1;
@@ -717,7 +717,7 @@ Book::Enums::Code STMLText::Compiler::CompileColor(STMLText::STMLAttribute& A)
     }
     if ((Token.M == STMLText::STMLToken::STMLMnemonic::Eos) || (Token.M == STMLText::STMLToken::STMLMnemonic::ClosingTag))
     {
-        if (A.FG == Core::Color::Reset)
+        if (A.FG == Color::Reset)
         {
             A.BG = A.FG;
             if(Token.M == STMLText::STMLToken::STMLMnemonic::Eos)
@@ -811,28 +811,28 @@ Book::Enums::Code STMLText::Compiler::EatToken(STMLText::STMLToken& Token)
 {
     C = Token._Location.End;
     C++;
-    //Book::debug() << (int)(*C) << " Cursor on '" << Core::Color::Yellow << *C << Core::Color::Reset << '\'';
+    //Book::debug() << (int)(*C) << " Cursor on '" << Color::Yellow << *C << Color::Reset << '\'';
 
     return Book::Enums::Code::Accepted;
 }
 
 
-Core::Color::code STMLText::Compiler::ColorID(STMLToken& Token)
+Color::Code STMLText::Compiler::ColorID(STMLToken& Token)
 {
     if(std::string(Token.L) == STMLText::STMLToken::Reset)
     {
         EatToken(Token);
-        return Core::Color::Reset;
+        return Color::Reset;
     }
 
     auto Str = Token();
-    Core::Color::code Colr = Core::Color::Scan(Str);
-    if (Colr == Core::Color::Reset)
+    Color::Code Colr = Color::Scan(Str);
+    if (Colr == Color::Reset)
     {
         if (Str != "Reset")
         {
-            AppBook::Error() << " Expected Core::Color::code name (strict case match). Got '" << Core::Color::Yellow << Str << Core::Color::White << "' instead:" << Book::Enums::Fn::Endl <<Token.mark(B);
-            return Core::Color::Reset;
+            AppBook::Error() << " Expected Color::Code name (strict case match). Got '" << Color::Yellow << Str << Color::White << "' instead:" << Book::Enums::Fn::Endl << Token.mark(B);
+            return Color::Reset;
         }
     }
     EatToken(Token);
@@ -847,7 +847,7 @@ Utf::Glyph::Type STMLText::Compiler::GlyphID(STMLToken& Token)
     Utf::Glyph::Type IconId = Utf::Glyph::Scan(Str);
     if (IconId == 0)
     {
-        AppBook::Error() << " Expected Utf::Glyph::Type name, got '" << Core::Color::Yellow << Str << Core::Color::White << "' insbookd:" << Book::Enums::Fn::Endl << Token.mark(B);
+        AppBook::Error() << " Expected Utf::Glyph::Type name, got '" << Color::Yellow << Str << Color::White << "' insbookd:" << Book::Enums::Fn::Endl << Token.mark(B);
         return 0;
     }
     EatToken(Token);

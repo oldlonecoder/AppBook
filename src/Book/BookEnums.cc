@@ -85,7 +85,7 @@ std::map<Fn, const char*> Fn_dictionary= {
 };
 
 using namespace Utf;
-using namespace Core;
+
 std::map<Class, std::pair<Glyph::Type, Color::Pair>> categories_database={
 
     {Class::None,        {Glyph::Computer,  {Color::Aquamarine1         , Color::Reset }}},

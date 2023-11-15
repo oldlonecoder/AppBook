@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code IsIn this project is written       *
+ *   Unless otherwise specified, all Code IsIn this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -12,7 +12,7 @@
 #pragma once
 #include <AppBook/Exports.h>
 #include <AppBook/Utf/Glyphes.h>
-#include <AppBook/Core/ChAttr.h>
+#include <AppBook/Util/ChAttr.h>
 #include <source_location>
 #include <string>
 
@@ -35,9 +35,6 @@ namespace Book::Enums
 //#define HEREF   {__LINE__,__FILE__,__PRETTY_FUNCTION__}
 
 
-
-// Book::Enums::Class::None;
-// Book::Enums::Code::Success;
 
 enum class Class : uint8_t{
     None, Error, Warning, Fatal, Except, Message, Output, Debug, Info, Comment, Syntax, Status, Test, Interrupted, Aborted, Segfault
@@ -77,7 +74,7 @@ enum class Code : uint8_t
 enum class Fn : uint8_t
 {
     Function         ,
-    Endl             , ///< End of line code, input format
+    Endl             , ///< End of line Code, input format
     File             ,
     Line             ,
     Stamp            , ///< fully detailed timestamp
@@ -105,9 +102,9 @@ enum class Action : uint8_t
 std::string ClassText(Book::Enums::Class Cls);
 std::string CodeText(Book::Enums::Code Cod);
 
-std::pair<Utf::Glyph::Type, Core::Color::Pair> ClassAttributes(Book::Enums::Class Cls);
-std::pair<Utf::Glyph::Type, Core::Color::Pair> CodeAttributes(Book::Enums::Code cod);
-std::pair<Utf::Glyph::Type, Core::Color::Pair> FnAttributes(Book::Enums::Fn Fn);
+std::pair<Utf::Glyph::Type, Color::Pair> ClassAttributes(Book::Enums::Class Cls);
+std::pair<Utf::Glyph::Type, Color::Pair> CodeAttributes(Book::Enums::Code cod);
+std::pair<Utf::Glyph::Type, Color::Pair> FnAttributes(Book::Enums::Fn Fn);
 
 
 

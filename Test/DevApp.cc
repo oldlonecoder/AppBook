@@ -1,7 +1,7 @@
 #include "DevApp.h"
 //#include <source_location>
 #include "AppBook/Book/StmlText.h"
-#include "AppBook/Core/StrBreak.h"
+#include "AppBook/Util/StrBreak.h"
 
 #include <csignal>
 
@@ -45,7 +45,7 @@ DevApp::DevApp(const std::string& test_name)
 {
 }
 
-Book::Enums::Code DevApp::Opt1(Core::Cmd::ArgumentData& arg)
+Book::Enums::Code DevApp::Opt1(Cmd::ArgumentData& arg)
 {
     AppBook::Message() << "Arguments:";
 
@@ -55,8 +55,8 @@ Book::Enums::Code DevApp::Opt1(Core::Cmd::ArgumentData& arg)
         AppBook::Out() << str;
         //...
     }
-    Core::StrBreak::ConfigData Data = {arg.Arguments[0],"/", Core::StrBreak::Keep};
-    Core::StrBreak Sb;
+    StrBreak::ConfigData Data = {arg.Arguments[0],"/", StrBreak::Keep};
+    StrBreak Sb;
     auto C = Sb(Data);
     for(auto S : Data.Words)
     {
@@ -67,7 +67,7 @@ Book::Enums::Code DevApp::Opt1(Core::Cmd::ArgumentData& arg)
     return Book::Enums::Code::Accepted;
 }
 
-Book::Enums::Code DevApp::Opt2(Core::Cmd::ArgumentData& arg)
+Book::Enums::Code DevApp::Opt2(Cmd::ArgumentData& arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -79,7 +79,7 @@ Book::Enums::Code DevApp::Opt2(Core::Cmd::ArgumentData& arg)
     return Book::Enums::Code::Accepted;
 }
 
-Book::Enums::Code DevApp::Opt3(Core::Cmd::ArgumentData& arg)
+Book::Enums::Code DevApp::Opt3(Cmd::ArgumentData& arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -91,7 +91,7 @@ Book::Enums::Code DevApp::Opt3(Core::Cmd::ArgumentData& arg)
     return Book::Enums::Code::Accepted;
 }
 
-Book::Enums::Code DevApp::Defaults(Core::Cmd::ArgumentData &arg)
+Book::Enums::Code DevApp::Defaults(Cmd::ArgumentData &arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -107,9 +107,9 @@ Book::Enums::Code DevApp::Defaults(Core::Cmd::ArgumentData &arg)
 Book::Enums::Code DevApp::CmdArgs(int argc, char **argv)
 {
 
-    Args << Core::Cmd::ArgumentData{"Stml test",       "-m","--Stml","Test Book::STMLText", 1};
-    Args << Core::Cmd::ArgumentData{"Expression test", "-e", "--expression", "Test expression [test/fake]", 1};
-    Args << Core::Cmd::ArgumentData{"Usage test",      "-u", "--help", "Display Usage [test]",0};
+    Args << Cmd::ArgumentData{"Stml test",       "-m","--Stml","Test Book::STMLText", 1};
+    Args << Cmd::ArgumentData{"Expression test", "-e", "--expression", "Test expression [test/fake]", 1};
+    Args << Cmd::ArgumentData{"Usage test",      "-u", "--help", "Display Usage [test]",0};
 
     Args["Stml test"].Connect(this, &DevApp::Opt1);
 

@@ -47,7 +47,7 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
-# .NET Core
+# .NET Util
 project.lock.json
 project.fragment.lock.json
 artifacts/
@@ -127,7 +127,7 @@ _TeamCity*
 # DotCover is a Code Coverage Tool
 *.dotCover
 
-# Visual Studio code coverage results
+# Visual Studio Code coverage results
 *.coverage
 *.coveragexml
 

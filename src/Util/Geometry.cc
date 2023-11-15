@@ -2,10 +2,8 @@
 // Created by oldlonecoder on 10/29/23.
 //
 
-#include "AppBook/Core/Geometry.h"
+#include "AppBook/Util/Geometry.h"
 
-namespace Core
-{
 
 
 
@@ -256,5 +254,3 @@ Point Point::Min(const Point &b) const
 
 
 
-
-}

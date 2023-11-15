@@ -56,7 +56,7 @@ AppBook& AppBook::Init(const std::string &book_name)
     AppBook::Application_Book = new AppBook(book_name);
 
     // --- Initialise env and filesystem / or the future sqlite database. Create it if not exists, open if exists.
-    Core::StrAcc loc = Fs::current_path().c_str();
+    StrAcc loc = Fs::current_path().c_str();
     loc << '/' << AppBook::Application_Book->Id() << ".Book";
     if(! Fs::exists(loc()) )
         Fs::create_directory(loc());
@@ -88,7 +88,7 @@ AppBook::AppBook()
         throw AppBook::Exception(" Cannot re-instanciate a new Book!");
 }
 
-AppBook::AppBook(const std::string &book_id): Core::Object(nullptr,book_id)
+AppBook::AppBook(const std::string &book_id): Object(nullptr, book_id)
 {
     if(AppBook::Application_Book)
         throw AppBook::Exception(" Cannot re-instanciate a new Book!");
@@ -107,7 +107,7 @@ AppBook::~AppBook()
 
 /*!
  * \brief Book::open  If the directory and subdirs already exist, then the Book select the last Section created.
- * \return code::accepted
+ * \return Code::accepted
  * \author &copy; 2023, oldlonecoder ( serge.lussier@oldlonecoder.club )
  *
  * \note At the call of this method, the filesystem must already be positionned into the "$id().Book" subdirectory!
@@ -130,9 +130,9 @@ Book::Enums::Code AppBook::Open()
     {
         if(item.is_directory())
         {
-            Core::StrAcc dir;
+            StrAcc dir;
             auto const& tp = item.last_write_time();
-            dir << " subdir : '" << Core::Color::Yellow << item.path().c_str() << Core::Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch())  << "\n";
+            dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
             std::cout << dir();
             if(!last_entry.is_set)
             {
@@ -181,12 +181,12 @@ Book::Enums::Code AppBook::Close()
 AppBook::Section &AppBook::operator[](std::string_view section_id)
 {
     for(auto* s : Sections) if( s->Id() == section_id ) return *s;
-    Core::StrAcc e;
-    e << "Section identified by '" << Core::Color::Yellow << section_id << Core::Color::Reset << "' not found.";
+    StrAcc e;
+    e << "Section identified by '" << Color::Yellow << section_id << Color::Reset << "' not found.";
     throw AppBook::Exception(e());
 }
 
-using Core::Color;
+
 
 /*!
  * \brief Book::create_section
@@ -219,8 +219,8 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     s.Location = check_location;
     if(Fs::exists(check_location))
     {
-        Core::StrAcc err;
-        err << "Section Location '" << Core::Color::Yellow << check_location.c_str() << Core::Color::Reset << "' already exists... Openning it.";
+        StrAcc err;
+        err << "Section Location '" << Color::Yellow << check_location.c_str() << Color::Reset << "' already exists... Openning it.";
         std::cout << err() << "\n";
         return s;
     }
@@ -237,10 +237,10 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
 
 
 
-Core::Color::Format AppBook::Format()
+Color::Format AppBook::Format()
 {
     if(!AppBook::Application_Book)
-        return Core::Color::Format::ansi256;
+        return Color::Format::ansi256;
     return AppBook::Application_Book->_Format;
 }
 

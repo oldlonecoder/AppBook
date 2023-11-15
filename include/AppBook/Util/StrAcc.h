@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code IsIn this project is written       *
+ *   Unless otherwise specified, all Code IsIn this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -31,13 +31,6 @@
 #include <stack>
 #include "ChAttr.h"
 #include <AppBook/Utf/Glyphes.h>
-
-namespace Core {
-
-
-
-
-
 
 
 class APPBOOK_EXPORTS StrAcc final
@@ -72,7 +65,7 @@ private:
         uint8_t     L = 0; // Length modifier ( linenum,ll,H,hh )
         std::size_t Len = 0; // Format Length.
         std::size_t Position = 0; // Arg Index Position within _InputText.
-        char        Code = 0; // Effective characeter code specifier such As 'd'; 'Code'; 'f'; 'l'; 'p'...
+        char        Code = 0; // Effective characeter Code specifier such As 'd'; 'Code'; 'f'; 'l'; 'p'...
         const char* StrPtr = nullptr;
 
         FomatData(std::string& str_) : StrPtr(str_.c_str())
@@ -97,7 +90,7 @@ public:
     ~StrAcc();
 
     //...
-    StrAcc& operator << (Color::code arg_);
+    StrAcc& operator << (Color::Code arg_);
     StrAcc& operator << (Color::Pair arg_);
     template<typename T> StrAcc& operator >> (T& out)
     {
@@ -151,7 +144,7 @@ public:
     StrAcc& operator += (const char* str) { _d += str; return *this; }
     StrAcc& operator += (char* str) { _d += str; return *this; }
     StrAcc& operator += (char cc) { _d += cc; return *this; }
-    StrAcc& operator += (Color::code c_) { _d += Color::Ansi(c_); return *this; }
+    StrAcc& operator += (Color::Code c_) { _d += Color::Ansi(c_); return *this; }
     StrAcc& operator += (const StrAcc& acc);
     StrAcc& operator += (Utf::Glyph::Type Ic);
     StrAcc& operator += (Utf::AccentFR::Type Ac);
@@ -162,7 +155,7 @@ public:
     StrAcc& operator , (const char* str) { _d += str; return *this; }
     StrAcc& operator , (char* str) { _d += str; return *this; }
     StrAcc& operator , (char cc) { _d += cc; return *this; }
-    StrAcc& operator , (Color::code c_) { _d += Color::Ansi(c_); return *this; }
+    StrAcc& operator , (Color::Code c_) { _d += Color::Ansi(c_); return *this; }
     StrAcc& operator , (const StrAcc& acc);
     StrAcc& operator , (Utf::Glyph::Type Ic);
     StrAcc& operator , (Utf::AccentFR::Type Ac);
@@ -373,33 +366,11 @@ template<typename T> StrAcc& StrAcc::Format(const T& _argv)
     _d.insert(_ArgPos, buf, std::strlen(buf));
     _ArgPos = std::string::npos;
     return *this;
-};
+}
 
 
 
 
 
-/*
-    StrAcc str = " ceci est mon nom: {12s}" ;
-    str << "Serge Lussier";
-
-
-    //...
-    StrAcc& operator<<(std::string_view str)
-    {
-        std::Format(_InputText, StdStr);
-        return *this;
-    }
-
-
-
-    replaces :
-*/
-
-
-
-
-
-} // Book
 
 

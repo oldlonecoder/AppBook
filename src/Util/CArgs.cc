@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -11,12 +11,12 @@
  ***************************************************************************/
 
 
-#include "AppBook/Core/CArgs.h"
+#include "AppBook/Util/CArgs.h"
 #include <AppBook/Book/AppBook.h>
 
 
 
-namespace Core::Cmd
+namespace Cmd
 {
 
 
@@ -74,7 +74,7 @@ Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArr
                 (*CurArg)->Arguments.emplace_back(Str);
                 ++(*CurArg)->Count;
                 (*CurArg)->Enabled = true;
-                AppBook::Out() << Core::Color::Yellow << (*CurArg)->Name << Core::Color::Reset << " Arg: '"<< Str;
+                AppBook::Out() << Color::Yellow << (*CurArg)->Name << Color::Reset << " Arg: '" << Str;
             }
             else
             {
@@ -95,7 +95,7 @@ Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArr
      * \brief Initialize and bulds internal Data.
      * \param argc
      * \param argv
-     * \return Status code
+     * \return Status Code
      */
 Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
 {
@@ -112,7 +112,7 @@ Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
                 (*CurArg)->Arguments.emplace_back(Str);
                 ++(*CurArg)->Count;
                 (*CurArg)->Enabled = true;
-                AppBook::Out() << Core::Color::Yellow << (*CurArg)->Name << Core::Color::Reset << " Arg: '"<< Str;
+                AppBook::Out() << Color::Yellow << (*CurArg)->Name << Color::Reset << " Arg: '" << Str;
             }
             else
             {

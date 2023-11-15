@@ -7,7 +7,7 @@
 namespace fs = std::filesystem;
 
 
-using Core::Color;
+
 using namespace Book::Enums;
 
 /*!
@@ -15,7 +15,7 @@ using namespace Book::Enums;
  * \return reference to the section instance.
  * \author &copy; 2023, oldlonecoder (sergre.lussier@oldlonecoder.club).
  */
-AppBook::Section::Section(Object *par, const std::string &section_id):Core::Object(par, section_id)
+AppBook::Section::Section(Object *par, const std::string &section_id): Util::Object(par, section_id)
 {
 
 }
@@ -44,7 +44,7 @@ AppBook::Section &AppBook::Section::Open()
     std::cout << __PRETTY_FUNCTION__ << ": location:" << Location << ":\n";
     if(!fs::exists(Location))
     {
-        Core::StrAcc err;
+        StrAcc err;
         err <<  "Section location '" << Color::Yellow << Location.c_str() << Color::Reset << "' does not exist.";
         throw AppBook::Exception(err().c_str());
     }
@@ -83,7 +83,7 @@ AppBook::Section::Contents &AppBook::Section::operator[](const std::string &bloc
             return *blk;
         }
     }
-    Core::StrAcc e;
+    StrAcc e;
     e << "bloc stack identified by '" << Color::Yellow << bloc_id << Color::Reset << "' not found.";
     throw AppBook::Exception(e());
 }

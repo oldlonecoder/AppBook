@@ -1,7 +1,7 @@
 #include "AppBook/Book/AppBook.h"
 
 using namespace Book::Enums;
-using Core::Color;
+
 
 
 namespace fs = std::filesystem;
@@ -17,7 +17,7 @@ std::string AppBook::Section::Contents::GetFilename()
 
 
 
-AppBook::Section::Contents::Contents(Core::Object *parent_obj, const std::string &atitle): Core::Object(parent_obj, atitle)
+AppBook::Section::Contents::Contents(Util::Object *parent_obj, const std::string &atitle): Util::Object(parent_obj, atitle)
 {
 
 }
@@ -37,7 +37,7 @@ Code AppBook::Section::Contents::Open()
 
     Location = Parent<AppBook::Section>()->Location;
     Location += '/';
-    Core::StrAcc file;
+    StrAcc file;
     file << Location.c_str() << GetFilename();
     Filename = file(); // Keep the copy of the filename
 
@@ -45,7 +45,7 @@ Code AppBook::Section::Contents::Open()
     OutputFile.open(file(),std::ios_base::out);
     if(!OutputFile.is_open())
     {
-        Core::StrAcc str = "bloc_stack : cannot open file '";
+        StrAcc str = "bloc_stack : cannot open file '";
         str << file << "' for output!'";
         throw AppBook::Exception(str());
     }

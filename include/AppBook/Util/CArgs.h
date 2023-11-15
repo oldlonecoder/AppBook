@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -13,12 +13,12 @@
 
 #pragma once
 
-#include <AppBook/Core/Delegate.h>
+#include <AppBook/Util/Delegate.h>
 #include <AppBook/Book/BookEnums.h>
 
 
 
-namespace Core::Cmd
+namespace Cmd
 {
 
 

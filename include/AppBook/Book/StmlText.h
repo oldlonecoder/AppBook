@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -16,9 +16,9 @@
 
 
 #include "AppBook/Utf/Glyphes.h"
-#include "AppBook/Core/StrAcc.h"
+#include "AppBook/Util/StrAcc.h"
 #include "AppBook/Book/BookEnums.h"
-#include "AppBook/Core/Delegate.h"
+#include "AppBook/Util/Delegate.h"
 
 
 namespace Book
@@ -87,7 +87,7 @@ using std::string_view;
 class  APPBOOK_EXPORTS STMLText
 {
     std::string _InputText;
-    ::Core::Color::Format _Format = Core::Color::Format::ansi256;
+    Color::Format _Format = Color::Format::ansi256;
     enum StmlStatus : char
     {
         Ok,
@@ -212,8 +212,8 @@ public:
     struct APPBOOK_EXPORTS  STMLAttribute
     {
         // ============ Indiquer c'est quoi qu'il faut lire!!!!!! ======================
-        Core::Color::code FG  = Core::Color::Black;
-        Core::Color::code BG  = Core::Color::Black;
+        Color::Code FG  = Color::Black;
+        Color::Code BG  = Color::Black;
         Utf::Glyph::Type Glph   = 0;
         Utf::AccentFR::Type Accent = Utf::AccentFR::Err;
         // =============================================================================
@@ -299,7 +299,7 @@ private:
         STMLText::STMLAttribute CompileAccent(STMLText::STMLAttribute& Attr);
         STMLText::STMLToken Scan();
         STMLText::STMLToken SkipToAttribute();
-        Core::Color::code ColorID(STMLToken& Token);
+        Color::Code ColorID(STMLToken& Token);
         Utf::Glyph::Type GlyphID(STMLToken& Token);
         STMLText::STMLToken ScanIdentifier();
         Book::Enums::Code EatToken(STMLText::STMLToken& Token);

@@ -254,7 +254,7 @@ int UTF8_to_Unicode ( char * utf8, unsigned int * Uni )
     if ( utf8 == NULL ) return 0;
     if ( Uni  == NULL ) return 0;
     // U-00000000 - U-0000007F
-    // ASCII code ?
+    // ASCII Code ?
     if (*utf8 >= 0)
     {
         *Uni= *utf8; return 1;
@@ -296,7 +296,7 @@ int UTF8_to_Unicode ( char * utf8, unsigned int * Uni )
         {
             if ( ( u[A] >=0 ) || ( (u[A]&0xC0) != 0x80 ) )
             {
-            // our UTF-8 code is malformed ...
+            // our UTF-8 Code is malformed ...
             // let&aposs return it as an extended-ASCII
             *Uni = u[0];
             return 1;
@@ -310,7 +310,7 @@ int UTF8_to_Unicode ( char * utf8, unsigned int * Uni )
     // are not allowed.
     if ( ( (*Uni) >= 0xD800 ) || ( (*Uni) <= 0xDFFF ) )
     {
-        // In this case, our UTF-8 code was well formed.
+        // In this case, our UTF-8 Code was well formed.
         // So, or we break it into 2 extended ASCII codes,
         // or we display an other symbol insbookd ...
         // We should read the Unicode 5.0 book to
@@ -327,7 +327,7 @@ int UTF8_to_Unicode ( char * utf8, unsigned int * Uni )
 
 Good explanation!
 
-I know this is old, but there are A couple of bugs in your sample code.
+I know this is old, but there are A couple of bugs in your sample Code.
 
  *u[A] >= 0 always evaluates to true if u is unsigned. You need A cast to char.
 if ((char)*u[A] > 0) ... )
@@ -338,7 +338,7 @@ if ((*Uni >= 0xD800) && (*Uni <= 0xDFFF))
  There'Code A superfluous semicolon at the End of the while loop'Code closing brace in UTF8_strlen
 Also, Uni should be defined As unsigned int IsIn the same function (To match the other function'Code argument.
 
-It would be nice if you could reformat the code so that line breaks appear correctly. I suppose it got mangled by the editor...
+It would be nice if you could reformat the Code so that line breaks appear correctly. I suppose it got mangled by the editor...
 
 For anyone interested, here'Code the fixed version (I hope you don't mind, I'll remove it if any objections).
 

@@ -1,5 +1,5 @@
 #include "AppBook/Book/AppBook.h"
-#include "AppBook/Core/StrBreak.h"
+#include "AppBook/Util/StrBreak.h"
 #include <chrono>
 //#include <format>
 
@@ -7,12 +7,8 @@
 using namespace Book::Enums;
 using  Book::Enums::Class;
 
-using Core::Color;
 
-
-
-
-AppBook::Section::Contents::Element::Element(Object* par, Book::Enums::Class Cls, std::source_location asrc):Core::Object(par,"q-anon element!")
+AppBook::Section::Contents::Element::Element(Object* par, Book::Enums::Class Cls, std::source_location asrc): Object(par, "q-anon element!")
 {
     Src = asrc;
     this->Class = Cls;
@@ -49,8 +45,8 @@ void AppBook::Section::Contents::Element::CompileHeader()
     {
         if(header_components.filename)
         {
-            Core::StrBreak txt;
-            Core::StrBreak::ConfigData data = { Src.file_name(),"/",Core::StrBreak::Discard};
+            StrBreak txt;
+            StrBreak::ConfigData data = { Src.file_name(),"/", StrBreak::Discard};
             auto cnt = txt(data);
             ///@todo check cnt....
 
@@ -217,7 +213,7 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const Core::StrAcc& txt)
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const StrAcc& txt)
 {
     Text << txt;
     InputComponents.push_back(Text());
@@ -268,7 +264,7 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Color::code C)
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (Color::Code C)
 {
     Text << C;
     InputComponents.push_back(Text());
@@ -277,7 +273,7 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
 }
 
 
-AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const Core::Rect& R)
+AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operator << (const Rect& R)
 {
     Text << R;
     InputComponents.push_back(Text());
@@ -336,9 +332,9 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
 
         //std::chrono::zoned_time date{"America/Toronto", std::chrono::system_clock::now()};
         //const auto tp{std::chrono::system_clock::now()};
-        //auto txt{Core::StrAcc::now("{:%H:%M:%S}", tp)};
+        //auto txt{StrAcc::now("{:%H:%M:%S}", tp)};
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Stamp);
-        Text << a.Fg << Utf::Glyph::Data[ic] << Color::Reset << Core::StrAcc::Now("%T");
+        Text << a.Fg << Utf::Glyph::Data[ic] << Color::Reset << StrAcc::Now("%T");
     }
     break;
     case Book::Enums::Fn::File:
@@ -348,21 +344,21 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
     {
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Weekday);
         //auto today{std::chrono::system_clock::now()};
-        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << Core::StrAcc::Now("%A");
+        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << StrAcc::Now("%A");
     }
         break;
     case Book::Enums::Fn::Day :
     {
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Day);
         //auto today{std::chrono::system_clock::now()};
-        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << Core::StrAcc::Now("%d");
+        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << StrAcc::Now("%d");
     }
         break;
     case Book::Enums::Fn::Month:
     {
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Month);
         //auto today{std::chrono::system_clock::now()};
-        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << Core::StrAcc::Now("%m");
+        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << StrAcc::Now("%m");
     }
 
     break;
@@ -370,7 +366,7 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
     {
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Month);
         //auto today{std::chrono::system_clock::now()};
-        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << Core::StrAcc::Now("%B");
+        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << StrAcc::Now("%B");
     }
 
     break;
@@ -379,7 +375,7 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
     {
         auto [ic,a] = FnAttributes(Book::Enums::Fn::Year);
         //auto today{std::chrono::system_clock::now()};
-        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << Core::StrAcc::Now("%Y");
+        Text << /*Utf::Glyph::Data[ic] <<*/ a.Fg << StrAcc::Now("%Y");
     }
     break;
     case Book::Enums::Fn::Function:

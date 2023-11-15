@@ -19,9 +19,9 @@
 #include <unordered_map>
 #include <map>
 
-#include "AppBook/Core/ChAttr.h"
+#include "AppBook/Util/ChAttr.h"
 
-namespace Core {
+//namespace Util {
 
 std::vector<Color::Data> ColorDB =
 {
@@ -286,11 +286,11 @@ std::vector<Color::Data> ColorDB =
 
 
 /*!
- * @brief Converts Color::code Fg To console Ansi string command
+ * @brief Converts Color::Code Fg To console Ansi string command
  * @param Fg
  * @return std::string
  */
-std::string Color::Ansi(Color::code Fg)
+std::string Color::Ansi(Color::Code Fg)
 {
     if (Fg == Color::Reset) { return "\033[0m"; }
     std::ostringstream Out;
@@ -311,7 +311,7 @@ std::string Color::Ansi(Color::Pair Pair)
     return Out.str();
 }
 
-std::string Color::AnsiBg(Color::code Bg)
+std::string Color::AnsiBg(Color::Code Bg)
 {
     if (Bg == Color::Reset) { return "\033[0m"; }
     std::ostringstream Out;
@@ -320,23 +320,23 @@ std::string Color::AnsiBg(Color::code Bg)
     return Out.str();
 }
 
-Color::code Color::Scan(const std::string &ColName)
+Color::Code Color::Scan(const std::string &ColName)
 {
     int N = 0;
     for (auto& Clr : ColorDB)
     {
-        if (ColName == Clr.Name) return static_cast<Color::code>(N);
+        if (ColName == Clr.Name) return static_cast<Color::Code>(N);
         ++N;
     }
     return Color::Reset;
 }
 
-std::string Color::Name(Color::code Clr)
+std::string Color::Name(Color::Code Clr)
 {
     return ColorDB[Clr].Name.data();
 }
 
-std::string Color::Html(Color::code Clr)
+std::string Color::Html(Color::Code Clr)
 {
     return "0";
 }
@@ -374,4 +374,4 @@ Color::Pair &Color::Pair::operator>>(std::string &out)
     out = Color::Ansi(*this);
     return *this;
 }
-} // Book
+//} // Book

@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -12,9 +12,9 @@
 
 
 #pragma once
-#include "AppBook/Core/Object.h"
-#include "AppBook/Core/StrAcc.h"
-#include "AppBook/Core/Geometry.h"
+#include "AppBook/Util/Object.h"
+#include "AppBook/Util/StrAcc.h"
+#include "AppBook/Util/Geometry.h"
 #include "AppBook/Utf/Glyphes.h"
 #include "AppBook/Book/BookEnums.h"
 
@@ -32,10 +32,10 @@
  * \author &copy;2023, oldlonecoder
  */
 
-class APPBOOK_EXPORTS AppBook : public Core::Object {
+class APPBOOK_EXPORTS AppBook : public Util::Object {
 
     std::ostream *out_stream{nullptr}; ///< Pointer to the address of the currently selected output stream.
-    Core::Color::Format _Format{Core::Color::Format::ansi256};
+    Color::Format _Format{Color::Format::ansi256};
     std::string starting_path;
 
 public:
@@ -63,14 +63,14 @@ public:
     struct APPBOOK_EXPORTS config_data
     {
         std::string Filename;
-        [[maybe_unused]] Core::Color::Format OutputFormat;
+        [[maybe_unused]] Color::Format OutputFormat;
         [[maybe_unused]] bool Immediate;
     };
 
     /*!
      * \brief The Section class
     */
-    struct APPBOOK_EXPORTS Section : public Core::Object
+    struct APPBOOK_EXPORTS Section : public Object
     {
 
     using Array = std::vector<AppBook::Section *>;
@@ -102,7 +102,7 @@ public:
     *
     *
     */
-    struct APPBOOK_EXPORTS Contents : public Core::Object
+    struct APPBOOK_EXPORTS Contents : public Object
     {
 
         std::ofstream OutputFile; ///< the Filename and path Location are implicitely set by the parent Section, this bloc ID and the ouput format.
@@ -118,11 +118,11 @@ public:
         std::string GetFilename();
 
 
-        struct APPBOOK_EXPORTS Element : public Core::Object
+        struct APPBOOK_EXPORTS Element : public Object
         {
             using Memory = std::vector<AppBook::Section::Contents::Element>;
             std::vector<std::string> InputComponents;
-            Core::StrAcc Text;
+            StrAcc Text;
             Book::Enums::Class Class{Book::Enums::Class::None};
             Book::Enums::Code Code{Book::Enums::Code::Rejected};
             std::source_location Src{};
@@ -131,20 +131,20 @@ public:
             Element() = default;
             Element(const Element &) = default;
             Element(Element && e) noexcept = default;
-            Element(Core::Object* Par, Book::Enums::Class aClass, std::source_location aSrc);
+            Element(Object* Par, Book::Enums::Class aClass, std::source_location aSrc);
 
             AppBook::Section::Contents::Element &operator=(const AppBook::Section::Contents::Element &e) = default;
             AppBook::Section::Contents::Element &operator=(AppBook::Section::Contents::Element && e) noexcept = default;
             AppBook::Section::Contents::Element &operator<<(Utf::Glyph::Type graphem);
             AppBook::Section::Contents::Element &operator<<(Utf::AccentFR::Type accent);
-            AppBook::Section::Contents::Element &operator<<(const Core::StrAcc &txt);
+            AppBook::Section::Contents::Element &operator<<(const StrAcc &txt);
             AppBook::Section::Contents::Element &operator<<(const std::string &txt);
             AppBook::Section::Contents::Element &operator<<(const char *txt);
             AppBook::Section::Contents::Element &operator<<(char c);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Code c);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Class c);
-            AppBook::Section::Contents::Element &operator<<(Core::Color::code c);
-            AppBook::Section::Contents::Element &operator<<(const Core::Rect &R);
+            AppBook::Section::Contents::Element &operator<<(Color::Code c);
+            AppBook::Section::Contents::Element &operator<<(const Rect &R);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Action A);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Fn tr);
             AppBook::Section::Contents::Element &operator<<(AppBook::ElementComponents cfg);
@@ -165,7 +165,7 @@ public:
         Contents() = default;
 
         AppBook::Section::Contents::Element::Memory MemoryStream;
-        Contents(Core::Object* parent_obj /* Normally AppBook::Section* */,const std::string &atitle);
+        Contents(Object* parent_obj /* Normally AppBook::Section* */, const std::string &atitle);
 
         ~Contents() override;
 
@@ -196,7 +196,7 @@ public:
     std::filesystem::path Location;
 
 
-    Section(Core::Object* par, const std::string &section_id);
+    Section(Object* par, const std::string &section_id);
     ~Section() override;
 
     Book::Enums::Code Close();
@@ -240,7 +240,7 @@ public:
 
     AppBook::Section &operator[](std::string_view section_id);
     static AppBook::Section &CreateSection(const std::string &section_id);
-    static Core::Color::Format Format();
+    static Color::Format Format();
     static AppBook &Init(const std::string &book_name);
 
     static AppBook &Self();

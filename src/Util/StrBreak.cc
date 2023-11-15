@@ -3,17 +3,15 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code IsIn this project is written       *
+ *   Unless otherwise specified, all Code IsIn this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
  *   Copyrights from authors other than Serge Lussier also apply here      *
  ***************************************************************************/
 
-#include "AppBook/Core/StrBreak.h"
+#include "AppBook/Util/StrBreak.h"
 
-namespace Core
-{
 
 
 [[maybe_unused]] std::string StrBreak::_default_token_separators = "\\%(){}[]`$#@!;,~?^&<>=+-*/:.";
@@ -88,7 +86,7 @@ StrBreak::SBContext::SBContext(std::string_view aStr):
 }
 
 /*!
-    @note Enleveer le code de trop (suivi du num de ligne et de la col).
+    @note Enleveer le Code de trop (suivi du num de ligne et de la col).
 */
 bool StrBreak::SBContext::SkipWS()
 {
@@ -375,7 +373,3 @@ std::size_t StrBreak::operator()(StrBreak::ConfigData & data)
     return data.Words.size();
 }
 
-
-
-
-}

@@ -3,12 +3,12 @@
  *   serge.lussier@oldlonecoder.club                                                      *
  *                                                                                        *
  *                                                                                        *
- *   Unless otherwise specified, all code IsIn this project is written                      *
+ *   Unless otherwise specified, all Code IsIn this project is written                      *
  *   by the author (Serge Lussier)                                                        *
  *   and no one else then not even {copilot, chatgpt, or any other AI calamities}         *
  *   ----------------------------------------------------------------------------------   *
  *   Copyrights from authors other than Serge Lussier also apply here                     *
- *   Open source FREE licences also apply To the code from the same author (Serge Lussier)*
+ *   Open source FREE licences also apply To the Code from the same author (Serge Lussier)*
  *   ----------------------------------------------------------------------------------   *
  ******************************************************************************************/
 

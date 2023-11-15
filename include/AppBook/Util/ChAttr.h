@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
+ *   Unless otherwise specified, all Code in this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -16,14 +16,14 @@
 #include <unordered_map>
 
 
-namespace Core {
+
 
 /*!
  *
  */
 struct APPBOOK_EXPORTS Color
 {
-    enum code : uint16_t
+    enum Code : uint16_t
     {
         /*0   */ Black = 0,         //#000000	rgb(128,0,0)	hsl(0,100%,25%)
         /*1   */ Maroon,            //#800000	rgb(128,0,0)	hsl(0,100%,25%)
@@ -285,8 +285,8 @@ struct APPBOOK_EXPORTS Color
 
     struct  APPBOOK_EXPORTS Pair
         {
-            Color::code Fg = Color::White;
-        Color::code Bg = Color::Grey11;
+            Color::Code Fg = Color::White;
+        Color::Code Bg = Color::Grey11;
 
 
         std::string operator()() const;
@@ -296,7 +296,7 @@ struct APPBOOK_EXPORTS Color
 
     struct APPBOOK_EXPORTS Data
     {
-        Color::code _enum = Color::Reset;
+        Color::Code _enum = Color::Reset;
         std::string_view  Name = " ";
         uint8_t R = 0;
         uint8_t G = 0;
@@ -310,13 +310,13 @@ struct APPBOOK_EXPORTS Color
 
 
 
-    static std::string Ansi(Color::code Fg);
+    static std::string Ansi(Color::Code Fg);
     static std::string Ansi(Color::Pair Pair);
-    static std::string AnsiBg(Color::code Bg);
+    static std::string AnsiBg(Color::Code Bg);
     //static std::string Endl(Color::Format const Enc = Color::Format::ansi256);
-    static Color::code Scan(const std::string& ColName);
-    static std::string Name(Color::code Clr);
-    static std::string Html(Color::code Clr);
+    static Color::Code Scan(const std::string& ColName);
+    static std::string Name(Color::Code Clr);
+    static std::string Html(Color::Code Clr);
     static std::string Html(Color::Pair Pair);
 
     struct APPBOOK_EXPORTS Item
@@ -344,6 +344,6 @@ struct APPBOOK_EXPORTS Color
 
 
 
-} // Book
+
 
 

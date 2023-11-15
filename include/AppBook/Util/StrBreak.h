@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code IsIn this project is written       *
+ *   Unless otherwise specified, all Code IsIn this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -11,9 +11,9 @@
  ***************************************************************************/
 
 #pragma once
-#include "AppBook/Core/StrAcc.h"
+#include "AppBook/Util/StrAcc.h"
 
-namespace Core {
+
 
 //using std::string;
 using std::string;
@@ -115,5 +115,3 @@ private:
 
 };
 
-
-}

@@ -3,7 +3,7 @@
  *   serge.lussier@oldlonecoder.club                                       *
  *                                                                         *
  *                                                                         *
- *   Unless otherwise specified, all code IsIn this project is written       *
+ *   Unless otherwise specified, all Code IsIn this project is written       *
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
@@ -13,10 +13,10 @@
 
 
 
-#include "AppBook/Core/StrAcc.h"
+#include "AppBook/Util/StrAcc.h"
 #include <chrono>
 
-namespace Core {
+
 
 
 
@@ -105,7 +105,7 @@ StrAcc& StrAcc::operator << (Color::Pair arg_)
 }
 
 
-StrAcc& StrAcc::operator<<(Color::code arg_)
+StrAcc& StrAcc::operator<<(Color::Code arg_)
 {
     return Format(Color::Ansi(arg_));
 }
@@ -144,7 +144,7 @@ std::string StrAcc::MakeStr(const char* B, const char* E)
 
 std::string StrAcc::Now(const std::string& str_fmt)
 {
-    // Old archaic code...
+    // Old archaic Code...
     // time_t rawtime;
     // struct tm* timeinfo;
     // char tmb[180];
@@ -174,6 +174,3 @@ StrAcc &StrAcc::operator+=(Utf::AccentFR::Type Ac)
     _d += Utf::AccentFR::Data[Ac];
     return *this;
 }
-
-
-} // Book
