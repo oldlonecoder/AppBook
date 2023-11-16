@@ -56,7 +56,11 @@ AppBook& AppBook::Init(const std::string &book_name)
     AppBook::Application_Book = new AppBook(book_name);
 
     // --- Initialise env and filesystem / or the future sqlite database. Create it if not exists, open if exists.
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    StrAcc loc = Fs::current_path().string().c_str();
+#else 
     StrAcc loc = Fs::current_path().c_str();
+#endif
     loc << '/' << AppBook::Application_Book->Id() << ".Book";
     if(! Fs::exists(loc()) )
         Fs::create_directory(loc());
@@ -123,8 +127,12 @@ Book::Enums::Code AppBook::Open()
 
     Fs::file_time_type htime;
     auto Path = Fs::current_path();
-
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    StrAcc loc = Path.string().c_str();
+#else 
     std::cout << "current path: " << Path.c_str() << ":\n";
+#endif
+    
 
     for(const auto& item : Fs::directory_iterator(AppBook::LocationPath))
     {
@@ -132,7 +140,12 @@ Book::Enums::Code AppBook::Open()
         {
             StrAcc dir;
             auto const& tp = item.last_write_time();
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+            dir << " subdir : '" << Color::Yellow << item.path().string().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
+#else 
             dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
+#endif
+            
             std::cout << dir();
             if(!last_entry.is_set)
             {
@@ -156,9 +169,15 @@ Book::Enums::Code AppBook::Open()
         std::cout << "This book has no contents ( no subdirs. ) - reject open request. \n";
         return Book::Enums::Code::Rejected;
     }
-
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    AppBook::Self().starting_path = Fs::current_path().string().c_str();
+    std::cout << "last entry:" << last_entry.entry.path().string().c_str() << "\n";
+#else 
     AppBook::Self().starting_path = Fs::current_path().c_str();
     std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
+#endif
+    
+    
     //...
     return Book::Enums::Code::Success;
 }
@@ -220,7 +239,12 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     if(Fs::exists(check_location))
     {
         StrAcc err;
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        err << "Section Location '" << Color::Yellow << check_location.string().c_str() << Color::Reset << "' already exists... Openning it.";
+#else 
         err << "Section Location '" << Color::Yellow << check_location.c_str() << Color::Reset << "' already exists... Openning it.";
+#endif
+        
         std::cout << err() << "\n";
         return s;
     }

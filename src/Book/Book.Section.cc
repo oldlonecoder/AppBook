@@ -45,8 +45,11 @@ AppBook::Section &AppBook::Section::Open()
     if(!fs::exists(Location))
     {
         StrAcc err;
-        err <<  "Section location '" << Color::Yellow << Location.c_str() << Color::Reset << "' does not exist.";
-        throw AppBook::Exception(err().c_str());
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        throw AppBook::Exception()[AppBook::Error() << "Section location '" << Color::Yellow << Location.string().c_str() << Color::Reset << "' does not exist." ];
+#else 
+        throw AppBook::Exception()[AppBook::Error() << "Section location '" << Color::Yellow << Location.c_str() << Color::Reset << "' does not exist."];
+#endif
     }
     return *this;
 }

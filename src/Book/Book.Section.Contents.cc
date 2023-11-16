@@ -38,7 +38,12 @@ Code AppBook::Section::Contents::Open()
     Location = Parent<AppBook::Section>()->Location;
     Location += '/';
     StrAcc file;
+#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    file << Location.string().c_str() << GetFilename();
+#else 
     file << Location.c_str() << GetFilename();
+#endif
+
     Filename = file(); // Keep the copy of the filename
 
     std::cout << __PRETTY_FUNCTION__ << " - checking for existing '"<< Filename << "' :\n";
