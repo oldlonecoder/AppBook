@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b703da45-5f0c-49fb-9cc8-50335dc23273}</ProjectGuid>
-    <RootNamespace>AppBook</RootNamespace>
+    <ProjectGuid>{f9944b5f-05e5-45d5-bdd1-b2fc1a596293}</ProjectGuid>
+    <RootNamespace>logbook</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -111,6 +111,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(HOMEDRIVE)$(HOMEPATH)\libraries\binaries</AdditionalLibraryDirectories>
+      <AdditionalDependencies>chrtools.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
@@ -143,35 +145,21 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\AppBook\Book\AppBook.h" />
-    <ClInclude Include="include\AppBook\Book\BookEnums.h" />
-    <ClInclude Include="include\AppBook\Book\Expect.h" />
-    <ClInclude Include="include\AppBook\Book\StmlText.h" />
-    <ClInclude Include="include\AppBook\Exports.h" />
-    <ClInclude Include="include\AppBook\Utf\Glyphes.h" />
-    <ClInclude Include="include\AppBook\Util\CArgs.h" />
-    <ClInclude Include="include\AppBook\Util\ChAttr.h" />
-    <ClInclude Include="include\AppBook\Util\Delegate.h" />
-    <ClInclude Include="include\AppBook\Util\Geometry.h" />
-    <ClInclude Include="include\AppBook\Util\Object.h" />
-    <ClInclude Include="include\AppBook\Util\StrAcc.h" />
-    <ClInclude Include="include\AppBook\Util\StrBreak.h" />
+    <ClInclude Include="include\logbook\Book.h" />
+    <ClInclude Include="include\logbook\cargs.h" />
+    <ClInclude Include="include\logbook\Expect.h" />
+    <ClInclude Include="include\logbook\notify.h" />
+    <ClInclude Include="include\logbook\object.h" />
+    <ClInclude Include="include\logbook\public.h" />
+    <ClInclude Include="include\logbook\rem.h" />
+    <ClInclude Include="include\logbook\text.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Book\AppBook.cc" />
-    <ClCompile Include="src\Book\Book.Section.cc" />
-    <ClCompile Include="src\Book\Book.Section.Contents.cc" />
-    <ClCompile Include="src\Book\Book.Section.Contents.Element.cc" />
-    <ClCompile Include="src\Book\BookEnums.cc" />
-    <ClCompile Include="src\Book\StmlText.cc" />
-    <ClCompile Include="src\Utf\Glyphes.cc" />
-    <ClCompile Include="src\Util\CArgs.cc" />
-    <ClCompile Include="src\Util\ChAttr.cc" />
-    <ClCompile Include="src\Util\Delegate.cc" />
-    <ClCompile Include="src\Util\Geometry.cc" />
-    <ClCompile Include="src\Util\Object.cc" />
-    <ClCompile Include="src\Util\StrAcc.cc" />
-    <ClCompile Include="src\Util\StrBreak.cc" />
+    <ClCompile Include="src\book.cc" />
+    <ClCompile Include="src\cargs.cc" />
+    <ClCompile Include="src\object.cc" />
+    <ClCompile Include="src\rem.cc" />
+    <ClCompile Include="src\text.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
