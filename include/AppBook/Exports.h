@@ -23,10 +23,10 @@
 #   define _CRT_SECURE_NO_WARNINGS
 #   define _SCL_SECURE_NO_WARNINGS
 #   define NOMINMAX
-#   ifdef XIO_EXPORTS
-#       define AppBook_EXPORTS __declspec(dllexport)
+#   ifdef APPBOOKAPI_EXPORTS
+#       define APPBOOK_EXPORTS __declspec(dllexport)
 #   else
-#       define AppBook_EXPORTS __declspec(dllimport)
+#       define APPBOOK_EXPORTS __declspec(dllimport)
 #   endif
 
 #   include <Windows.H> // Must be included before anything else
