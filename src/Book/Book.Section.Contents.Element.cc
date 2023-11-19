@@ -388,7 +388,26 @@ AppBook::Section::Contents::Element& AppBook::Section::Contents::Element::operat
     return *this;
 }
 
+AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Point Pt)
+{
+    Text << Pt.operator std::string();
+    InputComponents.push_back(Text());
+    Text.Clear();
 
+    return *this;
+}
 
+AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Dim WH)
+{
+    Text << WH.operator std::string();
+    InputComponents.push_back(Text());
+    return *this;
+}
 
+AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Rect R)
+{
+    Text << R.operator std::string();
+    InputComponents.push_back(Text());
+    return *this;
+}
 

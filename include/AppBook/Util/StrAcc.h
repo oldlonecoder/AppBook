@@ -129,6 +129,7 @@ public:
     StrAcc& operator << (Utf::Glyph::Type Ic);
     StrAcc& operator << (Utf::AccentFR::Type Ac);
 
+
     StrAcc& fill(char c, int count);
     template<typename T> StrAcc& operator , (const T& arg_) { return (*this) += arg_; }
     template<typename T> StrAcc& operator + (const T& arg_)

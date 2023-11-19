@@ -19,7 +19,7 @@
 // ------- copied from, intellectual proprietary to:
 // https://schneegans.github.io/tutorials/2015/09/20/signal-slot :
 
-// Modified and adapted for liblsg and basic threads, by oldlonecoder
+// Modified and adapted for AppBook and basic threads, by oldlonecoder
 // ------------------------------------------------------------------
 
 

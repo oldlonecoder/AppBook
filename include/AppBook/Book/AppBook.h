@@ -148,7 +148,9 @@ public:
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Action A);
             AppBook::Section::Contents::Element &operator<<(Book::Enums::Fn tr);
             AppBook::Section::Contents::Element &operator<<(AppBook::ElementComponents cfg);
-            
+            AppBook::Section::Contents::Element & operator << (Point Pt);
+            AppBook::Section::Contents::Element & operator << (Dim WH);
+            AppBook::Section::Contents::Element & operator << (Rect R);
             template<typename other_types> AppBook::Section::Contents::Element &operator<<(other_types val)
             {
                 Text << val;
