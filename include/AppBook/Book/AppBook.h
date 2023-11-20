@@ -133,6 +133,26 @@ public:
             Element(Element && e) noexcept = default;
             Element(Object* Par, Book::Enums::Class aClass, std::source_location aSrc);
 
+            template<typename T> Book::Enums::Code Input(T const& Arg)
+            {
+                if(!InputComponents.empty())
+                {
+                    StrAcc Acc = InputComponents.back();
+                    if(Acc.ScanArg() != std::string::npos)
+                    {
+                        Acc << Arg;
+                        Text << Acc;
+                        InputComponents.back() = Text();
+                        Text.Clear();
+                        return Book::Enums::Code::Implemented;
+                    }
+                }
+                Text <<Arg;
+                InputComponents.push_back(Text());
+                Text.Clear();
+                return Book::Enums::Code::Ok;
+            }
+
             AppBook::Section::Contents::Element &operator=(const AppBook::Section::Contents::Element &e) = default;
             AppBook::Section::Contents::Element &operator=(AppBook::Section::Contents::Element && e) noexcept = default;
             AppBook::Section::Contents::Element &operator<<(Utf::Glyph::Type graphem);
@@ -153,9 +173,7 @@ public:
             AppBook::Section::Contents::Element & operator << (Rect R);
             template<typename other_types> AppBook::Section::Contents::Element &operator<<(other_types val)
             {
-                Text << val;
-                InputComponents.push_back(Text());
-                Text.Clear();
+                Input(val);
                 return *this;
             }
             

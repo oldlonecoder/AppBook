@@ -76,7 +76,7 @@ private:
 
     };
 
-    std::string::size_type ScanArg(std::string::size_type _pos = 0);
+    //std::string::size_type ScanArg(std::string::size_type _pos = 0);
     operator std::string(){ return (*this)(); }
     template<typename T> StrAcc& Format(const T& _argv);
 public:
@@ -88,7 +88,7 @@ public:
 
 
     ~StrAcc();
-
+    std::string::size_type ScanArg(std::string::size_type _pos = 0);
     //...
     StrAcc& operator << (Color::Code arg_);
     StrAcc& operator << (Color::Pair arg_);
