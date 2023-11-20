@@ -27,10 +27,10 @@ template <typename... Args> class Delegate {
 
 public:
     std::string _id{ "anonymous signal" };
-    using Slot = std::function<Book::Enums::Code(Args...)>;
+    using Slot = std::function<Book::Enums::Action(Args...)>;
     using Array = std::vector<typename Delegate::Slot>;
     using iterator = typename Delegate::Array::iterator;
-    using Accumulator = std::vector<Book::Enums::Code>;
+    using Accumulator = std::vector<Book::Enums::Action>;
     Delegate() = default;
     ~Delegate() = default;
     explicit Delegate(std::string  id_) : _id(std::move(id_)) {}
@@ -66,14 +66,14 @@ public:
 
     // Connects a std::function to the notifier. The returned
     // value can be used to Disconnect the function again.
-    typename Delegate::iterator Connect(std::function<Book::Enums::Code(Args...)> const& aslot) const {
+    typename Delegate::iterator Connect(std::function<Book::Enums::Action(Args...)> const& aslot) const {
         _slots.push_back(aslot);
         return --_slots.end();
     }
 
     // Convenience member method to Connect explicitely a member function of an
     // object to this notifier.
-    template <typename T> typename Delegate::iterator ConnectMember(T* inst, Book::Enums::Code(T::* func)(Args...)) {
+    template <typename T> typename Delegate::iterator ConnectMember(T* inst, Book::Enums::Action(T::* func)(Args...)) {
         return Connect([=](Args... args) {
             return (inst->*func)(args...);
         });
@@ -81,7 +81,7 @@ public:
 
     // Convenience method to Connect a member function of an
     // object to this notifier.
-    template <typename T> typename Delegate::iterator Connect(T* inst, Book::Enums::Code(T::* func)(Args...)) {
+    template <typename T> typename Delegate::iterator Connect(T* inst, Book::Enums::Action(T::* func)(Args...)) {
         return Connect([=](Args... args) {
             return (inst->*func)(args...);
         });
@@ -90,7 +90,7 @@ public:
 
     // Convenience method to Connect a const member function
     // of an object to this notifier.
-    template <typename T> typename Delegate::iterator Connect(T* inst, Book::Enums::Code(T::* func)(Args...) const) {
+    template <typename T> typename Delegate::iterator Connect(T* inst, Book::Enums::Action(T::* func)(Args...) const) {
         return Connect([=](Args... args) {
             return (inst->*func)(args...);
         });
@@ -107,39 +107,39 @@ public:
     }
 
     //// Calls all connected functions.
-    Book::Enums::Code operator()(Args... p) {
+    Book::Enums::Action operator()(Args... p) {
         if (_slots.empty())
-            return Book::Enums::Code::Accepted;
-        Book::Enums::Code R;
+            return Book::Enums::Action::Continue;
+        Book::Enums::Action R;
         for (auto const&fn : _slots) {
             R = fn(p...);
             if (_acc) _acc->push_back(R);
-            if (R != Book::Enums::Code::Accepted) return R;
+            if (R != Book::Action::Continue) return R;
         }
         return R;
     }
 
 
     // Calls all connected functions except for one.
-    Book::Enums::Code emit_for_all_but_one(const std::string& id_, Args... p) {
-        Book::Enums::Code R;
+    Book::Enums::Action emit_for_all_but_one(const std::string& id_, Args... p) {
+        Book::Enums::Action R;
         for (auto const& it : _slots) {
             if (it._id != id_) {
                 R = it(p...);
                 if (_acc) _acc->push_back(R);
-                if (R != Book::Enums::Code::Accepted) return R;
+                if (R != Book::Enums::Action::Continue) return R;
             }
         }
         return R;
     }
 
     // Calls only one connected function.
-    Book::Enums::Code emit_for(typename Delegate::iterator id_, Args... p) {
-        Book::Enums::Code R;
+    Book::Enums::Action emit_for(typename Delegate::iterator id_, Args... p) {
+        Book::Enums::Action R;
         if (id_ != _slots.end()) {
             R = (*id_)(p...);
             if (_acc) _acc->push_back(R);
-            if (R != Book::Enums::Code::Accepted) return R;
+            if (R != Book::Enums::Action::Continue) return R;
         }
         return R;
     }

@@ -95,7 +95,8 @@ enum class Action : uint8_t
     Leave            , ///< End (logger: End of entry accumulators, so do commit); End of (sel)Section, STMLAttribute ( auto- color::Reset ) and unindent
     Ci               , ///< Commit...
     Begin            , ///< Begin (sel)Section or indent
-    End
+    End              , ///< End
+    Continue
 };
 
 
@@ -105,7 +106,7 @@ std::string APPBOOK_EXPORTS CodeText(Book::Enums::Code Cod);
 std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS ClassAttributes(Book::Enums::Class Cls);
 std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS CodeAttributes(Book::Enums::Code cod);
 std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS FnAttributes(Book::Enums::Fn Fn);
-
+std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS ActionAttributes(Book::Enums::Fn Fn);
 
 
 }

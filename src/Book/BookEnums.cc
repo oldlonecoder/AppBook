@@ -57,11 +57,12 @@ std::map<Code, const char*> message_codes_dictionary = {
 
 
 std::map<Action, const char*> actions_dictionary= {
-    {Action::Enter, "enter"},
-    {Action::Leave, "leave"},
+    {Action::Enter, "Enter"},
+    {Action::Leave, "Leave"},
     {Action::Begin, "Begin"},
     {Action::End,   "End"},
-    {Action::Ci,    "commit"},
+    {Action::Ci,    "Commit"},
+    {Action::Continue, "Continue"},
 
 };
 
@@ -108,7 +109,14 @@ std::map<Class, std::pair<Glyph::Type, Color::Pair>> categories_database={
 };
 
 
-
+std::map<Action, std::pair<Glyph::Type, Color::Pair>> ActionsColorDb={
+    {Action::Enter, {Glyph::Enter, {Color::White, Color::Reset}}},
+    {Action::Leave, {Glyph::File, {Color::White, Color::Reset}}},
+    {Action::Begin, {Glyph::Chronos, {Color::White, Color::Reset}}},
+    {Action::End,   {Glyph::DeadHead, {Color::White, Color::Reset}}},
+    {Action::Ci,    {Glyph::PencilDr, {Color::White, Color::Reset}}},
+    {Action::Continue, {Glyph::Success, {Color::White, Color::Reset}}},
+};
 
 std::map<Code, std::pair<Glyph::Type, Color::Pair>> codes_database={
     {Code::Ok,              {Glyph::ThumbUp,         {Color::DarkGreen         ,Color::Reset }}},
@@ -136,9 +144,6 @@ std::map<Code, std::pair<Glyph::Type, Color::Pair>> codes_database={
     {Code::Reimplement,{Glyph::Books,                {Color::Yellow            ,Color::Reset }}},
 
 };
-
-
-
 
 
 std::map<Fn, std::pair<Glyph::Type, Color::Pair>> Fn_database={
@@ -187,6 +192,10 @@ std::pair<Glyph::Type, Color::Pair> FnAttributes(Fn f)
     return Fn_database[f];
 }
 
+std::pair<Utf::Glyph::Type, Color::Pair> ActionAttributes(Book::Enums::Action A)
+{
+    return ActionsColorDb[A];
+}
 
 
 }

@@ -129,9 +129,9 @@ Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
     return Book::Enums::Code::Ok;
 }
 
-Book::Enums::Code CArgs::Execute()
+Book::Action  CArgs::Execute()
 {
-    auto R = Book::Enums::Code::Rejected;
+    auto R = Book::Action::End;
     if(!Args.empty())
     {
         int b = 0;
@@ -139,15 +139,15 @@ Book::Enums::Code CArgs::Execute()
         if(!b)
         {
             AppBook::Debug() << " No addressed arguments";
-            return Book::Enums::Code::Empty;
+            return Book::Action::End;
         }
         for(auto* Arg : Args)
         {
             if(!(*Arg)) continue; // No callback.
             if(Arg->Enabled)
             {
-                R = Arg->DelegateCB(*Arg);
-                if(R != Book::Enums::Code::Accepted)
+                auto E = Arg->DelegateCB(*Arg);
+                if(E != Book::Action::Continue)
                     return R;
 
             }
@@ -157,12 +157,12 @@ Book::Enums::Code CArgs::Execute()
     {
         if(Defaults.Enabled)
         {
-            R = Defaults.DelegateCB(Defaults);
-            if(R != Book::Enums::Code::Accepted)
+            auto R = Defaults.DelegateCB(Defaults);
+            if(R != Book::Action::Continue)
                 return R;
         }
     }
-    return Book::Enums::Code::Accepted;
+    return Book::Action::Continue;
 }
 
 ArgumentData &CArgs::operator[](const std::string &ArgName)

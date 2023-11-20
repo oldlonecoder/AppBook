@@ -18,11 +18,11 @@ public:
     ~DevApp();
     DevApp(const std::string& test_name);
 
-    Book::Enums::Code Opt1(Cmd::ArgumentData& arg);
-    Book::Enums::Code Opt2(Cmd::ArgumentData& arg);
-    Book::Enums::Code Opt3(Cmd::ArgumentData& arg);
-    Book::Enums::Code Defaults(Cmd::ArgumentData& arg);
-    Book::Enums::Code CmdArgs(int argc, char **argv);
+    Book::Action Opt1(Cmd::ArgumentData& arg);
+    Book::Action Opt2(Cmd::ArgumentData& arg);
+    Book::Action Opt3(Cmd::ArgumentData& arg);
+    Book::Action Defaults(Cmd::ArgumentData& arg);
+    Book::Action CmdArgs(int argc, char **argv);
 };
 
 

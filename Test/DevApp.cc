@@ -45,7 +45,7 @@ DevApp::DevApp(const std::string& test_name)
 {
 }
 
-Book::Enums::Code DevApp::Opt1(Cmd::ArgumentData& arg)
+Book::Action DevApp::Opt1(Cmd::ArgumentData& arg)
 {
     AppBook::Message() << "Arguments:";
 
@@ -64,10 +64,10 @@ Book::Enums::Code DevApp::Opt1(Cmd::ArgumentData& arg)
     }
     Data.Words.clear();
 
-    return Book::Enums::Code::Accepted;
+    return Book::Action::Continue;
 }
 
-Book::Enums::Code DevApp::Opt2(Cmd::ArgumentData& arg)
+Book::Action DevApp::Opt2(Cmd::ArgumentData& arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -76,10 +76,10 @@ Book::Enums::Code DevApp::Opt2(Cmd::ArgumentData& arg)
         //Book::Enums::Code::out() << str << Book::Enums::Code::commit;
         //...
     }
-    return Book::Enums::Code::Accepted;
+    return Book::Action::Continue;
 }
 
-Book::Enums::Code DevApp::Opt3(Cmd::ArgumentData& arg)
+Book::Action DevApp::Opt3(Cmd::ArgumentData& arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -88,10 +88,10 @@ Book::Enums::Code DevApp::Opt3(Cmd::ArgumentData& arg)
         //Book::Enums::Code::out() << str << Book::Enums::Code::commit;
         //...
     }
-    return Book::Enums::Code::Accepted;
+    return Book::Action::Continue;
 }
 
-Book::Enums::Code DevApp::Defaults(Cmd::ArgumentData &arg)
+Book::Action DevApp::Defaults(Cmd::ArgumentData &arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
@@ -101,10 +101,10 @@ Book::Enums::Code DevApp::Defaults(Cmd::ArgumentData &arg)
         //...
     }
 
-    return Book::Enums::Code::Accepted;
+    return Book::Action::Continue;
 }
 
-Book::Enums::Code DevApp::CmdArgs(int argc, char **argv)
+Book::Action DevApp::CmdArgs(int argc, char **argv)
 {
 
     Args << Cmd::ArgumentData{"Stml test",       "-m","--Stml","Test Book::STMLText", 1};

@@ -175,7 +175,7 @@ Book::Enums::Code STMLText::operator>>(std::string& Out)
             if(!OutputDelegate.Empty())
             {
                 auto R = OutputDelegate(*r);
-                if(R != Book::Enums::Code::Accepted) return R;
+                if(R != Book::Action::Continue) return Book::Result::Rejected;
             }
             r++;
         }
@@ -183,7 +183,7 @@ Book::Enums::Code STMLText::operator>>(std::string& Out)
         if(!AttributeDelegate.Empty())
         {
             auto R = AttributeDelegate(A);
-            if(R != Book::Enums::Code::Accepted) return R;
+            if(R != Book::Action::Continue) return Book::Result::Rejected;
         }
 
         // ----------- Foreground and b assign colors: -----------------------------
@@ -254,14 +254,14 @@ Book::Enums::Code STMLText::operator()()
         while (r != A.Begin)
         {
             auto R = OutputDelegate(*r);
-            if(R != Book::Enums::Code::Accepted)
-                return R;
+            if(R != Book::Action::Continue)
+                return Book::Result::Rejected;
             r++;
         }
         r += A().length();
         auto R = AttributeDelegate(A);
-        if(R != Book::Enums::Code::Accepted)
-            return R;
+        if(R != Book::Action::Continue)
+            return Book::Result::Rejected;
     }
     while (static_cast<size_t>(r - b) < l) OutputDelegate(*r++);
 

@@ -44,7 +44,7 @@ struct APPBOOK_EXPORTS ArgumentData
 
     bool operator !() { return DelegateCB.Empty(); }
 
-    template<typename T> void Connect(T* Obj, Book::Enums::Code (T::*Fn)(ArgumentData&)){
+    template<typename T> void Connect(T* Obj, Book::Enums::Action (T::*Fn)(ArgumentData&)){
         DelegateCB.Connect(Obj, Fn);
     }
     ~ArgumentData();
@@ -77,7 +77,7 @@ public:
     Book::Enums::Code InputCmdLineData(int argc, char** argv);
     Book::Enums::Code ProcessStringArray(std::vector<std::string_view> StrArray);
 
-    Book::Enums::Code Execute();
+    Book::Action Execute();
 
     std::string Usage();
 };
