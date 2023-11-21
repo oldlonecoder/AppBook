@@ -229,6 +229,76 @@ std::string Rect::to_string() const
     return this->operator std::string();
 }
 
+void Rect::Home()
+{
+    Cursor = {0,0};
+}
+
+bool Rect::operator++()
+{
+    ++Cursor.X;
+    if(Cursor.X >= Dwh.W)
+    {
+        if(NoWrap)
+        {
+            --Cursor.X;
+            return false;
+        }
+        ++Cursor.Y;
+        if(Cursor.Y > Dwh.H)
+        {
+            --Cursor.Y;
+            Cursor.X = Dwh.W-1;
+            return false;
+        }
+        Cursor.X = 0;
+    }
+    return true;
+}
+
+
+Point Rect::operator++(int)
+{
+    Point P = Cursor;
+    if(!++(*this)) P={-1,-1};
+    return P;
+}
+
+bool Rect::operator--()
+{
+    --Cursor.X;
+    if(Cursor.X < 0)
+    {
+        if(NoWrap)
+        {
+            ++Cursor.X;
+            return false;
+        }
+        --Cursor.Y;
+        if(Cursor.Y < 0)
+        {
+            Cursor.Y = 0;
+            return false;
+        }
+        Cursor.X = 0;
+    }
+    return true;
+}
+
+Point Rect::operator--(int)
+{
+    Point P = Cursor;
+    if(!--(*this)) P={-1,-1};
+    return P;
+}
+
+bool Rect::GotoXY(Point P)
+{
+    if(IsIn(P)) return false;
+    Cursor = P;
+    return true;
+}
+
 WinBuffer & WinBuffer::operator<<(Point xy)
 {
     GotoXY(xy.X, xy.Y);

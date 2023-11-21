@@ -117,7 +117,10 @@ struct APPBOOK_EXPORTS Rect
 
     Point A{0,0};
     Point B{0,0};
+    Point Cursor{0,0}; ///< Inner Cursor Coordinates used by the location operations
+
     Dim   Dwh;
+    bool NoWrap = false;
 
     using Array = std::vector<Rect>;
     using Iterator = Rect::Array::iterator;
@@ -313,6 +316,16 @@ struct APPBOOK_EXPORTS Rect
 
         return Dwh.operator bool();
     }
+
+    //------------- location operations ---------------------------------
+    void Home();
+    bool operator ++();
+    Point operator ++(int);
+    bool operator --();
+    Point operator --(int);
+    bool GotoXY(Point P);
+    Point operator *() const { return Cursor; }
+
 };
 
 
