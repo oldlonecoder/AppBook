@@ -59,6 +59,7 @@ struct APPBOOK_EXPORTS Point
         Y += dxy.Y;
         return *this;
     }
+    bool operator == (Point Rhs) const{ return (X == Rhs.X)&& (Y == Rhs.Y);}
 
     Point operator+ (const Point& dxy) const
     {
