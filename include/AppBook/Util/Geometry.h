@@ -68,10 +68,11 @@ struct APPBOOK_EXPORTS Point
 
     [[nodiscard]] Point Max (const Point& b) const;
     [[nodiscard]] Point Min (const Point& b) const;
-    Point operator- (const Point& dxy) const
-    {
-        return {X - dxy.X, Y - dxy.Y};
-    }
+    Point operator - (const Point& Rhs)     const{return {X-Rhs.X,Y-Rhs.Y};}
+    [[nodiscard]] Point Lesser(Point Rhs)   const{return {X<Rhs.X?X:Rhs.X,Y<Rhs.Y?Y:Rhs.Y};}
+    [[nodiscard]] Point Greater(Point Rhs)  const{return {X>Rhs.X?X:Rhs.X,Y>Rhs.Y?Y:Rhs.Y};}
+    Point operator << (Point Rhs) const{ return Lesser(Rhs); }
+    Point operator >> (Point Rhs) const{ return Greater(Rhs); }
 
     Point& operator()(int x_, int y_)
     {
@@ -242,7 +243,7 @@ struct APPBOOK_EXPORTS Rect
         @brief intersection between this (A) and R (B).
 
         @note A & B must be on the same referential offset. Undefined behaviour otherwise.
-        @author &copy; 1996, 2023, Serge Lussier, (oldlonecoder@gmail.com)
+        @author &copy; 1996, 2023, Serge Lussier, (oldlonecoder'@'gmail.com)
         @code
        A+==============================+
         |                              |
@@ -255,8 +256,11 @@ struct APPBOOK_EXPORTS Rect
             +======================================+
         @endcode
     */
-    [[nodiscard]] Rect operator& (const Rect& R) const
+    [[nodiscard]] Rect operator & (const Rect& R) const
     {
+        auto TopL = R.A - A;
+        auto BotR = R.B - B;
+
         Rect Tmp;
         Tmp.A = {std::max(Tmp.A.X, R.A.X), std::max(Tmp.A.Y, R.A.Y)};
         Tmp.B = {std::min(B.X, R.B.X), std::min(B.Y, R.B.Y)};
