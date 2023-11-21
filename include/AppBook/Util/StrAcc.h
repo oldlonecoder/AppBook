@@ -137,6 +137,11 @@ public:
         return (*this) += arg_;
     }
 
+    static StrAcc Make(const char* Str);
+    bool   operator [] (const char* SubStr){ return _d.find(SubStr) != std::string::npos; }
+    bool   operator !() { return _d.empty();}
+    explicit operator bool() { return !_d.empty(); }
+
     //---------------------------------------------------------------------------------------------------------------
     // Explicit concatenations:
     StrAcc& operator += (std::string_view str) { _d += str.data(); return *this; }

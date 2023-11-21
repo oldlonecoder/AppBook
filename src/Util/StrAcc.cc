@@ -174,3 +174,8 @@ StrAcc &StrAcc::operator+=(Utf::AccentFR::Type Ac)
     _d += Utf::AccentFR::Data[Ac];
     return *this;
 }
+
+StrAcc StrAcc::Make(const char *Str)
+{
+    return Str != nullptr ? Str : "";
+}
