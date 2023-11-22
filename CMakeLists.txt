@@ -18,20 +18,20 @@ add_library(
         ${TargetName}
         SHARED
         include/${TargetName}/Exports.h                              #global framework-wide macros definitions and dll export and import macros for MSVC.
-        include/${TargetName}/Util/StrAcc.h src/Util/StrAcc.cc
-        include/AppBook/Util/ChAttr.h src/Util/ChAttr.cc
-        include/AppBook/Utf/Glyphes.h src/Utf/Glyphes.cc
-        include/AppBook/Util/StrBreak.h src/Util/StrBreak.cc
-        include/AppBook/Book/BookEnums.h src/Book/BookEnums.cc
-        include/AppBook/Util/Object.h src/Util/Object.cc
-        include/AppBook/Util/Geometry.h src/Util/Geometry.cc
-        include/AppBook/Book/StmlText.h src/Book/StmlText.cc
-        include/AppBook/Book/AppBook.h src/Book/AppBook.cc
+        include/${TargetName}/Util/StrAcc.h         src/Util/StrAcc.cc
+        include/AppBook/Util/Colors.h               src/Util/Colors.cc
+        include/AppBook/Utf/Glyphes.h               src/Utf/Glyphes.cc
+        include/AppBook/Util/StrBreak.h             src/Util/StrBreak.cc
+        include/AppBook/Book/BookEnums.h            src/Book/BookEnums.cc
+        include/AppBook/Util/Object.h               src/Util/Object.cc
+        include/AppBook/Util/Geometry.h             src/Util/Geometry.cc
+        include/AppBook/Book/StmlText.h             src/Book/StmlText.cc
+        include/AppBook/Book/AppBook.h              src/Book/AppBook.cc
                                                         src/Book/Book.Section.cc
                                                         src/Book/Book.Section.Contents.cc
                                                         src/Book/Book.Section.Contents.Element.cc
-        include/AppBook/Util/Delegate.h src/Util/Delegate.cc
-        include/AppBook/Util/CArgs.h src/Util/CArgs.cc
+        include/AppBook/Util/Delegate.h             src/Util/Delegate.cc
+        include/AppBook/Util/CArgs.h                src/Util/CArgs.cc
         include/AppBook/Book/Expect.h
 )
 
