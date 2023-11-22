@@ -21,19 +21,19 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{B703DA45-5F0C-49FB-9CC8-50335DC23273}</ProjectGuid>
-    <RootNamespace>logbook</RootNamespace>
+    <ProjectGuid>{317ac7a8-4d68-40d7-b2a2-03c33ebe51ec}</ProjectGuid>
+    <RootNamespace>AppBook</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,24 +72,36 @@
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level1</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>APPBOOKAPI_EXPORTS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>APPBOOKAPI_EXPORTS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,11 +109,17 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level1</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>APPBOOKAPI_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -111,37 +129,37 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(HOMEDRIVE)$(HOMEPATH)\libraries\binaries</AdditionalLibraryDirectories>
-      <AdditionalDependencies>chrtools.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
 xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
-xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E</Command>
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>APPBOOKAPI_EXPORTS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(HOMEDRIVE)$(HOMEPATH)\libraries\binaries</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
       <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
-               xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
-               xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
-      </Command>
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -152,7 +170,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     <ClInclude Include="include\AppBook\Exports.h" />
     <ClInclude Include="include\AppBook\Utf\Glyphes.h" />
     <ClInclude Include="include\AppBook\Util\CArgs.h" />
-    <ClInclude Include="include\AppBook\Util\ChAttr.h" />
+    <ClInclude Include="include\AppBook\Util\Colors.h" />
     <ClInclude Include="include\AppBook\Util\Delegate.h" />
     <ClInclude Include="include\AppBook\Util\Geometry.h" />
     <ClInclude Include="include\AppBook\Util\Object.h" />
@@ -160,7 +178,6 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     <ClInclude Include="include\AppBook\Util\StrBreak.h" />
   </ItemGroup>
   <ItemGroup>
-    
     <ClCompile Include="src\Book\AppBook.cc" />
     <ClCompile Include="src\Book\Book.Section.cc" />
     <ClCompile Include="src\Book\Book.Section.Contents.cc" />
@@ -169,7 +186,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     <ClCompile Include="src\Book\StmlText.cc" />
     <ClCompile Include="src\Utf\Glyphes.cc" />
     <ClCompile Include="src\Util\CArgs.cc" />
-    <ClCompile Include="src\Util\ChAttr.cc" />
+    <ClCompile Include="src\Util\Colors.cc" />
     <ClCompile Include="src\Util\Delegate.cc" />
     <ClCompile Include="src\Util\Geometry.cc" />
     <ClCompile Include="src\Util\Object.cc" />
