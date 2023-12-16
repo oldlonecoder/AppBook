@@ -323,11 +323,12 @@ template<typename T> StrAcc& StrAcc::Format(const T& _argv)
                 _ArgPos = std::string::npos;
                 return *this;
             }
-            break;
         }
-
+            break;
         case 'd': // Decimale ou entier
-        case 'i':fmt.Code = *c++;
+        case 'D':
+        case 'i':
+        case 'I':fmt.Code = *c++;
             break;
         case 'x':
         case 'X':fmt.Code = *c++;
@@ -338,6 +339,7 @@ template<typename T> StrAcc& StrAcc::Format(const T& _argv)
         case 'G':fmt.Code = *c++;
             break;
         case 's':
+        case 'S':
         case 'c':fmt.Code = *c++;
             break;
         default:
