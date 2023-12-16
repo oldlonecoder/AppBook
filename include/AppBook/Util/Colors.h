@@ -318,6 +318,7 @@ struct APPBOOK_EXPORTS Color
     static std::string Name(Color::Code Clr);
     static std::string Html(Color::Code Clr);
     static std::string Html(Color::Pair Pair);
+    static Color::Data Argb(Color::Code A);
 
     struct APPBOOK_EXPORTS Item
     {

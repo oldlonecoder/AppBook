@@ -346,6 +346,12 @@ std::string Color::Html(Color::Pair Pair)
     return "0";
 }
 
+Color::Data Color::Argb(Color::Code A)
+{
+    return ColorDB[static_cast<size_t>(A)];
+}
+
+
 std::string Color::Item::operator()()
 {
     return Data();
