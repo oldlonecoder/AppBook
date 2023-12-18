@@ -178,6 +178,12 @@ std::string CArgs::Usage()
 {
     StrAcc Str;
     Str << "usage:\n";
+    StrAcc Unused, Used;
+    Unused = Used = "%s%s";
+    Unused << Color::Red1 << Utf::Glyph::Err1;
+    Used   << Color::LightGreen2 << Utf::Glyph::Success;
+
+
     Str << "------------------------------------------------------------------------------\n";
     for (auto* Arg : Args)
     {
@@ -185,7 +191,7 @@ std::string CArgs::Usage()
             Arg->SwitchChar <<
             Arg->SwitchText <<
             Arg->Description <<
-            (Arg->Enabled ? Utf::Glyph::Success : Utf::Glyph::Err1) <<
+            (Arg->Enabled ? Used() : Unused()) <<
             Color::Reset << '\n';
 
         Str << "------------------------------------------------------------------------------\n";
