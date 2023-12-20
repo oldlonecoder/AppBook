@@ -325,7 +325,7 @@ Color::Code Color::Scan(const std::string &ColName)
     int N = 0;
     for (auto& Clr : ColorDB)
     {
-        if (ColName == Clr.Name) return static_cast<Color::Code>(N);
+        if (ColName == Clr.ColorName) return static_cast<Color::Code>(N);
         ++N;
     }
     return Color::Reset;
@@ -333,7 +333,7 @@ Color::Code Color::Scan(const std::string &ColName)
 
 std::string Color::Name(Color::Code Clr)
 {
-    return ColorDB[Clr].Name.data();
+    return ColorDB[Clr].ColorName.data();
 }
 
 std::string Color::Html(Color::Code Clr)
