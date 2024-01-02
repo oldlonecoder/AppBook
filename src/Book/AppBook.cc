@@ -275,15 +275,19 @@ Color::Format AppBook::Format()
 AppBook::Section::Contents::Element& AppBook::Out         (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Out(src); }
 AppBook::Section::Contents::Element& AppBook::Warning     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Warning(src); }
 AppBook::Section::Contents::Element& AppBook::Error       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Error(src); }
-AppBook::Section::Contents::Element& AppBook::Fatal       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Fatal(src); }
+
+[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Fatal       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Fatal(src); }
 AppBook::Section::Contents::Element& AppBook::Except      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Except(src); }
 AppBook::Section::Contents::Element& AppBook::Message     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Message(src); }
 AppBook::Section::Contents::Element& AppBook::Debug       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Debug(src); }
 AppBook::Section::Contents::Element& AppBook::Info        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Info(src); }
-AppBook::Section::Contents::Element& AppBook::Comment     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Comment(src); }
+
+[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Comment     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Comment(src); }
 AppBook::Section::Contents::Element& AppBook::Syntax      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Syntax(src); }
-AppBook::Section::Contents::Element& AppBook::Status      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Status(src); }
-AppBook::Section::Contents::Element& AppBook::Test        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Test(src); }
+
+[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Status      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Status(src); }
+
+[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Test        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Test(src); }
 AppBook::Section::Contents::Element& AppBook::Interrupted (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Interrupted(src); }
 AppBook::Section::Contents::Element& AppBook::Aborted     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Aborted(src); }
 AppBook::Section::Contents::Element& AppBook::Segfault    (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Segfault(src); }

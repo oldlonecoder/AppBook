@@ -125,9 +125,11 @@ Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
             CurArg = NextArg;
     }
 
-
     return Book::Enums::Code::Ok;
 }
+
+
+
 
 Book::Action  CArgs::Execute()
 {
@@ -191,7 +193,7 @@ std::string CArgs::Usage()
             Arg->SwitchChar <<
             Arg->SwitchText <<
             Arg->Description <<
-            (Arg->Enabled ? Used() : Unused()) <<
+            (Arg->Enabled ? Used : Unused) <<
             Color::Reset << '\n';
 
         Str << "------------------------------------------------------------------------------\n";
