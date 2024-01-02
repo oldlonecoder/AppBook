@@ -97,7 +97,8 @@ public:
 
     T operator *(){
         if(!good)
-            throw AppBook::Exception()[
+            throw AppBook::Exception()
+        [
             AppBook::Except() << Book::Result::Expected << " AppBook::Expect<...> good state, but is not."
         ];
         return value;
