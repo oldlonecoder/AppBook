@@ -324,11 +324,11 @@ public:
     // -----------------------------------------------------------------------
     SVScanner::Iterator Begin();
     SVScanner::Iterator End();
-<<<<<<< HEAD
+
 
     Book::Result Reposition(int Offset);
-=======
->>>>>>> origin/main
+
+
 
 private:
 
