@@ -168,7 +168,6 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\Dev\include   /Y  /I  /E
     <ClInclude Include="include\AppBook\Book\Expect.h" />
     <ClInclude Include="include\AppBook\Book\StmlText.h" />
     <ClInclude Include="include\AppBook\Book\SVScanner.h" />
-    <ClInclude Include="include\AppBook\Book\Tests\Test.h" />
     <ClInclude Include="include\AppBook\Exports.h" />
     <ClInclude Include="include\AppBook\Utf\Glyphes.h" />
     <ClInclude Include="include\AppBook\Util\CArgs.h" />
@@ -187,7 +186,6 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\Dev\include   /Y  /I  /E
     <ClCompile Include="src\Book\BookEnums.cc" />
     <ClCompile Include="src\Book\StmlText.cc" />
     <ClCompile Include="src\Book\SVScanner.cxx" />
-    <ClCompile Include="src\Book\Tests\Test.cxx" />
     <ClCompile Include="src\Utf\Glyphes.cc" />
     <ClCompile Include="src\Util\CArgs.cc" />
     <ClCompile Include="src\Util\Colors.cc" />
