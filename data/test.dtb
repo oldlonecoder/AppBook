@@ -1,0 +1,11 @@
+theme
+{
+    id: default.
+    colors: default colors.
+}
+
+
+default colors
+{
+    ...
+}
