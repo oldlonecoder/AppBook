@@ -41,7 +41,7 @@ DevApp::~DevApp()
 
 }
 
-DevApp::DevApp(const std::string& TestName):Test(nullptr, TestName) {}
+DevApp::DevApp(const std::string& TestName){}
 
 
 
@@ -67,8 +67,6 @@ Book::Action DevApp::StrBreakTest(Cmd::ArgumentData& arg)
         AppBook::Out() << S();
     }
     Data.Words.clear();
-    Passed();
-    Failed();
     return Book::Action::Continue;
 }
 

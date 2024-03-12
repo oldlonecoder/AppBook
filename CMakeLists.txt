@@ -47,8 +47,7 @@ add_library(
     include/AppBook/Util/CArgs.h src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
     include/AppBook/Book/SVScanner.h src/Book/SVScanner.cxx
-    src/Book/Tests/Test.cxx
-    include/AppBook/Book/Tests/Test.h
+
 )
 
 
