@@ -21,6 +21,7 @@ namespace Book
 {
 
 SVScanner SVScanner::Numeric::Empty{};
+[[maybe_unused]] std::string_view SVScanner::Word::_Separators = "\\%(){}[]`$#@!;,~?^&<>=+-*/:.";
 
 
 SVScanner::SVScanner(std::string_view Txt) : Text(Txt)
@@ -272,6 +273,13 @@ Book::Result SVScanner::Reposition(int Offset)
     if(Eof()) return Book::Result::Rejected;
     mPos += Offset;
     return Result::Accepted;
+}
+
+SVScanner::Word::Result SVScanner::Words(SVScanner::Word::Opt Opt, std::string_view Delims)
+{
+    _Word_Options = Opt;
+    _Words_Separators = Delims.empty() ? SVScanner::Word::_Separators : Delims;
+    return {};
 }
 
 
