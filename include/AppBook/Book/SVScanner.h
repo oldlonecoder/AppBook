@@ -274,21 +274,19 @@ public:
 
         SVScanner::Iterator Begin{};
         SVScanner::Iterator End{};
-        SVScanner::Iterator Eos{};
 
         std::string_view operator()() const;
-        std::string_view::iterator operator*() const;
+//        std::string_view::iterator operator*() const;
 
         using Array = std::vector<SVScanner::Word>;
         using Iterator [[maybe_unused]] = SVScanner::Word::Array::iterator;
-        using Result = std::pair<std::size_t, SVScanner::Word::Array>;
+        using Result = std::pair<Book::Result, SVScanner::Word::Array>;
 
         enum Opt
         {
             Keep,
             Discard
-        }O;
-
+        };
     };
 
     SVScanner() = default;

@@ -23,6 +23,18 @@ namespace Book
 SVScanner SVScanner::Numeric::Empty{};
 [[maybe_unused]] std::string_view SVScanner::Word::_Separators = "\\%(){}[]`$#@!;,~?^&<>=+-*/:.";
 
+SVScanner::Word &SVScanner::Word::operator<<(const SVScanner::LocationData &LD)
+{
+
+    return *this;
+}
+
+std::string_view SVScanner::Word::operator()() const
+{
+    if(Begin == End) return {};
+    return {Begin, End};
+}
+
 
 SVScanner::SVScanner(std::string_view Txt) : Text(Txt)
 {
@@ -279,6 +291,135 @@ SVScanner::Word::Result SVScanner::Words(SVScanner::Word::Opt Opt, std::string_v
 {
     _Word_Options = Opt;
     _Words_Separators = Delims.empty() ? SVScanner::Word::_Separators : Delims;
+
+    Word::Result Data= {Book::Result::Empty,{}};
+
+    if(Empty())
+    {
+        AppBook::Warning() << Color::Yellow << " Scanning words on empty text segment";
+        return Data;
+    }
+
+    SkipWS();
+    Sync();   // Update Offset vars ( Line, Column, Offset, Iterators ).
+    Word W;
+    W.Begin = mPos;
+
+
+    // Il faut à tout prix éviter de mettre des `quotes` dans la chaîne séparateur car ceux-ci sont exactement pris comme étant des ...`quotes` ...
+    //---------------------------------------------------------------------------------------------------------------------------------------------
+    while(!Eof())
+    {
+        if(_Words_Separators.find(*mPos) != std::string_view::npos)
+        {
+            // Ici on entre dans le traitement des séparateurs:
+            // ---------------------------------------------------
+
+            if(mPos > W.Begin) --mPos;
+            // On fini et on push le 'mot' courant :
+            Data.second.push_back({W.Begin, mPos++});
+            //----------------------------------------------------
+
+            // On repart sur un autre 'mot' :
+            //--------------------------------
+            W = {mPos,mPos};
+            // '//' As one sequence instead of having two consecutive '/'
+            if((*mPos == '/') && (*(mPos + 1) == '/')) ++mPos;
+
+            // Faire du 'séparateur ou séquence de 'séparateurs contingues' un mot a insérer s'il est désiré de garder les séparateurs:
+            if(Opt == Word::Opt::Keep)
+                Data.second.push_back({W.Begin, mPos++});
+
+            W = {mPos,mPos}; // On avance le nouveau mot avec mPos qui est passé au charactère suivant ...
+
+            if(Eof())
+            {
+                // On oubli la dernier séquence de scan puisque la fin du text est atteinte:
+                Data.first  = Book::Result::Success;
+                return Data;
+             };
+        }
+        //---------------------------------------------------------------------------------------------------------------------------------------------
+
+        // mPos n'est pas sur un séparateur alors on passe à la vérification (analyse) suivante:
+        // -------------------------------------------------------------------------------------
+        else if((*mPos == '\'') || (*mPos == '"'))
+        { // Quoted literal string...
+            if(Opt == Word::Opt::Keep)
+            {
+                // Create the three parts of the quoted string: (") + (literal) + (") ( or ' )
+                // So, we save the literal Sequence anyway.
+                Data.second.push_back({W.Begin, mPos});
+            }
+
+            auto Seq = ScanLiteralString();//w.Begin + (data.o == StrBreak::Opt::Keep ? 0 : 1), *cursor.Pos); // W.B is the starting position, _Cursor.m is the quote delim.
+            if(!Seq.first)
+            {
+                AppBook::Error() << " Failed to scan/tokenize string sequence.";
+                Data.first = Book::Result::Failed;
+                return Data;
+            }
+            auto I = Seq.second.begin();
+            while(I < )
+
+            while(cursor.Pos < p)
+                ++cursor; // compute white spaces!!!
+
+            if(data.o == StrBreak::Opt::Keep)
+            {
+                // then push the litteral that is inside the quotes.
+                data.Words.push_back({w.Begin + 1, p - 1, cursor.End, w.Line, w.Column, w.Offset});
+                //++_Cursor; // _Cursor now on the closing quote
+                cursor >> w; // Litteral is done, update W.
+                data.Words.push_back({w.Begin, p, cursor.End, w.Line, w.Column, w.Offset});
+            }
+            else
+            {
+                // PushLocation the entire quote delims surrounding the litteral As the token_t.
+                data.Words.push_back({w.Begin, cursor.Pos, cursor.End, w.Line, w.Column, w.Offset});
+            }
+            if(++cursor)
+                cursor >> w;
+            else
+                return data.Words.size();
+
+        }
+        else
+        {
+            cc = cursor.Pos;
+            ++cc;
+            if(cc == cursor.End)
+            {
+                ++cursor.Pos;
+                break;
+            }
+            if(isspace(*cc))
+            {
+                if(w.Begin < cc)
+                {
+                    data.Words.push_back({w.Begin, cc - 1, cursor.End, w.Line, w.Column, w.Offset});
+                    ++cursor;
+                }
+
+                if(cursor.SkipWS())
+                {
+                    cursor >> w;
+                    continue;
+                }
+                return data.Words.size();
+            }
+            if(!cursor.AtEnd())
+                ++cursor; // advance offset To the next separator/white space.
+        }
+
+    }
+    if(cursor.Pos > w.Begin)
+        data.Words.push_back({w.Begin, cursor.Pos - 1, cursor.End, w.Line, w.Column, w.Offset});
+
+    return data.Words.size();
+
+
+
     return {};
 }
 

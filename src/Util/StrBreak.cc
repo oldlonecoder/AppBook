@@ -86,7 +86,7 @@ StrBreak::SBContext::SBContext(std::string_view aStr):
 }
 
 /*!
-    @note Enleveer le Code de trop (suivi du num de ligne et de la col).
+    @note Enlever le Code de trop (suivi du num de ligne et de la col).
 */
 bool StrBreak::SBContext::SkipWS()
 {
