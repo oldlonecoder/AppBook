@@ -267,27 +267,6 @@ public:
         LocationData const & operator >> (std::string& Out) const;
     };
 
-    struct APPBOOK_EXPORTS Word
-    {
-
-        [[maybe_unused]] static std::string_view _Separators;
-
-        SVScanner::Iterator Begin{};
-        SVScanner::Iterator End{};
-
-        std::string_view operator()() const;
-//        std::string_view::iterator operator*() const;
-
-        using Array = std::vector<SVScanner::Word>;
-        using Iterator [[maybe_unused]] = SVScanner::Word::Array::iterator;
-        using Result = std::pair<Book::Result, SVScanner::Word::Array>;
-
-        enum Opt
-        {
-            Keep,
-            Discard
-        };
-    };
 
     SVScanner() = default;
     explicit SVScanner(std::string_view Txt);
@@ -330,7 +309,7 @@ public:
     SVScanner::Numeric::Result ScanNumber();
     std::pair<Book::Result, std::string_view> ScanLiteralString();
 
-    Word::Result Words(SVScanner::Word::Opt Opt, std::string_view Delims);
+    //Word::Result Words(SVScanner::Word::Opt Opt, std::string_view Delims);
 
 
     void PushLocation();
@@ -354,9 +333,6 @@ public:
 
 
 private:
-
-    std::string_view _Words_Separators{ Word::_Separators };
-    Word::Opt _Word_Options {Word::Opt::Discard};
 
     LocationData mLocation{};
     std::vector<std::pair<std::size_t,std::size_t>> mPoints;
