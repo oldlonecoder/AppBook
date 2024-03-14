@@ -20,7 +20,7 @@ using std::string;
 
 class APPBOOK_EXPORTS StrBreak
 {
-    [[maybe_unused]] static std::string _default_token_separators;
+    static constexpr std::string_view mDefSeparators { "\\%(){}[]`$#@!;,~?^&<>=+-*/:." };
     using Iterator = std::string_view::iterator;
     using Array = std::vector<std::string>;
 
@@ -38,9 +38,9 @@ public:
 
     struct APPBOOK_EXPORTS Word
     {
-        StrBreak::Iterator Begin;
-        StrBreak::Iterator End;
-        StrBreak::Iterator Eos;
+        StrBreak::Iterator Begin{};
+        StrBreak::Iterator End{};
+        StrBreak::Iterator Eos{};
 
         std::string operator()() const;
         std::string operator*() const;
@@ -49,10 +49,10 @@ public:
         using Iterator [[maybe_unused]] = StrBreak::Word::Array::iterator;
         [[maybe_unused]][[nodiscard]] std::string Mark() const;
 
-        int Line   = 1;
-        int Column = 1;
-        std::size_t Offset = 0;
-        std::string Location();
+        int Line{1};
+        int Column{1};
+        std::size_t Offset{0};
+        std::string Location() const;
     };
 
     struct APPBOOK_EXPORTS ConfigData
@@ -73,13 +73,13 @@ public:
 private:
     struct SBContext
     {
-        std::string_view::iterator Begin;
-        std::string_view::iterator Pos;
-        std::string_view::iterator End; /// ...
+        std::string_view::iterator Begin{};
+        std::string_view::iterator Pos{};
+        std::string_view::iterator End{}; /// ...
 
-        int _line = 1;
-        int _col = 1;
-        uint64_t Index = 0;
+        int _line{1};
+        int _col{1};
+        uint64_t Index{0};
 
         SBContext() = default;
 
@@ -108,7 +108,7 @@ private:
         SBContext &operator>>(StrBreak::Word &word_);
     } Cursor;
 
-    bool Append(SBContext &cursor, StrBreak::ConfigData &dat, const StrBreak::Word &w);
+    static bool Append(SBContext &cursor, StrBreak::ConfigData &dat, const StrBreak::Word &w);
 
 private:
     ConfigData Data;

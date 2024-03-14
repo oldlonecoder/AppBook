@@ -14,7 +14,7 @@
 
 
 
-[[maybe_unused]] std::string StrBreak::_default_token_separators = "\\%(){}[]`$#@!;,~?^&<>=+-*/:.";
+
 
 
 std::string StrBreak::Word::operator()() const
@@ -66,7 +66,7 @@ std::string StrBreak::Word::Mark() const
     return Str;
 }
 
-std::string StrBreak::Word::Location()
+std::string StrBreak::Word::Location() const
 {
     std::ostringstream Str;
     Str << '(' << Line << ',' << Column << ')';
@@ -117,10 +117,12 @@ bool StrBreak::SBContext::SkipWS()
                 _col = 1;
             }
                 break;
-            case '\t':++Pos;
-                ++_col;
-                break;
-            default:++Pos;
+//            case '\t':
+//                ++Pos;
+//                ++_col;
+//                break;
+            default:
+                ++Pos;
                 ++_col;
                 break;
         }
@@ -264,7 +266,7 @@ std::size_t StrBreak::operator()(StrBreak::ConfigData & data)
         std::cerr << "---> content is Empty!";
 
     if(data.Delimiters.empty())
-        data.Delimiters = StrBreak::_default_token_separators;
+        data.Delimiters = StrBreak::mDefSeparators;
 
     StrBreak::SBContext cursor;
     cursor.Reset(_d);
@@ -306,7 +308,7 @@ std::size_t StrBreak::operator()(StrBreak::ConfigData & data)
 
         }
         else if((*cursor.Pos == '\'') || (*cursor.Pos == '"'))
-        { // Quoted litteral string...
+        { // Quoted literal string...
             cursor >> w;
             if(data.o == StrBreak::Opt::Keep)
             {
