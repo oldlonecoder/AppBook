@@ -326,7 +326,7 @@ SVScanner::Word::Result SVScanner::Words(SVScanner::Word::Opt Opt, std::string_v
             // '//' As one sequence instead of having two consecutive '/'
             if((*mPos == '/') && (*(mPos + 1) == '/')) ++mPos;
 
-            // Faire du 'séparateur ou séquence de 'séparateurs contingues' un mot a insérer s'il est désiré de garder les séparateurs:
+            // Faire du 'séparateur ou séquence de 'séparateurs contingus' un mot a insérer s'il est désiré de garder les séparateurs:
             if(Opt == Word::Opt::Keep)
                 Data.second.push_back({W.Begin, mPos++});
 
