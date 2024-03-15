@@ -159,11 +159,7 @@ class __attribute__ ((visibility ("hidden"))) MarkupProc
  *
  * @author  &copy; 2024, Serge Lussier (oldlonecoder, serge.lussier\@oldlonecoder.club)
  *
- * @todo <ul> <li> Embed Util::StrBreak ...</li>
- * <li>Remove STMLText from this library to create its own.</li>
- * <li>Remove the starting Test subdir to create its own library.</li>
- * </ul>
- */
+ * */
 class APPBOOK_EXPORTS SVScanner
 {
     std::string_view Text{};
