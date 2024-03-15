@@ -38,7 +38,7 @@ void sig_abort( int s)
 
 DevApp::~DevApp()
 {
-
+    AppBook::Close();
 }
 
 DevApp::DevApp(const std::string& TestName){}
@@ -205,7 +205,7 @@ R"(
         exit(1);
     }
 
-    AppBook::Close();
+
 
     return 0;
 }
