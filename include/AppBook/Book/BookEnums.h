@@ -98,10 +98,10 @@ std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS ActionAttributes(Book::
 
 namespace Book
 {
-using Result  = Book::Enums::Code;
-using Fn      = Book::Enums::Fn;
-using Action  = Book::Enums::Action;
-using Class   = Book::Enums::Class;
+using Result  = Enums::Code;
+using Fn      = Enums::Fn;
+using Action  = Enums::Action;
+using Class   = Enums::Class;
 }
 
 bool operator !(Book::Enums::Code C);

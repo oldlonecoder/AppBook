@@ -97,7 +97,7 @@ Book::Action DevApp::SVScanTest(Cmd::ArgumentData& arg)
         AppBook::Debug() << "Text.ScanNumber: " << Book::Result::Failed;
 
     Text = R"(
-        "We Are the \" World"
+        "This world has become an open-wide planetary \"psychiatric hospital\" managed by the fouls!"
 )"sv;
 
     Text.SkipWS();
