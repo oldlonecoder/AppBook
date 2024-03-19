@@ -290,7 +290,7 @@ std::size_t StrBreak::operator()(StrBreak::ConfigData & data)
             }
 
             // '//' As one token_t insbookd of having two consecutive '/'
-            if((*cursor.Pos == '/') && (*(cursor.Pos + 1) == '/'))
+            if ((*cursor.Pos == '/') && ((cursor.Pos+1) != _d.end()) && (*(cursor.Pos + 1) == '/'))
                 ++cursor;
 
             if(data.o == StrBreak::Opt::Keep)

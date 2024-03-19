@@ -57,6 +57,7 @@ class APPBOOK_EXPORTS CArgs
     ArgumentData::Array Args;
     ArgumentData Defaults;
 
+    ArgumentData::Iterator A{};
 public:
     CArgs() = default;
     ~CArgs();
@@ -66,13 +67,13 @@ public:
         (void)Defaults.DelegateCB.Connect(Obj, Fn);
     }
 
-    ArgumentData::Iterator Query(const std::string& Switch);
+    ArgumentData::Iterator Query(std::string_view Switch);
     ArgumentData& operator<<(const ArgumentData& Arg);
     ArgumentData& operator [] (const std::string& ArgName);
-    Book::Enums::Code InputCmdLineData(int argc, char** argv);
-    Book::Enums::Code ProcessStringArray(std::vector<std::string_view> StrArray);
+    //Book::Enums::Code InputCmdLineData(int argc, char** argv);
+    Book::Enums::Code Input(std::vector<std::string_view> StrArray);
 
-    Book::Action Execute();
+    Book::Action Process();
 
     std::string Usage();
 };

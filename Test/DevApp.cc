@@ -41,11 +41,29 @@ DevApp::~DevApp()
     AppBook::Close();
 }
 
-DevApp::DevApp(const std::string& TestName){}
+DevApp::DevApp(const std::string& TestName, int argc, char** argv){
+    for (int i = 1; i < argc; i++)
+        inArgs.emplace_back(argv[i]);
+}
 
 
 
 
+
+Book::Result DevApp::SetupArgs()
+{
+    (Args << Cmd::ArgumentData{ "StrBreak test",   "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
+    (Args << Cmd::ArgumentData{ "Test SVScanner",  "-s",  "--SVScanner", "Test SVScanner", 0 }).Connect(this, &DevApp::SVScanTest);
+    (Args << Cmd::ArgumentData{ "Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
+
+    return Args.Input(inArgs);
+}
+
+Book::Result DevApp::Run()
+{
+    (void)Args.Process();
+    return Book::Result::Ok;
+}
 
 Book::Action DevApp::StrBreakTest(Cmd::ArgumentData& arg)
 {
@@ -57,7 +75,7 @@ Book::Action DevApp::StrBreakTest(Cmd::ArgumentData& arg)
         AppBook::Out() << str;
         //...
     }
-    AppBook::Info() << " Processing argument:";
+    AppBook::Info() << " Processing argument:" << Color::Yellow << arg.Arguments[0];
 
     StrBreak::ConfigData Data = {arg.Arguments[0],"/", StrBreak::Keep};
     StrBreak Sb;
@@ -131,27 +149,6 @@ Book::Action DevApp::Defaults(Cmd::ArgumentData &arg)
     return Book::Action::Continue;
 }
 
-Book::Action DevApp::CmdArgs(int argc, char **argv)
-{
-
-    (Args << Cmd::ArgumentData{ "StrBreak test",   "-w", "--Break","Test Book::StrBreak", 2 }).Connect(this, &DevApp::StrBreakTest);
-    (Args << Cmd::ArgumentData{ "Test SVScanner",  "-s",  "--SVScanner", "Test SVScanner", 0 }).Connect(this, &DevApp::SVScanTest);
-    (Args << Cmd::ArgumentData{ "Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
-
-
-
-    Args.InputCmdLineData(argc, argv);
-    //Args.ProcessStringArray(StrAcc::SVArray(argc,argv));
-
-    //...
-
-    auto R =  Args.Execute();
-    AppBook::Out() << " usage:";
-    AppBook::Info() << Args.Usage();
-    return R;
-}
-
-
 
 int main(int argc, char** argv)
 {
@@ -169,6 +166,7 @@ R"(
 
     std::string head;
     Book::STMLText MLText;
+    DevApp test = { "AppBook:Tests", argc,argv };
     try {
         auto & LivreSection  = AppBook::CreateSection("AppBook.Dev");
         LivreSection.Open().CreateSectionContents("TestStml");
@@ -185,15 +183,16 @@ R"(
 
         AppBook::Info() << "Last line, committing Section::Contents and closing the book:";
         AppBook::Out() << "-----------------------------------------------------------------";
-        DevApp test = {"STML"};
-
-        test.CmdArgs(argc, argv);
-
+        
+        test.SetupArgs();
+        test.Run();
+        
         AppBook::Commit();
     }
     catch(AppBook::Exception& e)
     {
-        std::cout << "Book::Exception caught:\n[" << e.what() << "]\n";
+        //
+        AppBook::Out() << Color::Reset << test.Arguments().Usage();
     }
     catch(std::exception& e)
     {
@@ -202,10 +201,6 @@ R"(
     catch(const char* msg)
     {
         std::cout << "\n\n global exception caught:\n[" << Color::Ansi(Color::LightCoral) << msg << Color::Ansi(Color::Reset) << "]\n\n";
-        exit(1);
     }
-
-
-
     return 0;
 }

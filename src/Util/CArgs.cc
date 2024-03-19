@@ -20,7 +20,7 @@ namespace Cmd
 {
 
 
-ArgumentData::Iterator CArgs::Query(const std::string &Switch)
+ArgumentData::Iterator CArgs::Query(std::string_view Switch)
 {
     auto It = Args.begin();
     for (; It != Args.end(); It++)
@@ -60,40 +60,46 @@ ArgumentData &CArgs::operator<<(const ArgumentData &Arg)
     return *A;
 }
 
-Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArray)
+Book::Enums::Code CArgs::Input(std::vector<std::string_view> StrArray)
 {
-    auto CurArg = Args.end();
+    A = Args.end();
     for(auto Sv : StrArray)
     {
-        auto NextArg = Query(Sv.data());
+        auto Next = Query(Sv);
 
+        AppBook::Out() << Color::Cyan << "Cargs::Input" << Color::White << '(' << Color::Yellow << Sv << Color::White << "):";
 
-        if(NextArg == Args.end())
+        if(Next == Args.end())
         {
             // It is not a switch - so must be an argument data for the CurArg/NextArg...
-            if((CurArg != Args.end()) && ((*CurArg)->Required > (*CurArg)->Count) && ((*CurArg)->Required > 0))
+            if((A != Args.end()) && 
+                ((*A)->Required > (*A)->Count) && ((*A)->Required > 0))
             {
-                (*CurArg)->Arguments.emplace_back(Sv);
-                ++(*CurArg)->Count;
-                (*CurArg)->Enabled = true;
-                AppBook::Out() << Color::Yellow << (*CurArg)->Name << Color::Reset << " Arg: '" << Sv;
+                (*A)->Arguments.emplace_back(Sv);
+                ++(*A)->Count;
+                (*A)->Enabled = true;
+                AppBook::Out() << Color::Yellow << (*A)->Name << Color::Reset << " Arg:" << (*A)->Count << " '" << Sv << '\'';
             }
             else
             {
                 // ... or non-switch arg
                 Defaults.Arguments.emplace_back(Sv);
+                ++Defaults.Count;
                 Defaults.Enabled = true;
+                AppBook::Out() << Color::Yellow << Defaults.Name << Color::Reset << " Arg:" << Defaults.Count << " '" << Sv << '\'';
             }
-            continue;
         }
         else
         {
-            // argv[i] is a switch,  then enable it....
-            CurArg = NextArg;
-            (*CurArg)->Enabled = true;
+            if ((A != Args.end()) && ((*A)->Count < (*A)->Required))
+            {
+                AppBook::Error() << " Argument " << Color::Yellow << (*A)->Name << Color::Reset << " is missing " << Color::Red4 << (*A)->Required - (*A)->Count << Color::Reset << " Arguments / " << Color::Lime << (*A)->Required;
+                return Book::Result::Failed;
+            }
+            A = Next;
+            (*A)->Enabled = true;    
         }
     }
-
     return Book::Result::Ok;
 }
 
@@ -103,7 +109,7 @@ Book::Enums::Code CArgs::ProcessStringArray(std::vector<std::string_view> StrArr
      * \param argc
      * \param argv
      * \return Status Code
-     */
+     
 Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
 {
 
@@ -143,30 +149,35 @@ Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
     return Book::Enums::Code::Ok;
 }
 
+*/
 
 
-
-Book::Action  CArgs::Execute()
+Book::Action  CArgs::Process()
 {
     auto R = Book::Action::End;
-    if(!Args.empty())
+    if (!Args.empty())
     {
-        int b = 0;
-        for(auto const& A : Args)if(A->Enabled) ++b;
-        if(!b)
+        for (auto* Arg : Args)
         {
-            AppBook::Debug() << " No addressed arguments";
-            return Book::Action::End;
-        }
-        for(auto* Arg : Args)
-        {
-            if(!(*Arg)) continue; // No callback.
-            if(Arg->Enabled)
+            if (Arg->Enabled)
             {
-                auto E = Arg->DelegateCB(*Arg);
-                if(E != Book::Action::Continue)
-                    return R;
+                if (Arg->Required > Arg->Count)    
+                {
+                    Arg->Enabled = false;
+                    throw AppBook::Exception()[AppBook::Except() << " Switch '" << Color::Yellow << Arg->Name
+                        << Color::Reset << " is missing "
+                        << Color::Red4 << Arg->Required - Arg->Count
+                        << Color::Reset << " Arguments: Requires "
+                        << Color::Lime << Arg->Required];
+                    
+                    // throw did not work? :
+                    AppBook::Except() << " If this is shown, it means exceptions are deactivated. I suggest to enable it... ";
+                    AppBook::Out() << Usage();
+                    return Book::Action::Leave;
 
+                }
+                if (Arg->DelegateCB(*Arg) != Book::Action::Continue) 
+                    return Book::Action::Leave;
             }
         }
     }
@@ -174,9 +185,9 @@ Book::Action  CArgs::Execute()
     {
         if(Defaults.Enabled)
         {
-            auto R = Defaults.DelegateCB(Defaults);
-            if(R != Book::Action::Continue)
-                return R;
+             Defaults.DelegateCB(Defaults);
+             if (R != Book::Action::Continue)
+                 return Book::Action::Leave;
         }
     }
     return Book::Action::Continue;
