@@ -188,3 +188,9 @@ std::vector<std::string_view> StrAcc::SVArray(int Count, char **s)
     return temp;
 }
 
+//StrAcc &StrAcc::operator<<(Utf::Glyph::Type arg_)
+//{
+//    _d += Utf::Glyph::Data[arg_];
+//    return *this;
+//}
+

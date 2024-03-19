@@ -11,9 +11,12 @@
 using Book::Enums::Code;
 using Book::Enums::Class;
 
+#define src_location std::source_location::current()
+#define out_fun     std::cout << src_location.function_name() << " :" <<
+
 #define CHECK_BOOK \
-if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || !AppBook::Application_Book->out_stream) \
-    throw AppBook::Exception("Using unset or uninitialized Book components.");
+if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || !AppBook::Application_Book->out_stream) AppBook::ThrowOnNoStream();
+
 
 
 AppBook* AppBook::Application_Book{nullptr};
@@ -66,16 +69,18 @@ Book::Result AppBook::Init()
 
     // By default we set our out_stream to the address of the console's stdout. Subsequent creations of stack of elements will
     // set it to the given output stream file / or not,  so out_stream always points to a valid output file :
+    out_fun "Setting output stream to the std::cout address by default, will be replaced by subsequent section::content stream..." << std::endl;
     AppBook::Application_Book->out_stream = &std::cout;
 
     // Result the ref to the (singleton) instance of the Book  :
+    out_fun ": AppBook::LocationPath is set and it is now in " << AppBook::LocationPath << std::endl;
     return Book::Result::Success;
 }
 
 AppBook &AppBook::Self()
 {
     if(!AppBook::Application_Book)
-        throw AppBook::Exception("No Book instance yet! - Use `Book& Book::init(const std::string &book_name)` prior to use the `Book`");
+        throw AppBook::Exception("No Book instance yet! - Use `AppBook& AppBook::Begin|Open(const std::string &BookName)` prior to use the `AppBook`");
 
     return *AppBook::Application_Book;
 }
@@ -83,22 +88,24 @@ AppBook &AppBook::Self()
 
 AppBook::AppBook()
 {
-    if(AppBook::Application_Book)
-        throw AppBook::Exception(" Cannot re-instanciate a new Book!");
+    if(!AppBook::Application_Book)
+        throw AppBook::Exception("Application Book must be instantiated through the static AppBook::Open('BookName')!");
+
 }
 
 AppBook::AppBook(const std::string &book_id): Object(nullptr, book_id)
 {
     if(AppBook::Application_Book)
-        throw AppBook::Exception(" Cannot re-instanciate a new Book!");
+        throw AppBook::Exception(" Cannot re-instance a new Book!");
 }
 
 
 AppBook::~AppBook()
 {
-    AppBook::Application_Book = nullptr;
+    //AppBook::Application_Book = nullptr;
     //... Sections Chaining Clear...
     //...
+
     for(auto* s: Sections) delete s;
 
 }
@@ -109,7 +116,7 @@ AppBook::~AppBook()
  * \return Code::accepted
  * \author &copy; 2023, oldlonecoder ( serge.lussier@oldlonecoder.club )
  *
- * \note At the call of this method, the filesystem must already be positionned into the "$id().Book" subdirectory!
+ * \note We call this method to create or position to the Id().Book subdir.
  */
 AppBook& AppBook::Open(const std::string& BookName)
 {
@@ -125,17 +132,18 @@ AppBook& AppBook::Open(const std::string& BookName)
         throw AppBook::Exception("Book instance already created!");
 
     AppBook::Application_Book = new AppBook(BookName);
-    auto R = AppBook::Init();
-    if(R != Book::Result::Success)
-        throw AppBook::Exception(" Open Book failed!");
+    (void) AppBook::Init();
+//    if(R != Book::Result::Success)
+//        throw AppBook::Exception(" Open Book failed!");
 
+    out_fun " Application Book " << AppBook::Instance().Id() << "  Created\n";
 
     Fs::file_time_type htime;
     auto Path = Fs::current_path();
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     StrAcc loc = Path.string().c_str();
 #else 
-    std::cout << "current path: " << Path.c_str() << ":\n";
+    out_fun "current path: " << Path.c_str() << ":\n";
 #endif
     
 
@@ -151,7 +159,7 @@ AppBook& AppBook::Open(const std::string& BookName)
             dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
 #endif
             
-            std::cout << dir();
+            std::cout << std::source_location::current().function_name() <<  ":" << dir();
             if(!last_entry.is_set)
             {
                 last_entry.is_set = true;
@@ -171,9 +179,9 @@ AppBook& AppBook::Open(const std::string& BookName)
     }
     if(!last_entry.is_set)
     {
-        std::cout << "This book has no contents ( no subdirs. ) - reject open request. \n";
+        out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving. \n";
         return *AppBook::Application_Book;
-        // throw "exception thrown from  AppBook::Open";
+         //throw AppBook::Exception("exception thrown from  AppBook::Open : no entry");
     }
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     AppBook::Self().starting_path = Fs::current_path().string().c_str();
@@ -193,6 +201,7 @@ Book::Enums::Code AppBook::Close()
 {
     if(!AppBook::Application_Book) return Book::Enums::Code::Rejected;
 
+    if(AppBook::Application_Book->Sections.empty()) return Book::Result::Empty;
     for(auto* s: AppBook::Application_Book->Sections)
     {
         s->Close();
@@ -200,14 +209,22 @@ Book::Enums::Code AppBook::Close()
     }
     AppBook::Application_Book->Sections.clear();
     delete AppBook::Application_Book;
+    AppBook::Application_Book = nullptr;
 
     return Book::Enums::Code::Success;
 }
 
 AppBook::Section &AppBook::operator[](std::string_view section_id)
 {
-    for(auto* s : Sections) if( s->Id() == section_id ) return *s;
     StrAcc e;
+
+    if(!AppBook::Application_Book)
+    {
+        e << "Application Book not Opened! Instantiate through AppBook::Open('BookName')";
+        throw AppBook::Exception(e());
+    }
+
+    for(auto* s : AppBook::Application_Book->Sections) if( s->Id() == section_id ) return *s;
     e << "Section identified by '" << Color::Yellow << section_id << Color::Reset << "' not found.";
     throw AppBook::Exception(e());
 }
@@ -300,6 +317,48 @@ AppBook::Section::Contents::Element& AppBook::Aborted     (std::source_location 
 AppBook::Section::Contents::Element& AppBook::Segfault    (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Segfault(src); }
 
 Book::Enums::Code AppBook::Commit() { CHECK_BOOK return AppBook::Self().current_stream->Commit(); }
+
+AppBook &AppBook::Instance()
+{
+    if(!AppBook::Application_Book)
+    {
+        StrAcc Str;
+        Str << Color::Red4 << "Error: " << Color::White << " Application Book was not created! ";
+        throw AppBook::Exception(Str());
+    }
+    return *AppBook::Application_Book;
+}
+
+AppBook &AppBook::Begin(const std::string &BookName)
+{
+    return AppBook::Open(BookName);
+}
+
+Book::Enums::Code AppBook::End()
+{
+    return AppBook::Close();
+}
+
+void AppBook::ThrowOnNoStream()
+{
+
+    StrAcc Msg;
+    Msg <<  Color::Red4 << "Error: " << Color::White <<"Throwing AppBook::Exception while accessing one of AppBook output methods:\n";
+
+    if(AppBook::Application_Book)
+    {
+        AppBook& Ins = AppBook::Instance();
+
+        if(!Ins.current_stream)
+            Msg << " --> Section::Contents was unset/or un-selected yet";
+        if(!Ins.out_stream)
+            Msg << "\n --> Output file stream of " << Ins.current_stream->Parent<AppBook::Section>()->Id() << " was not set yet.";
+    }
+    else
+        Msg << " --> The Application Book was not yet created.\n";
+
+    throw AppBook::Exception(Msg());
+}
 
 // -------------------------------------------------------------------------------------
 AppBook::Exception AppBook::Exception::operator[](AppBook::Section::Contents::Element El)

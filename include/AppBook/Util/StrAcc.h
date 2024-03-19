@@ -42,6 +42,7 @@ class APPBOOK_EXPORTS StrAcc final
     std::string::size_type _ArgPos = std::string::npos;
 public:
     using Array = std::vector<std::string>;
+    using CArray = std::vector<std::string_view>;
     using Stack = std::stack<std::string>;
     using Iterator = StrAcc::Array::iterator;
     using CIterator = StrAcc::Array::const_iterator;
@@ -94,6 +95,7 @@ public:
     //...
     StrAcc& operator << (Color::Code arg_);
     StrAcc& operator << (Color::Pair arg_);
+
     template<typename T> StrAcc& operator >> (T& out)
     {
         std::istringstream in(_d); //  When String was derived from std::string ... Oops!  std::istringstream IsIn(*this);

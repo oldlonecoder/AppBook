@@ -55,6 +55,11 @@ Code AppBook::Section::Contents::Open()
         throw AppBook::Exception(str());
     }
     std::cout << " file '" << Color::Ansi(Color::Yellow) << Filename << Color::Ansi(Color::Reset) << "' is open.\n";
+    StrAcc Msg;
+    Msg << Color::DeepSkyBlue7 << Parent<AppBook::Section>()->Id() << Color::White << "::" << Color::Yellow <<  Id() << Color::White << " logs\n";
+    OutputFile << Msg();
+    OutputFile << "--------------------------------------------------\n";
+
     return Code::Success;
 }
 

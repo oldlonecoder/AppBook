@@ -170,7 +170,7 @@ R"(
     std::string head;
     Book::STMLText MLText;
     try {
-        auto & LivreSection  = Livre.CreateSection("AppBook.Dev");
+        auto & LivreSection  = AppBook::CreateSection("AppBook.Dev");
         LivreSection.Open().CreateSectionContents("TestStml");
         /*auto & stackdev =*/
         Livre["AppBook.Dev"]["TestStml"];

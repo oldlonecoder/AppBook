@@ -257,15 +257,17 @@ public:
     ~AppBook() override;
     config_data &config(){ return Conf; }
     static AppBook& Open(const std::string& BookName);
+    static AppBook& Begin(const std::string& BookName);
     static Book::Enums::Code Close();
-
+    static Book::Enums::Code End();
+    static AppBook& Instance();
     std::string Descriptions;
 
     AppBook::Section &operator[](std::string_view section_id);
     static AppBook::Section &CreateSection(const std::string &section_id);
     static Color::Format Format();
 
-
+    static void ThrowOnNoStream();
     static AppBook &Self();
 
     [[maybe_unused]] static std::filesystem::path LocationPath;
@@ -293,12 +295,12 @@ public:
 //    static std::string year();
 //    ------------------------------
 
-
+    AppBook();
 private:
 
     explicit AppBook(const std::string &book_id);
 
-    AppBook();
+
 
     Section::Array Sections;
     AppBook::Section::Contents *current_stream{nullptr};
