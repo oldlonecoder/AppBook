@@ -57,7 +57,7 @@ using std::string_view;
             STMLText Text;
             std::string Encoded_Text;
             try{
-                SMTLInputText = "<fb:Reset; fg:Yellow; Icon:Home;> Salut <fb:Reset Fg:White;  fg:yellow;> &agrave; <fb:reset;>Toi!";
+                SMTLInputText = "#{fb:Reset; fg:Yellow; Icon:Home;} Salut #{fb:Reset Fg:White;  fg:yellow;} &agrave; #{fb:reset;}Toi!";
 
                 auto RetCode = Text << STMLInputText >> ExtendedTextReceiver;
 
@@ -157,15 +157,17 @@ public:
             int Index = -1;
         } _Location;
 
-        // non-case-sensitive keywords/lexems:
+        // non-case-sensitive keywords/lexemes:
         using STMLLexem                       = const char*;
         static constexpr STMLLexem Fg         = "FG";
         static constexpr STMLLexem Bg         = "BG";
         static constexpr STMLLexem ColorPair  = "COLOR";
         static constexpr STMLLexem Icon       = "ICON";
+        // static constexpr STMLLexeme OpenSeq    = "#{";
         static constexpr STMLLexem OpenSeq    = "<";
         static constexpr STMLLexem Reset      = "/";
         static constexpr STMLLexem CloseSeq   = ">";
+        // static constexpr STMLLexeme CloseSeq   = "}";
         static constexpr STMLLexem ArgSeq     = ":";
         static constexpr STMLLexem ArgSep     = ",";
         static constexpr STMLLexem EoSt       = ";";
