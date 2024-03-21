@@ -74,14 +74,14 @@ using std::string_view;
     \todo: Start implementing some "box" drawing...
     \code
         "Hello, <fg:White; box:single|bold> All! </box> -> ..."
-                ┍━━━━━━┓
-         "Hello,│ All! ┃ -> ..."
-                └──────┚
+                ┍━━━━━━━┓
+         "Hello,│ Allo! ┃ -> ..."
+                └───────┚
 
         "Hello, <fg:White; box:bold|single|Blue4; }> All! </box> -> ..."
-                ┎──────┐
-         "Hello,┃ All! │ -> ..."
-                ┗━━━━━━┙
+                ┎───────┐
+         "Hello,┃ Allo! │ -> ..."
+                ┗━━━━━━━┙
 
     \endcode
 
