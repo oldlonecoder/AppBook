@@ -42,6 +42,8 @@ bool SVScanner::PopLocation()
     mPoints.erase(P);
     return true;
 }
+
+
 void SVScanner::PushLocation()
 {
     mPoints.emplace_back(mLocation.Line, mLocation.Col);
