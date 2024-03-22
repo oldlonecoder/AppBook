@@ -265,10 +265,14 @@ public:
 
     AppBook::Section &operator[](std::string_view section_id);
     static AppBook::Section &CreateSection(const std::string &section_id);
+    static std::stack<AppBook::Section::Contents*> ContextStack;
     static Color::Format Format();
 
     static void ThrowOnNoStream();
     static AppBook &Self();
+    static Book::Result PushContext();
+    static Book::Result PopContext();
+
 
     [[maybe_unused]] static std::filesystem::path LocationPath;
     [[maybe_unused]] static AppBook::Section::Contents::Element &Error(std::source_location src = std::source_location::current());

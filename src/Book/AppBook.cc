@@ -21,6 +21,12 @@ if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || 
 
 AppBook* AppBook::Application_Book{nullptr};
 
+std::stack<AppBook::Section::Contents*> AppBook::ContextStack{};
+
+
+
+
+
 namespace Fs = std::filesystem;
 
 /*
@@ -363,6 +369,25 @@ void AppBook::ThrowOnNoStream()
         Msg << " --> The Application Book was not yet created.\n";
 
     throw AppBook::Exception(Msg());
+}
+
+Book::Result AppBook::PushContext()
+{
+    CHECK_BOOK
+
+    AppBook::ContextStack.push(AppBook::Application_Book->current_stream);
+    return Code::Ok;
+}
+
+Book::Result AppBook::PopContext()
+{
+    CHECK_BOOK
+
+    if(AppBook::Application_Book->Sections.empty())
+        return Book::Result::Empty;
+
+     AppBook::Application_Book->current_stream =  AppBook::ContextStack.top();
+    return Code::Accepted;
 }
 
 // -------------------------------------------------------------------------------------
