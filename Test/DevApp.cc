@@ -94,7 +94,7 @@ Book::Action DevApp::SVScanTest(Cmd::ArgumentData& arg)
         o777777;
 )"sv;
 
-    AppBook::Test() << " Testing TextProc::ScanNumber: R\"(" << Color::Yellow << view << Color::Reset << ")\"sv;";
+    AppBook::Test() << " Testing Processing::ScanNumber: R\"(" << Color::Yellow << view << Color::Reset << ")\"sv;";
 
     Book::SVScanner Text{view};
 
@@ -120,7 +120,7 @@ Book::Action DevApp::SVScanTest(Cmd::ArgumentData& arg)
 
     Text.SkipWS();
     auto [R,vv] = Text.ScanLiteralString();
-    AppBook::Test() << " TextProc::ScanLiteralString() : '" << Color::Lime <<  std::string(vv.begin(), vv.end()) << Color::Reset << "' ";
+    AppBook::Test() << " Processing::ScanLiteralString() : '" << Color::Lime <<  std::string(vv.begin(), vv.end()) << Color::Reset << "' ";
     //...
     return Book::Action::Continue;
 }

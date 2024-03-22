@@ -72,7 +72,7 @@ bool SVScanner::SkipWS()
 
 /*!
  * @brief Synchronize internal "cursor" location {Line #, Column #, Offset} at the current iterator offset into the view.
- * @return  Reference to the updated infos into the LocationData member of TextProc.
+ * @return  Reference to the updated infos into the LocationData member of Processing.
  */
 SVScanner::LocationData &SVScanner::Sync()
 {
@@ -116,7 +116,7 @@ SVScanner::operator bool() const
 
 
 /*!
- * @brief Initiate this TextProc with a (new) string_view.
+ * @brief Initiate this Processing with a (new) string_view.
  * @param view
  * @return reference to this instance.
  */
@@ -125,7 +125,7 @@ SVScanner &SVScanner::operator=(std::string_view view)
     Text = view;
     if(view.empty())
     {
-        AppBook::Error() << "TextProc assigned with an empty string \"view\". Be aware, this instance cannot be used.";
+        AppBook::Error() << "Processing assigned with an empty string \"view\". Be aware, this instance cannot be used.";
         return *this;
     }
     mBegin = mPos = Text.begin();
