@@ -192,10 +192,15 @@ AppBook& AppBook::Open(const std::string& BookName)
 #endif
     
     
-    //...
-    // return *this;
+    // Créer la section implicite nommée 'OutLog'.Section.
+    // Créer le contenu Output.log|html immédiatement pour démarrer la journalisation au niveau de cette API.
+    // 
+    AppBook::CreateSection("ApiLog").Open().CreateSectionContents("Out");
+    AppBook()["ApiLog"]["Out"];
+    AppBook::Debug() << " Automatic implicit Apilog/Out is setup." ;
     return *AppBook::Application_Book;
 }
+
 
 Book::Enums::Code AppBook::Close()
 {
