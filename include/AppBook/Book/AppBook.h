@@ -305,7 +305,7 @@ private:
     explicit AppBook(const std::string &book_id);
 
 
-
+    static Book::Result SetupBookApiJournal();
     Section::Array Sections;
     AppBook::Section::Contents *current_stream{nullptr};
     config_data Conf;

@@ -185,8 +185,10 @@ AppBook& AppBook::Open(const std::string& BookName)
     }
     if(!last_entry.is_set)
     {
-        out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving. \n";
-        return *AppBook::Application_Book;
+        out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving ( Goto: ApiLog section create). \n";
+        AppBook::SetupBookApiJournal();
+        return *ASppBook::Application_Book;
+
          //throw AppBook::Exception("exception thrown from  AppBook::Open : no entry");
     }
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -197,13 +199,7 @@ AppBook& AppBook::Open(const std::string& BookName)
     std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
 #endif
     
-    
-    // Créer la section implicite nommée 'OutLog'.Section.
-    // Créer le contenu Output.log|html immédiatement pour démarrer la journalisation au niveau de cette API.
-    // 
-    AppBook::CreateSection("ApiLog").Open().CreateSectionContents("Out");
-    AppBook()["ApiLog"]["Out"];
-    AppBook::Debug() << " Automatic implicit Apilog/Out is setup." ;
+
     return *AppBook::Application_Book;
 }
 
@@ -389,6 +385,15 @@ Book::Result AppBook::PopContext()
      AppBook::Application_Book->current_stream =  AppBook::ContextStack.top();
     return Code::Accepted;
 }
+
+Book::Result AppBook::SetupBookApiJournal()
+{
+    AppBook::CreateSection("BookApi").Open().CreateSectionContents("Journal");
+    AppBook()["BookApi"]["Journal"];
+    AppBook::Debug() << " Automatic implicit BookApi::Journal is setup." ;
+    return Code::Success;
+}
+
 
 // -------------------------------------------------------------------------------------
 AppBook::Exception AppBook::Exception::operator[](AppBook::Section::Contents::Element El)
