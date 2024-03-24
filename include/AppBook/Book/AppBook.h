@@ -315,3 +315,24 @@ private:
 
 };
 
+namespace Book
+{
+[[maybe_unused]] AppBook::Section::Contents::Element &Error(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Out(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Warning(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Fatal(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Except(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Message(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Debug(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Info(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Comment(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Syntax(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Status(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Test(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Interrupted(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Aborted(std::source_location src = std::source_location::current());
+[[maybe_unused]] AppBook::Section::Contents::Element &Segfault(std::source_location src = std::source_location::current());
+
+AppBook& Select();
+
+}

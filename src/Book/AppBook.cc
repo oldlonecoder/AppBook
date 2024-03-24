@@ -67,7 +67,10 @@ Book::Result AppBook::Init()
 #endif
     loc << '/' << AppBook::Application_Book->Id() << ".Book";
     if(! Fs::exists(loc()) )
+    {
+        out_fun " --> Create '" << loc() << "' subdirectory:" << std::endl;
         Fs::create_directory(loc());
+    }
     Fs::current_path(loc());
 
     // Set the "root-" Location of this application book; [ until the switch to sqlite ].
@@ -162,7 +165,7 @@ AppBook& AppBook::Open(const std::string& BookName)
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
             dir << " subdir : '" << Color::Yellow << item.path().string().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
 #else 
-            dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << "': timestamp " << std::chrono::duration(tp.time_since_epoch()) << "\n";
+            dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << '\n';
 #endif
             
             std::cout << std::source_location::current().function_name() <<  ":" << dir();
@@ -186,20 +189,20 @@ AppBook& AppBook::Open(const std::string& BookName)
     if(!last_entry.is_set)
     {
         out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving ( Goto: ApiLog section create). \n";
-        AppBook::SetupBookApiJournal();
-        return *ASppBook::Application_Book;
+
 
          //throw AppBook::Exception("exception thrown from  AppBook::Open : no entry");
     }
+    else {
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-    AppBook::Self().starting_path = Fs::current_path().string().c_str();
-    std::cout << "last entry:" << last_entry.entry.path().string().c_str() << "\n";
-#else 
-    AppBook::Self().starting_path = Fs::current_path().c_str();
-    std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
+        AppBook::Self().starting_path = Fs::current_path().string().c_str();
+        std::cout << "last entry:" << last_entry.entry.path().string().c_str() << "\n";
+#else
+        AppBook::Self().starting_path = Fs::current_path().c_str();
+        std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
 #endif
-    
-
+    }
+    AppBook::SetupBookApiJournal();
     return *AppBook::Application_Book;
 }
 
@@ -259,7 +262,11 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     //CHECK_BOOK
     auto sit =  AppBook::Application_Book->Sections.begin();
     for(;sit !=  AppBook::Application_Book->Sections.end(); sit++) if((*sit)->Id() == section_id) break;
-    if(sit !=  AppBook::Application_Book->Sections.end()) return *(*sit);
+    if(sit !=  AppBook::Application_Book->Sections.end())
+    {
+        out_fun "Section '" << section_id << "' found and returning its instance.";
+        return *(*sit);
+    }
     //-------------------------------------------------------------------------
 
     // -- Check if the Section already exists in the filesytem:
@@ -306,19 +313,15 @@ Color::Format AppBook::Format()
 AppBook::Section::Contents::Element& AppBook::Out         (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Out(src); }
 AppBook::Section::Contents::Element& AppBook::Warning     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Warning(src); }
 AppBook::Section::Contents::Element& AppBook::Error       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Error(src); }
-
-[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Fatal       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Fatal(src); }
+AppBook::Section::Contents::Element& AppBook::Fatal       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Fatal(src); }
 AppBook::Section::Contents::Element& AppBook::Except      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Except(src); }
 AppBook::Section::Contents::Element& AppBook::Message     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Message(src); }
 AppBook::Section::Contents::Element& AppBook::Debug       (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Debug(src); }
 AppBook::Section::Contents::Element& AppBook::Info        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Info(src); }
-
-[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Comment     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Comment(src); }
+AppBook::Section::Contents::Element& AppBook::Comment     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Comment(src); }
 AppBook::Section::Contents::Element& AppBook::Syntax      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Syntax(src); }
-
-[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Status      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Status(src); }
-
-[[maybe_unused]] AppBook::Section::Contents::Element& AppBook::Test        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Test(src); }
+AppBook::Section::Contents::Element& AppBook::Status      (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Status(src); }
+AppBook::Section::Contents::Element& AppBook::Test        (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Test(src); }
 AppBook::Section::Contents::Element& AppBook::Interrupted (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Interrupted(src); }
 AppBook::Section::Contents::Element& AppBook::Aborted     (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Aborted(src); }
 AppBook::Section::Contents::Element& AppBook::Segfault    (std::source_location src) { CHECK_BOOK return AppBook::Application_Book->current_stream->Segfault(src); }
@@ -411,4 +414,30 @@ const char *AppBook::Exception::what() const noexcept
         return EE.Text().c_str();
     }
     return msg.c_str();
+}
+
+
+namespace Book
+{
+AppBook::Section::Contents::Element &Error      (std::source_location src){ return AppBook::Error      (src);}
+AppBook::Section::Contents::Element &Out        (std::source_location src){ return AppBook::Out        (src);}
+AppBook::Section::Contents::Element &Warning    (std::source_location src){ return AppBook::Warning    (src);}
+AppBook::Section::Contents::Element &Fatal      (std::source_location src){ return AppBook::Fatal      (src);}
+AppBook::Section::Contents::Element &Except     (std::source_location src){ return AppBook::Except     (src);}
+AppBook::Section::Contents::Element &Message    (std::source_location src){ return AppBook::Message    (src);}
+AppBook::Section::Contents::Element &Debug      (std::source_location src){ return AppBook::Debug      (src);}
+AppBook::Section::Contents::Element &Info       (std::source_location src){ return AppBook::Info       (src);}
+AppBook::Section::Contents::Element &Comment    (std::source_location src){ return AppBook::Comment    (src);}
+AppBook::Section::Contents::Element &Syntax     (std::source_location src){ return AppBook::Syntax     (src);}
+AppBook::Section::Contents::Element &Status     (std::source_location src){ return AppBook::Status     (src);}
+AppBook::Section::Contents::Element &Test       (std::source_location src){ return AppBook::Test       (src);}
+AppBook::Section::Contents::Element &Interrupted(std::source_location src){ return AppBook::Interrupted(src);}
+AppBook::Section::Contents::Element &Aborted    (std::source_location src){ return AppBook::Aborted    (src);}
+AppBook::Section::Contents::Element &Segfault   (std::source_location src){ return AppBook::Segfault   (src);}
+
+AppBook& Select()
+{
+    return AppBook::Self();
+}
+
 }
