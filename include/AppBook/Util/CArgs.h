@@ -22,11 +22,11 @@ namespace Cmd
 {
 
 
-struct APPBOOK_EXPORTS ArgumentData
+struct APPBOOK_EXPORTS Switch
 {
     using Data = std::vector<std::string_view>;
-    using Array = std::vector<ArgumentData*>;
-    using Iterator = ArgumentData::Array::iterator;
+    using Array = std::vector<Switch*>;
+    using Iterator = Switch::Array::iterator;
 
 // ----------  ------------------------------------------
     std::string            Name;
@@ -40,38 +40,38 @@ struct APPBOOK_EXPORTS ArgumentData
 
     Data                   Arguments{};
     bool                   Enabled{ false };
-    Delegate<ArgumentData&> DelegateCB;
+    Delegate<Switch&> DelegateCB;
 
     bool operator !() { return DelegateCB.Empty(); }
 
-    template<typename T> void Connect(T* Obj, Book::Enums::Action (T::*Fn)(ArgumentData&)){
+    template<typename T> void Connect(T* Obj, Book::Enums::Action (T::*Fn)(Switch&)){
         DelegateCB.Connect(Obj, Fn);
     }
-    ~ArgumentData();
+    ~Switch();
 };
 
 
 class APPBOOK_EXPORTS CArgs
 {
 
-    ArgumentData::Array Args;
-    ArgumentData Defaults;
+    Switch::Array Args;
+    Switch Defaults;
 
-    ArgumentData::Iterator A{};
+    Switch::Iterator A{};
 public:
     CArgs() = default;
     ~CArgs();
 
-    template<typename T> void SetDefaultCallback(T* Obj, Book::Enums::Code (T::*Fn)(ArgumentData&))
+    template<typename T> void SetDefaultCallback(T* Obj, Book::Enums::Code (T::*Fn)(Switch&))
     {
         (void)Defaults.DelegateCB.Connect(Obj, Fn);
     }
 
-    ArgumentData::Iterator Query(std::string_view Switch);
-    ArgumentData& operator<<(const ArgumentData& Arg);
-    ArgumentData& operator [] (const std::string& ArgName);
+    Switch::Iterator Query(std::string_view Switch);
+    Switch& operator<<(const Switch& Arg);
+    Switch& operator [] (const std::string& ArgName);
     //Book::Enums::Code InputCmdLineData(int argc, char** argv);
-    Book::Enums::Code Input(std::vector<std::string_view> StrArray);
+    Book::Enums::Code Input(const std::vector<std::string_view>& StrArray);
 
     Book::Action Process();
 

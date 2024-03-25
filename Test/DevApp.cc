@@ -52,9 +52,9 @@ DevApp::DevApp(const std::string& TestName, int argc, char** argv){
 
 Book::Result DevApp::SetupArgs()
 {
-    (Args << Cmd::ArgumentData{ "StrBreak test",   "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
-    (Args << Cmd::ArgumentData{ "Test SVScanner",  "-s",  "--SVScanner", "Test SVScanner", 0 }).Connect(this, &DevApp::SVScanTest);
-    (Args << Cmd::ArgumentData{ "Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
+    (Args << Cmd::Switch{"StrBreak test",   "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
+    (Args << Cmd::Switch{"Test SVScanner",  "-s",  "--SVScanner", "Test SVScanner", 0 }).Connect(this, &DevApp::SVScanTest);
+    (Args << Cmd::Switch{"Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
 
     return Args.Input(inArgs);
 }
@@ -65,7 +65,7 @@ Book::Result DevApp::Run()
     return Book::Result::Ok;
 }
 
-Book::Action DevApp::StrBreakTest(Cmd::ArgumentData& arg)
+Book::Action DevApp::StrBreakTest(Cmd::Switch& arg)
 {
     AppBook::Message() << "Arguments:";
 
@@ -88,7 +88,7 @@ Book::Action DevApp::StrBreakTest(Cmd::ArgumentData& arg)
     return Book::Action::Continue;
 }
 
-Book::Action DevApp::SVScanTest(Cmd::ArgumentData& arg)
+Book::Action DevApp::SVScanTest(Cmd::Switch& arg)
 {
     auto view = R"(
         o777777;
@@ -125,7 +125,7 @@ Book::Action DevApp::SVScanTest(Cmd::ArgumentData& arg)
     return Book::Action::Continue;
 }
 
-Book::Action DevApp::DummyTest(Cmd::ArgumentData& arg)
+Book::Action DevApp::DummyTest(Cmd::Switch& arg)
 {
     AppBook::Message() << " Args:";
     for(auto const& A: arg.Arguments)
@@ -136,7 +136,7 @@ Book::Action DevApp::DummyTest(Cmd::ArgumentData& arg)
     return Book::Action::Continue;
 }
 
-Book::Action DevApp::Defaults(Cmd::ArgumentData &arg)
+Book::Action DevApp::Defaults(Cmd::Switch &arg)
 {
     //Book::Enums::Code::push_message(HERE) << "arguments:" << Book::Enums::Code::commit;
     for (auto const& str : arg.Arguments)
