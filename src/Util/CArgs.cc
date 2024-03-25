@@ -20,12 +20,12 @@ namespace Cmd
 {
 
 
-ArgumentData::Iterator CArgs::Query(std::string_view Switch)
+Switch::Iterator CArgs::Query(std::string_view SwitchData)
 {
     auto It = Args.begin();
     for (; It != Args.end(); It++)
     {
-        if ((Switch == (*It)->SwitchText ) || (Switch == (*It)->SwitchChar))
+        if ((SwitchData == (*It)->SwitchText ) || (SwitchData == (*It)->SwitchChar))
             return It;
     }
     return Args.end();
@@ -40,27 +40,27 @@ CArgs::~CArgs()
 /*!
  * @brief Input operator
  * @param Arg
- * @return Pointer to ArgumentData instance.
+ * @return Pointer to Switch instance.
  * @author &copy;2023/2024, oldlonecoder/serge.lussier@oldlonecoder.club
  *
- * @note Because of the Delegate<>, We must instantiate a unique non-copiable ArgumentData using <i>new</i> to ensure
+ * @note Because of the Delegate<>, We must instantiate a unique non-copiable Switch using <i>new</i> to ensure
  * that there will be NO move/copy of the instances. We may instantiate directly into the Args using emplace_back tho. -
  * to be considered...
  */
-ArgumentData &CArgs::operator<<(const ArgumentData &Arg)
+Switch &CArgs::operator<<(const Switch &Arg)
 {
-    Args.push_back(new ArgumentData);
-    ArgumentData* A = Args.back();
-    A->Name = Arg.Name;
-    A->SwitchChar = Arg.SwitchChar;
-    A->SwitchText = Arg.SwitchText;
-    A->Description = Arg.Description;
-    A->Required = Arg.Required;
+    Args.push_back(new Switch);
+    Switch* Sw = Args.back();
+    Sw->Name = Arg.Name;
+    Sw->SwitchChar = Arg.SwitchChar;
+    Sw->SwitchText = Arg.SwitchText;
+    Sw->Description = Arg.Description;
+    Sw->Required = Arg.Required;
 
-    return *A;
+    return *Sw;
 }
 
-Book::Enums::Code CArgs::Input(std::vector<std::string_view> StrArray)
+Book::Enums::Code CArgs::Input(const std::vector<std::string_view>& StrArray)
 {
     A = Args.end();
     for(auto Sv : StrArray)
@@ -104,54 +104,6 @@ Book::Enums::Code CArgs::Input(std::vector<std::string_view> StrArray)
 }
 
 
-/*!
-     * \brief Initialize and bulds internal Data.
-     * \param argc
-     * \param argv
-     * \return Status Code
-     
-Book::Enums::Code CArgs::InputCmdLineData(int argc, char **argv)
-{
-
-    auto CurArg = Args.end();
-    for(int i = 1; i < argc; i++)
-    {
-        auto const* Str = argv[i];
-        auto NextArg = Query(Str);
-
-
-        if(NextArg == Args.end())
-        {
-            // It is not a switch - so must be an argument data for the CurArg/NextArg...
-            if((CurArg != Args.end()) && ((*CurArg)->Required > (*CurArg)->Count) && ((*CurArg)->Required > 0))
-            {
-                (*CurArg)->Arguments.emplace_back(Str);
-                ++(*CurArg)->Count;
-                (*CurArg)->Enabled = true;
-                AppBook::Out() << Color::Yellow << (*CurArg)->Name << Color::Reset << " Arg: '" << Str;
-            }
-            else
-            {
-                // ... or non-switch arg
-                Defaults.Arguments.emplace_back(Str);
-                Defaults.Enabled = true;
-            }
-            continue;
-        }
-        else
-        {
-            // argv[i] is a switch,  then enable it....
-            CurArg = NextArg;
-            (*CurArg)->Enabled = true;
-        }
-    }
-
-    return Book::Enums::Code::Ok;
-}
-
-*/
-
-
 Book::Action  CArgs::Process()
 {
     auto R = Book::Action::End;
@@ -185,7 +137,7 @@ Book::Action  CArgs::Process()
     {
         if(Defaults.Enabled)
         {
-             Defaults.DelegateCB(Defaults);
+             R = Defaults.DelegateCB(Defaults);
              if (R != Book::Action::Continue)
                  return Book::Action::Leave;
         }
@@ -193,7 +145,7 @@ Book::Action  CArgs::Process()
     return Book::Action::Continue;
 }
 
-ArgumentData &CArgs::operator[](const std::string &ArgName)
+Switch &CArgs::operator[](const std::string &ArgName)
 {
     for(auto* Arg :Args)
     {
@@ -229,7 +181,7 @@ std::string CArgs::Usage()
 
 
 
-ArgumentData::~ArgumentData()
+Switch::~Switch()
 {
     Arguments.clear();
     DelegateCB.DisconnectAll();
