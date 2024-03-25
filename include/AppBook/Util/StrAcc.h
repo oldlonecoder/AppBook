@@ -243,6 +243,9 @@ template<typename T> StrAcc& StrAcc::Format(const T& _argv)
     if(ScanArg() == std::string::npos)
         return this->operator+=(_argv);
 
+    if(!std::isalnum(_d[_ArgPos+1]))
+        return this->operator+=(_argv);
+
     StrAcc::FomatData fmt = {_d };
     char     buf[MAX_STREAM_SIZE];
     std::memset(buf, 0, MAX_STREAM_SIZE);
