@@ -209,7 +209,7 @@ AppBook& AppBook::Open(const std::string& BookName)
 
 Book::Enums::Code AppBook::Close()
 {
-    if(!AppBook::Application_Book) return Book::Enums::Code::Rejected;
+    if(!AppBook::Application_Book) return Book::Enums::Code::Eof;
 
     if(AppBook::Application_Book->Sections.empty()) return Book::Result::Empty;
     for(auto* s: AppBook::Application_Book->Sections)
