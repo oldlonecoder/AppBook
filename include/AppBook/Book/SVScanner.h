@@ -292,7 +292,7 @@ public:
     [[nodiscard]] inline bool Empty() const { return Text.empty() ;}
 
     auto operator*() const  { return *mPos; }
-    auto operator()() const { return mPos; }
+    std::string_view::iterator operator()() const { return mPos; }
 
 
     //  -   Need more check and use cases...:
@@ -325,7 +325,7 @@ public:
     SVScanner::Iterator End();
 
 
-    Book::Result Reposition(int Offset);
+    Book::Result Reposition(std::size_t Offset);
 
 
 private:

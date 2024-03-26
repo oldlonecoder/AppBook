@@ -271,7 +271,7 @@ bool SVScanner::Pop()
     return true;
 }
 
-Book::Result SVScanner::Reposition(int Offset)
+Book::Result SVScanner::Reposition(std::size_t Offset)
 {
     if(Eof()) return Book::Result::Rejected;
     mPos += Offset;
