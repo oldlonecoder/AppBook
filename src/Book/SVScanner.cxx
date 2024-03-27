@@ -77,7 +77,6 @@ bool SVScanner::SkipWS()
 SVScanner::LocationData &SVScanner::Sync()
 {
     auto c = mBegin;
-    AppBook::Debug() << "'" << std::string_view{mPos,mEnd} << "'" << Book::Fn::Endl << "mBegin -> c: {" << std::string_view{c,mPos} << "}:";
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
             case '\n':
@@ -105,7 +104,7 @@ SVScanner::LocationData &SVScanner::Sync()
     }
     mLocation.Offset = mPos - mBegin;
     // ...
-    AppBook::Debug() << " Done";
+    Book::Debug() << Mark();
     return mLocation;
 }
 
@@ -297,6 +296,24 @@ std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::f
     if(!!ScannerFn())
         return EndSequence();
     return {};
+}
+
+
+
+/*!
+ * @brief Scans for the first occurrence of \Seq from the current position.
+ * @param Seq
+ * @return Accepted if found, Rejected if not.
+ * @todo Add more result codes to Book::Enum::Code !
+ */
+Book::Result SVScanner::Seek(const std::string_view &Seq)
+{
+    auto pos = Text.find(Seq,mPos-mBegin);
+    if(pos == std::string_view::npos)
+        return Book::Result::Rejected;
+    mPos = mBegin+pos;
+    Sync();
+    return Book::Result::Accepted;
 }
 
 

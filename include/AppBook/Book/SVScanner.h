@@ -286,6 +286,7 @@ public:
     bool Eof(std::string_view::iterator cc);
 
     Book::Result Seek(int32_t Idx);
+    Book::Result Seek(const std::string_view& Seq);
     // void Seek(std::string_view::iterator IPos); ///< Disabled
 
     explicit operator bool() const;
