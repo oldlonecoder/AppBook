@@ -302,12 +302,16 @@ public:
     bool         operator ++();
     bool         operator ++(int);
 
+    //Scanners:
     SVScanner::Numeric::Result ScanNumber();
     std::pair<Book::Result, std::string_view> ScanLiteralString();
 
-    //Word::Result Words(SVScanner::Word::Opt Opt, std::string_view Delims);
+    SVScanner::Iterator StartSequence();
+    std::pair<SVScanner::Iterator,SVScanner::Iterator> EndSequence();
 
+    std::pair<SVScanner::Iterator, SVScanner::Iterator> Scan(const std::function<Book::Result()>& ScannerFn);
 
+    // ------------------------------------------------------------------
     void PushLocation();
     bool PopLocation();
 

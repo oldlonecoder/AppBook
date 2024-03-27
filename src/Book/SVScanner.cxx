@@ -77,7 +77,7 @@ bool SVScanner::SkipWS()
 SVScanner::LocationData &SVScanner::Sync()
 {
     auto c = mBegin;
-    //AppBook::Debug() << "'" << std::string_view{mPos,mEnd} << "'" << Book::Fn::Endl << "mBegin -> c: " << std::string_view{c,mPos};
+    AppBook::Debug() << "'" << std::string_view{mPos,mEnd} << "'" << Book::Fn::Endl << "mBegin -> c: {" << std::string_view{c,mPos} << "}:";
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
             case '\n':
@@ -142,8 +142,8 @@ bool SVScanner::operator++()
     if(Eof()) return false;
 
     ++mPos;
-    SkipWS();
-    return Eof();
+    //SkipWS();
+    return !Eof();
 }
 
 bool SVScanner::operator++(int)
@@ -151,8 +151,8 @@ bool SVScanner::operator++(int)
     if(Eof()) return false;
 
     ++mPos;
-    SkipWS();
-    return Eof();
+    //SkipWS();
+    return !Eof();
 }
 
 Book::Result SVScanner::Seek(int32_t Idx)
@@ -278,7 +278,26 @@ Book::Result SVScanner::Reposition(std::size_t Offset)
     return Result::Accepted;
 }
 
+SVScanner::Iterator SVScanner::StartSequence()
+{
+    Push();
+    return mPos;
+}
 
+std::pair<SVScanner::Iterator,SVScanner::Iterator> SVScanner::EndSequence()
+{
+    auto I = PStack.top();
+    PStack.pop();
+    return {I,mPos};
+}
+
+std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::function<Book::Result()>& ScannerFn)
+{
+    StartSequence();
+    if(!!ScannerFn())
+        return EndSequence();
+    return {};
+}
 
 
 SVScanner::LocationData const& SVScanner::LocationData::operator>>(std::string &Out) const
