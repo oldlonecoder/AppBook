@@ -243,7 +243,7 @@ std::string SVScanner::Mark()
     // End of line:
     while((LEnd < mEnd) && (*LEnd != '\n') && (*LEnd != '\r')) ++LEnd;
     if(LEnd >= mEnd) --LEnd;
-    auto pos = mPos-LBegin;
+    auto pos = (mPos-LBegin)-1; // ?
     auto spc = std::string(pos,' ');
     return std::string(LBegin, LEnd) + '\n' + spc + Utf::Glyph::CArrowUp;
 }
