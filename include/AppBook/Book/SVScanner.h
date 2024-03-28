@@ -280,8 +280,8 @@ public:
 
     bool SkipWS();
 
-    SVScanner::LocationData& Sync();
-    SVScanner::LocationData Sync(std::size_t Offset);
+
+    SVScanner::LocationData& Sync(std::size_t Offset=0);
 
 
     bool Eof();

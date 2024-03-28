@@ -124,7 +124,7 @@ std::map<Code, std::pair<Glyph::Type, Color::Pair>> codes_database={
     {Code::Ok,              {Glyph::ThumbUp,         {Color::DarkGreen         ,Color::Reset }}},
     {Code::Accepted,        {Glyph::CMarkCheck,      {Color::DarkGreen         ,Color::Reset }}},
     {Code::Success,         {Glyph::Success,         {Color::DarkGreen         ,Color::Reset }}},
-    {Code::Rejected,        {Glyph::ThumbDown,       {Color::Orange5           ,Color::Reset }}},
+    {Code::Rejected,        {Glyph::ThumbDown,       {Color::HotPink4          ,Color::Reset }}},
     {Code::Failed,          {Glyph::Poop,            {Color::DarkGoldenrod     ,Color::Reset }}},
     {Code::Empty,           {Glyph::ArrowRight,      {Color::LighcoreateGrey   ,Color::Reset }}},
     {Code::Full,            {Glyph::SmallDot,        {Color::White             ,Color::Reset }}},

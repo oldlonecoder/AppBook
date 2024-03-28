@@ -74,8 +74,10 @@ bool SVScanner::SkipWS()
  * @brief Synchronize internal "cursor" location {Line #, Column #, Offset} at the current iterator offset into the view.
  * @return  Reference to the updated infos into the LocationData member of Processing.
  */
-SVScanner::LocationData &SVScanner::Sync()
+SVScanner::LocationData &SVScanner::Sync(size_t Offset)
 {
+    Book::Debug() << " Offset:" << Color::Yellow << Offset;
+    mPos += Offset;
     auto c = mBegin;
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
@@ -109,40 +111,6 @@ SVScanner::LocationData &SVScanner::Sync()
 }
 
 
-SVScanner::LocationData SVScanner::Sync(std::size_t Offset)
-{
-    LocationData Coord{};
-    auto c = mBegin+Offset;
-    while (!Eof(c) && (c < mEnd)) {
-        switch (*c) {
-            case '\n':
-                //AppBook::Debug() << " new line :";
-                ++c;
-                if (*c == '\r') ++c;
-                ++Coord.Line;
-                Coord.Col = 1;
-                continue;
-            case '\r':
-                //AppBook::Debug() << " new line :";
-                ++c;
-                if (*c == '\n') ++c;
-                ++Coord.Line;
-                Coord.Col = 1;
-                continue;
-            case '\t':
-            case '\v' :
-                throw AppBook::Exception()[AppBook::Error() << Result::Rejected << " - Invalid character, intentionally not handled in this context because of their arbitrary value."];
-
-            default:
-                ++c;
-                ++Coord.Col;
-        }
-    }
-    Coord.Offset = mPos - mBegin;
-    // ...
-    Book::Debug() << Mark();
-    return Coord;
-}
 
 
 
