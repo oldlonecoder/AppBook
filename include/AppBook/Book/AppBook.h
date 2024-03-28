@@ -114,6 +114,8 @@ public:
         std::filesystem::path Location;
         using Array = std::vector<AppBook::Section::Contents *>;
         using Iterator = Array::iterator;
+        size_t IndentationLevel{0};
+        size_t IndentationValue{4};
 
 
         Book::Enums::Code Commit(); ///< push element compiled STMLText content into the output stream.

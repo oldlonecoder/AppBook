@@ -78,9 +78,9 @@ enum class Action : uint8_t
     Enter            , ///< enter bloc or indent
     Leave            , ///< End (logger: End of entry accumulators, so do commit); End of (sel)Section, STMLAttribute ( auto- color::Reset ) and unindent
     Ci               , ///< Commit...
-    Begin            , ///< Begin (sel)Section or indent
-    End              , ///< End
-    Continue
+    Begin            , ///< Begin (sel)Section or augment indent level
+    End              , ///< End   (sel)Section or Unindent indent level
+    Continue         , ///< Continue Loop or continue Delegate iteration.
 };
 
 

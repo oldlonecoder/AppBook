@@ -132,6 +132,10 @@ public:
     StrAcc& operator << (const StrAcc& acc);
     StrAcc& operator << (Utf::Glyph::Type Ic);
     StrAcc& operator << (Utf::AccentFR::Type Ac);
+    StrAcc& operator << (std::string_view Ac)
+    {
+        return Format(std::string(Ac));
+    }
 
 
     StrAcc& fill(char c, int count);
