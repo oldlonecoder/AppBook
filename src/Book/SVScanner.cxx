@@ -108,6 +108,45 @@ SVScanner::LocationData &SVScanner::Sync()
     return mLocation;
 }
 
+
+SVScanner::LocationData SVScanner::Sync(std::size_t Offset)
+{
+    LocationData Coord{};
+    auto c = mBegin+Offset;
+    while (!Eof(c) && (c < mEnd)) {
+        switch (*c) {
+            case '\n':
+                //AppBook::Debug() << " new line :";
+                ++c;
+                if (*c == '\r') ++c;
+                ++Coord.Line;
+                Coord.Col = 1;
+                continue;
+            case '\r':
+                //AppBook::Debug() << " new line :";
+                ++c;
+                if (*c == '\n') ++c;
+                ++Coord.Line;
+                Coord.Col = 1;
+                continue;
+            case '\t':
+            case '\v' :
+                throw AppBook::Exception()[AppBook::Error() << Result::Rejected << " - Invalid character, intentionally not handled in this context because of their arbitrary value."];
+
+            default:
+                ++c;
+                ++Coord.Col;
+        }
+    }
+    Coord.Offset = mPos - mBegin;
+    // ...
+    Book::Debug() << Mark();
+    return Coord;
+}
+
+
+
+
 SVScanner::operator bool() const
 {
     return !Text.empty();
@@ -203,6 +242,8 @@ std::pair<Book::Result, std::string_view> SVScanner::ScanLiteralString()
 {
     StrAcc Buf;
     std::string_view::iterator A = mPos;
+
+
     if ((*A != '\'') && (*A != '"')) return { Book::Result::Rejected,{} };
     auto Q = *A++;
 
@@ -231,6 +272,7 @@ std::pair<Book::Result, std::string_view> SVScanner::ScanLiteralString()
     return { Book::Result::Accepted, {mPos, ++A} };
 }
 
+
 std::string SVScanner::Mark()
 {
     // 1 - Locate Beginning of the line:
@@ -247,11 +289,23 @@ std::string SVScanner::Mark()
     return std::string(LBegin, LEnd) + '\n' + spc + Utf::Glyph::CArrowUp;
 }
 
+
+
+
+/*!
+ * @brief const char* at the beginning of the Text.
+ * @return string_view::iterator ( const char* );
+ */
 SVScanner::Iterator SVScanner::Begin()
 {
     return mBegin; /// << The start if this Scanner
 }
 
+
+/*!
+ * @brief const char* at the end of the Text.
+ * @return string_view::iterator ( const char* );
+ */
 SVScanner::Iterator SVScanner::End()
 {
     return mEnd; //< the end of this scanner.
@@ -287,7 +341,7 @@ std::pair<SVScanner::Iterator,SVScanner::Iterator> SVScanner::EndSequence()
 {
     auto I = PStack.top();
     PStack.pop();
-    return {I,mPos};
+    return {I, mPos};
 }
 
 std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::function<Book::Result()>& ScannerFn)
@@ -295,6 +349,8 @@ std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::f
     StartSequence();
     if(!!ScannerFn())
         return EndSequence();
+    auto I = EndSequence();
+    Back(I.first);
     return {};
 }
 
@@ -426,7 +482,7 @@ Book::Result SVScanner::Numeric::Base8()
         AppBook::Debug() << "Octal loop exit: A on '" << Color::Yellow << *A << Color::Reset << '\'' << Color::Red4 << " Rejected";
         return Book::Result::Rejected;
     }
-    --A;
+    //--A;
     AppBook::Debug() << "Base8: A on '" << Color::Yellow << *A << Color::Reset << "' - Buffer: [" << Color::Yellow << Buf << Color::Reset << "]";
     NumDetails.Seq = {Begin, A};
     NumDetails.Value = std::stoi(Buf(), nullptr, 8);

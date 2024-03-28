@@ -281,6 +281,8 @@ public:
     bool SkipWS();
 
     SVScanner::LocationData& Sync();
+    SVScanner::LocationData Sync(std::size_t Offset);
+
 
     bool Eof();
     bool Eof(std::string_view::iterator cc);
@@ -309,7 +311,11 @@ public:
 
     SVScanner::Iterator StartSequence();
     std::pair<SVScanner::Iterator,SVScanner::Iterator> EndSequence();
-
+    void Back(std::string_view::iterator Pos)
+    {
+        mPos = Pos;
+        Sync();
+    }
     std::pair<SVScanner::Iterator, SVScanner::Iterator> Scan(const std::function<Book::Result()>& ScannerFn);
 
     // ------------------------------------------------------------------

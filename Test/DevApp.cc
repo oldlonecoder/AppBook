@@ -91,7 +91,7 @@ Book::Action DevApp::StrBreakTest(Cmd::Switch& arg)
 Book::Action DevApp::SVScanTest(Cmd::Switch& arg)
 {
     auto view = R"(
-        o777777;
+        x'777'777;
 )"sv;
 
     AppBook::Test() << " Testing Processing::ScanNumber: R\"(" << Color::Yellow << view << Color::Reset << ")\"sv;";
