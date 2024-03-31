@@ -76,6 +76,7 @@ bool TScanner::SkipWS()
 TScanner::LocationData &TScanner::Sync()
 {
     auto c = mBegin;
+    mLocation.Line = mLocation.Col = 1; //DUH!!!!!!!
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
             case '\n':
@@ -332,7 +333,7 @@ Book::Result TScanner::SeekAt(const std::string_view &Seq, int32_t Pos)
 
     Sync();
     auto sv= std::string_view(mBegin, (mEnd-mBegin)+1);
-    auto Start = Pos > -1 ? mPos-mBegin : Pos;
+    auto Start = Pos > -1 ? Pos : mPos-mBegin; // Fuck!!!!
     auto pos = sv.find(Seq, Start);
 
     if(pos == std::string_view::npos)
@@ -348,6 +349,21 @@ Book::Result TScanner::Step(int32_t Idx)
     if(mPos > mEnd)
         return Book::Result::Eof;
     return Result::Accepted;
+}
+
+std::pair<Book::Result, std::string_view> TScanner::ScanIdentifier()
+{
+    auto Cursor = mPos;
+    if(! std::isalpha(*Cursor) && (*Cursor != '_'))
+        return {Book::Result::Rejected,{}};
+
+    ++Cursor;
+    while(!Eof() && (std::isalnum(*Cursor) || (*Cursor == '_'))) ++Cursor;
+    if(Cursor > mPos)
+        return {Book::Result::Accepted, {mPos, static_cast<uint32_t >(Cursor-mPos)}};
+
+    return {Book::Result::Rejected,{}};
+
 }
 
 

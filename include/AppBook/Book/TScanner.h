@@ -302,6 +302,7 @@ public:
     //Scanners:
     TScanner::Numeric::Result ScanNumber();
     std::pair<Book::Result, std::string_view> ScanLiteralString();
+    std::pair<Book::Result, std::string_view> ScanIdentifier();
 
     TScanner::Iterator StartSequence();
     std::pair<TScanner::Iterator,TScanner::Iterator> EndSequence();
