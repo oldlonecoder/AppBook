@@ -261,7 +261,6 @@ public:
         LocationData const & operator >> (std::string& Out) const;
     };
 
-
     TScanner() = default;
     explicit TScanner(std::string_view Txt);
 
@@ -273,21 +272,18 @@ public:
     TScanner& operator = (TScanner const &) = default;
     TScanner& operator = (std::string_view view);
 
-
     LocationData& Location() { return mLocation; }
 
     bool SkipWS();
 
-
-    TScanner::LocationData& Sync(std::size_t Offset=0, bool UpdateCoords=false);
-
+    TScanner::LocationData& Sync();
 
     bool Eof();
     bool Eof(TScanner::Iterator cc);
 
-    Book::Result Seek(int32_t Idx);
-    Book::Result Seek(const std::string_view& Seq);
-    // void Seek(TScanner::Iterator IPos); ///< Disabled
+    Book::Result Seek(int32_t Idx = 0);
+    Book::Result Step(int32_t Idx = -1);
+    Book::Result SeekAt(const std::string_view& Seq, int32_t Pos=-1);
 
     explicit operator bool() const;
     [[nodiscard]] inline bool Empty() const { return mEnd==mBegin;}

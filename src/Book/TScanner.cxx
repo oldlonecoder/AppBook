@@ -53,13 +53,13 @@ void TScanner::PushLocation()
 
 bool TScanner::Eof(const char* cc)
 {
-    return cc >= mEnd;
+    return cc > mEnd;
 }
 
 
 bool TScanner::Eof()
 {
-    return mPos >= mEnd;
+    return mPos > mEnd;
 }
 
 
@@ -73,15 +73,8 @@ bool TScanner::SkipWS()
  * @brief Synchronize internal "cursor" location {Line #, Column #, Offset} at the current iterator offset into the view.
  * @return  Reference to the updated infos into the LocationData member of Processing.
  */
-TScanner::LocationData &TScanner::Sync(size_t Offset, bool UpdateCoords)
+TScanner::LocationData &TScanner::Sync()
 {
-    //Book::Debug() << " Offset:" << Color::Yellow << Offset;
-    if( (mPos + Offset) > mEnd)
-        throw AppBook::Exception()[Book::Error() << " Outside Boundaries: {TScanner Length: " << mEnd-mBegin << " <=> Required position, ends at: " << (mPos+Offset)-mBegin << '}'];
-
-    mPos += Offset;
-
-    if(!UpdateCoords) return mLocation; ///< Can lead to error.
     auto c = mBegin;
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
@@ -110,7 +103,7 @@ TScanner::LocationData &TScanner::Sync(size_t Offset, bool UpdateCoords)
     }
     mLocation.Offset = mPos - mBegin;
     // ...
-    Book::Debug() << Mark();
+    //Book::Debug() << Mark();
     return mLocation;
 }
 
@@ -169,25 +162,26 @@ Book::Result TScanner::Seek(int32_t Idx)
 //    if(Text.empty()) return Book::Result::Rejected;
 
 //    Signal Exception on any attempt to seek into an empty string_view !! :
-    if(!mBegin || !mEnd)
-        AppBook::Exception() [ AppBook::Except() << Book::Result::Empty << ": Attempt to use the Seek method on an un-assigned/incompletely assigned TScanner!" ];
+    if(mBegin && mEnd) {
 
-    // Otherwise just reject under/overflow :
-    // Otherwise execute the seek and return Accepted.
-    if(Idx < 0L)
-    {
-        size_t X =  -1 * Idx;
-        if((mEnd + X) < mBegin) X = (mEnd-mBegin)+1;
+        // Otherwise just reject under/overflow :
+        // Otherwise execute the seek and return Accepted.
+        if (Idx < 0L) {
+            size_t X = -1 * Idx;
+            if ((mEnd - X) < mBegin) X = 0;
 
-        mPos  = mEnd - X;
+            mPos = mEnd - X;
+            Sync();
+            return Book::Result::Accepted;
+        }
+        if (((mBegin + Idx) < mEnd)) mPos = mBegin + Idx;
+        else
+            mPos = mEnd; // Jump to the end of the text...
+
         Sync();
-        return Book::Result ::Accepted;
     }
-    if(mBegin && ((mBegin + Idx) < mEnd )) mPos = mBegin + Idx;
     else
-        mPos = mEnd-1; // Jump to the end of the text...
-
-    Sync();
+        AppBook::Exception() [ AppBook::Except() << Book::Result::Empty << ": Attempt to use the SeekAt method on an un-assigned/incompletely assigned TScanner!" ];
 
     return Eof() ? Book::Result::Eof : Book::Result::Accepted;
 }
@@ -333,18 +327,27 @@ std::pair<TScanner::Iterator, TScanner::Iterator> TScanner::Scan(const std::func
  * @return Accepted if found, Rejected if not.
  * @todo Add more result codes to Book::Enum::Code !
  */
-Book::Result TScanner::Seek(const std::string_view &Seq)
+Book::Result TScanner::SeekAt(const std::string_view &Seq, int32_t Pos)
 {
 
     Sync();
-    auto sv= std::string_view(mBegin, mEnd-mBegin);
-    auto pos = sv.find(Seq,mLocation.Col);
+    auto sv= std::string_view(mBegin, (mEnd-mBegin)+1);
+    auto Start = Pos > -1 ? mPos-mBegin : Pos;
+    auto pos = sv.find(Seq, Start);
 
     if(pos == std::string_view::npos)
         return Book::Result::Rejected;
     mPos = mBegin+pos;
     Sync();
     return Book::Result::Accepted;
+}
+
+Book::Result TScanner::Step(int32_t Idx)
+{
+    mPos += Idx;
+    if(mPos > mEnd)
+        return Book::Result::Eof;
+    return Result::Accepted;
 }
 
 
@@ -399,7 +402,7 @@ Book::Result TScanner::Numeric::Base2()
     }
 
 Loop2:
-    AppBook::Debug() << "Loop2: A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "Loop2: A on '" << Color::Yellow << *A << Color::Reset << '\'';
     if(*A == '\'')++A;
     if(!isdigit(*A)) return Book::Result::Rejected;
     while(!Text.Eof() && std::isdigit(*A))
@@ -414,7 +417,7 @@ Loop2:
     }
 
     if(A==Begin) return Book::Result::Rejected;
-    AppBook::Debug() << " Base2 : " << Color::Yellow << Buf << Book::Fn::Endl << " Length: " << Color::LightCoral << Seq.length();
+    //AppBook::Debug() << " Base2 : " << Color::Yellow << Buf << Book::Fn::Endl << " Length: " << Color::LightCoral << Seq.length();
     NumDetails.Seq = {Begin, A};
     NumDetails.Value = std::stoi(Buf(), nullptr, 2);
     NumDetails.Base = Details::BaseSize::Binary;
@@ -439,7 +442,7 @@ Book::Result TScanner::Numeric::Base8()
     }
 
     loop8:
-    AppBook::Debug() << "loop8: A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "loop8: A on '" << Color::Yellow << *A << Color::Reset << '\'';
     while(!Text.Eof() && std::isdigit(*A) && (*A <= '7'))
     {
         Buf << *A++;
@@ -450,15 +453,15 @@ Book::Result TScanner::Numeric::Base8()
         ++A;
         goto loop8;
     }
-    AppBook::Debug() << "Octal loop exit: A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "Octal loop exit: A on '" << Color::Yellow << *A << Color::Reset << '\'';
 
     if(((std::isdigit(*A) && (*A >= '7'))) || (A==Begin))
     {
-        AppBook::Debug() << "Octal loop exit: A on '" << Color::Yellow << *A << Color::Reset << '\'' << Color::Red4 << " Rejected";
+    //    AppBook::Debug() << "Octal loop exit: A on '" << Color::Yellow << *A << Color::Reset << '\'' << Color::Red4 << " Rejected";
         return Book::Result::Rejected;
     }
     //--A;
-    AppBook::Debug() << "Base8: A on '" << Color::Yellow << *A << Color::Reset << "' - Buffer: [" << Color::Yellow << Buf << Color::Reset << "]";
+    //AppBook::Debug() << "Base8: A on '" << Color::Yellow << *A << Color::Reset << "' - Buffer: [" << Color::Yellow << Buf << Color::Reset << "]";
     NumDetails.Seq = {Begin, A};
     NumDetails.Value = std::stoi(Buf(), nullptr, 8);
     NumDetails.Base = Details::BaseSize::Octal;
@@ -480,9 +483,9 @@ Book::Result TScanner::Numeric::Base10()
         Buf << '.'; // Force '.' for convertion using StrAcc >> ;
         ++A;
     }
-    AppBook::Debug() << "Decimal : A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "Decimal : A on '" << Color::Yellow << *A << Color::Reset << '\'';
     if(*A == '\'') ++A;
-    AppBook::Debug() << "Decimal : A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "Decimal : A on '" << Color::Yellow << *A << Color::Reset << '\'';
     if(!std::isdigit(*A) ){
         //AppBook::Status() << " Rejected on '" << Color::Yellow << *A << Color::Reset << "'";
         return Book::Result::Rejected;
@@ -509,7 +512,7 @@ Book::Result TScanner::Numeric::Base10()
         }
         //AppBook::Debug() << "Bottom while loop: A on '" << Color::Yellow << *A << Color::Reset << '\'';
     }
-    AppBook::Debug() << "A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "A on '" << Color::Yellow << *A << Color::Reset << '\'';
     if(A == Begin)
     {
         AppBook::Status() << " Rejected on '" << Color::Yellow << *A << Color::Reset << "' Sequence is not a number.";
@@ -532,7 +535,7 @@ Book::Result TScanner::Numeric::Base10()
 
 Book::Result TScanner::Numeric::Base16()
 {
-    AppBook::Debug() << " Base 2,8 rejected - then:";
+    //AppBook::Debug() << " Base 2,8 rejected - then:";
     auto A = Text();
     StrAcc Buf;
     NumDetails.Base = Details::BaseSize::Hexadecimal;
@@ -542,12 +545,12 @@ Book::Result TScanner::Numeric::Base16()
 
     if(std::toupper(*A) != 'X')
     {
-        AppBook::Debug() << "Hex [Mandatory prefix not met]: " << Color::Red4 << "Rejected";
+    //    AppBook::Debug() << "Hex [Mandatory prefix not met]: " << Color::Red4 << "Rejected";
         return Book::Result::Rejected;
     }
     ++A;
 loop16:
-    AppBook::Debug() << "loop16: A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "loop16: A on '" << Color::Yellow << *A << Color::Reset << '\'';
     while(!Text.Eof() && std::isxdigit(*A))
     {
         Buf << *A++;
@@ -556,15 +559,15 @@ loop16:
     if(!Text.Eof() && (*A == '\'')){ ++A; goto loop16; }
 
     if(A==Begin) return Book::Result::Rejected;
-    AppBook::Debug() << "A on '" << Color::Yellow << *A << Color::Reset << '\'';
+    //AppBook::Debug() << "A on '" << Color::Yellow << *A << Color::Reset << '\'';
     NumDetails.Seq = {Begin, A};
-    AppBook::Debug() << "[Hex] : Sequence ["
-    << Color::Yellow << std::string(NumDetails.Seq.begin(), NumDetails.Seq.end())
-    << Color::Reset << "] Length: "
-    << Color::LightCoral << NumDetails.Seq.length()
-    << Color::White <<  " -> Buffer:["
-    << Color::Yellow << Buf
-    << Color::Reset << "] ";
+//    AppBook::Debug() << "[Hex] : Sequence ["
+//    << Color::Yellow << std::string(NumDetails.Seq.begin(), NumDetails.Seq.end())
+//    << Color::Reset << "] Length: "
+//    << Color::LightCoral << NumDetails.Seq.length()
+//    << Color::White <<  " -> Buffer:["
+//    << Color::Yellow << Buf
+//    << Color::Reset << "] ";
 
     NumDetails.Value = std::stoi(Buf(), nullptr, 16);
     NumDetails.ScaleValue();
@@ -583,45 +586,42 @@ void TScanner::Numeric::Details::ScaleValue()
     // Signed Integer:
     // -------------------------------------------------------------------------------
     // 8bits:
-    if((Value >= 0) && (Value <=255))
-        Size = SizeType::U8;
-    else
-        if((Value >= -128) && (Value <= 127))
-        {
-            Size = SizeType::I8;
+    if((Value >=-128) && (Value <=127))
+    {
+        Size = SizeType::I8;
+        return;
+    }
+    if((Value >= 128) && (Value <=255))
+    {
+            Size = SizeType::U8;
             return;
-        }
-    // Signed Integer:
-    // -------------------------------------------------------------------------------
-    // 16bits:
-    if((Value >=0) && (Value <= 65535))
-        Size = SizeType::U16;
-    else
-        if(((Value < -128) && (Value >= -32768)) && ( Value <= 32767))
-        {
-            Size = SizeType::I16;
+    }
+    if((Value >= -32768) && (Value <= 32767))
+    {
+        Size = SizeType::I16;
+        return;
+    }
+    if((Value >=32768) && (Value <= 65565))
+    {
+            Size = SizeType::U16;
             return;
-        }
-
-    // Signed Integer:
-    // -------------------------------------------------------------------------------
-    // 32bits:
-    if((Value >=0) && (Value <= 0xFFFFFFFF))
+    }
+    if((Value >= -2147483648) && (Value <= 2147483647))
+    {
+        Size = SizeType::I32;
+        return;
+    }
+    if((Value >= 0x10000) && (Value <= 4294967295))
+    {
         Size = SizeType::U32;
+        return;
+    }
+    if((Value < 0LL))
+    {
+        Size = SizeType::I64;
+    }
     else
-        if(((Value < -32768) && (Value >= -2147483648)) && ( Value <= 2147483647))
-        {
-            Size = SizeType::I32;
-            return;
-        }
-
-    // Signed Integer:
-    // -------------------------------------------------------------------------------
-    // 64bits:
-    if((Value < -2147483648) && (Value >= -1 * 0xFFFFFFFFFFFFFFFFL) && (Value <= std::pow(2,64))) Size = SizeType::I64;
-
-    Size = SizeType::U64;
-
+        Size = SizeType::U64;
 
 }
 }
