@@ -46,7 +46,7 @@ add_library(
     include/AppBook/Util/Delegate.h src/Util/Delegate.cc
     include/AppBook/Util/CArgs.h src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
-    include/AppBook/Book/SVScanner.h src/Book/SVScanner.cxx
+    include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
 
 )
 

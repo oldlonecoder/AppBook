@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AppBook/Book/SVScanner.h"
+#include "AppBook/Book/TScanner.h"
 #include <AppBook/Util/CArgs.h>
 class DevApp
 {

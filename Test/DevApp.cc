@@ -53,7 +53,7 @@ DevApp::DevApp(const std::string& TestName, int argc, char** argv){
 Book::Result DevApp::SetupArgs()
 {
     (Args << Cmd::Switch{"StrBreak test",   "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
-    (Args << Cmd::Switch{"Test SVScanner",  "-s",  "--SVScanner", "Test SVScanner", 0 }).Connect(this, &DevApp::SVScanTest);
+    (Args << Cmd::Switch{"Test TScanner",  "-s",  "--TScanner", "Test TScanner", 0 }).Connect(this, &DevApp::SVScanTest);
     (Args << Cmd::Switch{"Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
 
     return Args.Input(inArgs);
@@ -96,7 +96,7 @@ Book::Action DevApp::SVScanTest(Cmd::Switch& arg)
 
     AppBook::Test() << " Testing Processing::ScanNumber: R\"(" << Color::Yellow << view << Color::Reset << ")\"sv;";
 
-    Book::SVScanner Text{view};
+    Book::TScanner Text{view};
 
     Text.SkipWS();
     std::string Str;
@@ -108,7 +108,7 @@ Book::Action DevApp::SVScanTest(Cmd::Switch& arg)
     if(Rn == Book::Result::Accepted)
     {
         AppBook::Debug() << " Text.ScanNumber - Sequence:[" << Color::Yellow << std::string(Details.Seq.begin(), Details.Seq.end()) << Color::Reset << "] :" << Color::Yellow << (int)Details.Value;
-        if(Details.Base == Book::SVScanner::Numeric::Details::BaseSize::Binary)
+        if(Details.Base == Book::TScanner::Numeric::Details::BaseSize::Binary)
             AppBook::Out() << StrAcc::ToBinary((int16_t)Details.Value, true, 4);
     }
     else

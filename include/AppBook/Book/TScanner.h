@@ -155,36 +155,34 @@ class __attribute__ ((visibility ("hidden"))) MarkupProc
 
 
 /*!
- * @brief Base Text processing... To be developped...
+ * @brief Base Text scanning... To be developped...
  *
  * @author  &copy; 2024, Serge Lussier (oldlonecoder, serge.lussier\@oldlonecoder.club)
  *
  * */
-class APPBOOK_EXPORTS SVScanner
+class APPBOOK_EXPORTS TScanner
 {
-    std::string_view Text{};
-
-    std::string_view::iterator mEnd{};
-    std::string_view::iterator mPos{};
-    std::string_view::iterator mBegin{};
+    const char* mEnd{nullptr};
+    const char* mPos{nullptr};
+    const char* mBegin{nullptr};
 
 
 public:
 
-    using Iterator = std::string_view::iterator;
+    using Iterator = const char*;
 
     struct APPBOOK_EXPORTS  [[maybe_unused]] Context
     {
-        std::string_view::iterator Pos{};
-        std::string_view::iterator Begin{};
-        Book::Result               Return{Book::Result::Notimplemented};
+        TScanner::Iterator Pos{nullptr};
+        TScanner::Iterator Begin{nullptr};
+        Book::Result       Return{Book::Result::Notimplemented};
         //...
     };
 
     struct APPBOOK_EXPORTS Numeric
     {
     private:
-        static SVScanner Empty;
+        static TScanner Empty;
     public:
 
         struct APPBOOK_EXPORTS Details
@@ -194,7 +192,7 @@ public:
             {
                 Binary,Octal,Decimal, Hexadecimal
 
-            }Base{SVScanner::Numeric::Details::BaseSize::Decimal };
+            }Base{TScanner::Numeric::Details::BaseSize::Decimal };
             enum class SizeType: char
             {
                 I8,U8,I16,U16,I32,U32,I64,U64,F32,F64,F128
@@ -223,20 +221,20 @@ public:
             void ScaleValue();
         };
 
-        using Result = std::pair<Book::Result, SVScanner::Numeric::Details>;
+        using Result = std::pair<Book::Result, TScanner::Numeric::Details>;
 
-        SVScanner& Text{SVScanner::Numeric::Empty};
+        TScanner& Text{TScanner::Numeric::Empty};
 
         std::string_view Seq{};
 
-        std::string_view::iterator End{};
-        std::string_view::iterator Pos{};
-        std::string_view::iterator Begin{};
+        TScanner::Iterator End{nullptr};
+        TScanner::Iterator Pos{nullptr};
+        TScanner::Iterator Begin{nullptr};
 
         bool Real{false};
         Details NumDetails{};
         Numeric() = default;
-        explicit Numeric(SVScanner& Tx);
+        explicit Numeric(TScanner& Tx);
 
 
         ~Numeric() = default;
@@ -264,16 +262,16 @@ public:
     };
 
 
-    SVScanner() = default;
-    explicit SVScanner(std::string_view Txt);
+    TScanner() = default;
+    explicit TScanner(std::string_view Txt);
 
-    SVScanner(SVScanner&& ) noexcept = default;
-    SVScanner(SVScanner&  ) = default;
-    ~SVScanner() = default;
+    TScanner(TScanner&& ) noexcept = default;
+    TScanner(TScanner&  ) = default;
+    ~TScanner() = default;
 
-    SVScanner& operator = (SVScanner&&) noexcept = default;
-    SVScanner& operator = (SVScanner const &) = default;
-    SVScanner& operator = (std::string_view view);
+    TScanner& operator = (TScanner&&) noexcept = default;
+    TScanner& operator = (TScanner const &) = default;
+    TScanner& operator = (std::string_view view);
 
 
     LocationData& Location() { return mLocation; }
@@ -281,42 +279,42 @@ public:
     bool SkipWS();
 
 
-    SVScanner::LocationData& Sync(std::size_t Offset=0);
+    TScanner::LocationData& Sync(std::size_t Offset=0, bool UpdateCoords=false);
 
 
     bool Eof();
-    bool Eof(std::string_view::iterator cc);
+    bool Eof(TScanner::Iterator cc);
 
     Book::Result Seek(int32_t Idx);
     Book::Result Seek(const std::string_view& Seq);
-    // void Seek(std::string_view::iterator IPos); ///< Disabled
+    // void Seek(TScanner::Iterator IPos); ///< Disabled
 
     explicit operator bool() const;
-    [[nodiscard]] inline bool Empty() const { return Text.empty() ;}
+    [[nodiscard]] inline bool Empty() const { return mEnd==mBegin;}
 
     auto operator*() const  { return *mPos; }
-    std::string_view::iterator operator()() const { return mPos; }
+    TScanner::Iterator operator()() const { return mPos; }
 
 
     //  -   Need more check and use cases...:
     //    auto  operator +( size_t sz );
-    //    SVScanner&  operator += ( size_t sz );
+    //    TScanner&  operator += ( size_t sz );
     //------------------------------------------------
     bool         operator ++();
     bool         operator ++(int);
 
     //Scanners:
-    SVScanner::Numeric::Result ScanNumber();
+    TScanner::Numeric::Result ScanNumber();
     std::pair<Book::Result, std::string_view> ScanLiteralString();
 
-    SVScanner::Iterator StartSequence();
-    std::pair<SVScanner::Iterator,SVScanner::Iterator> EndSequence();
-    void Back(std::string_view::iterator Pos)
+    TScanner::Iterator StartSequence();
+    std::pair<TScanner::Iterator,TScanner::Iterator> EndSequence();
+    void Back(TScanner::Iterator Pos)
     {
         mPos = Pos;
         Sync();
     }
-    std::pair<SVScanner::Iterator, SVScanner::Iterator> Scan(const std::function<Book::Result()>& ScannerFn);
+    std::pair<TScanner::Iterator, TScanner::Iterator> Scan(const std::function<Book::Result()>& ScannerFn);
 
     // ------------------------------------------------------------------
     void PushLocation();
@@ -332,8 +330,8 @@ public:
     //    bool         operator --();
     //    bool         operator --(int);
     // -----------------------------------------------------------------------
-    SVScanner::Iterator Begin();
-    SVScanner::Iterator End();
+    TScanner::Iterator Begin();
+    TScanner::Iterator End();
 
 
     Book::Result Reposition(std::size_t Offset);
@@ -343,7 +341,7 @@ private:
 
     LocationData mLocation{};
     std::vector<std::pair<std::size_t,std::size_t>> mPoints;
-    std::stack<SVScanner::Iterator> PStack{};
+    std::stack<TScanner::Iterator> PStack{};
 
 };
 

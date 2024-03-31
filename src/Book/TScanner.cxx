@@ -14,26 +14,27 @@
  *****************************************************************************************/
 
 
-#include "AppBook/Book/SVScanner.h"
+#include "AppBook/Book/TScanner.h"
 //using namespace std::literals;
 #include <AppBook/Utf/Glyphes.h>
 namespace Book
 {
 
-SVScanner SVScanner::Numeric::Empty{};
+TScanner TScanner::Numeric::Empty{};
 
 
 
 
-SVScanner::SVScanner(std::string_view Txt) : Text(Txt)
+TScanner::TScanner(std::string_view Txt)
 {
-    mBegin = mPos = Text.begin();
-    mEnd = Text.end();
+    mBegin = mPos = Txt.begin()+0;
+    mEnd = (mBegin + Txt.length())-1; // mEnd placed at the last valid character. It will NEVER be changed.
     mLocation = {1, 1, 0};
 
 }
 
-bool SVScanner::PopLocation()
+
+bool TScanner::PopLocation()
 {
     if(mPoints.empty()) return false;
     auto P = --mPoints.end();
@@ -44,29 +45,27 @@ bool SVScanner::PopLocation()
 }
 
 
-void SVScanner::PushLocation()
+void TScanner::PushLocation()
 {
     mPoints.emplace_back(mLocation.Line, mLocation.Col);
 
 }
 
-bool SVScanner::Eof(std::string_view::iterator cc)
+bool TScanner::Eof(const char* cc)
 {
     return cc >= mEnd;
 }
 
 
-bool SVScanner::Eof()
+bool TScanner::Eof()
 {
     return mPos >= mEnd;
 }
 
 
-bool SVScanner::SkipWS()
+bool TScanner::SkipWS()
 {
-    //AppBook::Debug();
     while (!Eof() && std::isspace(*mPos)) ++mPos;
-    //AppBook::Debug() << " Iterator now on '" << Color::Yellow << *mPos << Color::Reset << "' :";
     return Eof();
 }
 
@@ -74,10 +73,15 @@ bool SVScanner::SkipWS()
  * @brief Synchronize internal "cursor" location {Line #, Column #, Offset} at the current iterator offset into the view.
  * @return  Reference to the updated infos into the LocationData member of Processing.
  */
-SVScanner::LocationData &SVScanner::Sync(size_t Offset)
+TScanner::LocationData &TScanner::Sync(size_t Offset, bool UpdateCoords)
 {
-    Book::Debug() << " Offset:" << Color::Yellow << Offset;
+    //Book::Debug() << " Offset:" << Color::Yellow << Offset;
+    if( (mPos + Offset) > mEnd)
+        throw AppBook::Exception()[Book::Error() << " Outside Boundaries: {TScanner Length: " << mEnd-mBegin << " <=> Required position, ends at: " << (mPos+Offset)-mBegin << '}'];
+
     mPos += Offset;
+
+    if(!UpdateCoords) return mLocation; ///< Can lead to error.
     auto c = mBegin;
     while (!Eof(c) && (c < mPos)) {
         switch (*c) {
@@ -115,9 +119,9 @@ SVScanner::LocationData &SVScanner::Sync(size_t Offset)
 
 
 
-SVScanner::operator bool() const
+TScanner::operator bool() const
 {
-    return !Text.empty();
+    return mBegin != nullptr;
 }
 
 
@@ -126,24 +130,23 @@ SVScanner::operator bool() const
  * @param view
  * @return reference to this instance.
  */
-SVScanner &SVScanner::operator=(std::string_view view)
+TScanner &TScanner::operator=(std::string_view view)
 {
-    Text = view;
+
     if(view.empty())
     {
-        AppBook::Error() << "Processing assigned with an empty string \"view\". Be aware, this instance cannot be used.";
+        AppBook::Error() << "Assigned with an empty string \"view\". Be aware, this instance cannot be used.";
         return *this;
     }
-    mBegin = mPos = Text.begin();
-    mEnd = Text.end();
+    mBegin = mPos = view.begin()+0;
+    mEnd = mBegin + view.length()-1;
     mLocation = {1, 1, 0};
-
     return *this;
 }
 
 
 
-bool SVScanner::operator++()
+bool TScanner::operator++()
 {
     if(Eof()) return false;
 
@@ -152,7 +155,7 @@ bool SVScanner::operator++()
     return !Eof();
 }
 
-bool SVScanner::operator++(int)
+bool TScanner::operator++(int)
 {
     if(Eof()) return false;
 
@@ -161,24 +164,26 @@ bool SVScanner::operator++(int)
     return !Eof();
 }
 
-Book::Result SVScanner::Seek(int32_t Idx)
+Book::Result TScanner::Seek(int32_t Idx)
 {
 //    if(Text.empty()) return Book::Result::Rejected;
 
 //    Signal Exception on any attempt to seek into an empty string_view !! :
-    if(Text.empty())
-        AppBook::Exception() [ AppBook::Except() << Book::Result::Empty << ": Attempt to use the Seek method on an empty SVScanner!" ];
+    if(!mBegin || !mEnd)
+        AppBook::Exception() [ AppBook::Except() << Book::Result::Empty << ": Attempt to use the Seek method on an un-assigned/incompletely assigned TScanner!" ];
 
     // Otherwise just reject under/overflow :
     // Otherwise execute the seek and return Accepted.
     if(Idx < 0L)
     {
         size_t X =  -1 * Idx;
-        if(X >= Text.size()) return Book::Result::Rejected;
-        mPos  = Text.end() - X;
+        if((mEnd + X) < mBegin) X = (mEnd-mBegin)+1;
+
+        mPos  = mEnd - X;
+        Sync();
         return Book::Result ::Accepted;
     }
-    if((mBegin + Idx) < mEnd ) mPos = mBegin + Idx;
+    if(mBegin && ((mBegin + Idx) < mEnd )) mPos = mBegin + Idx;
     else
         mPos = mEnd-1; // Jump to the end of the text...
 
@@ -187,13 +192,8 @@ Book::Result SVScanner::Seek(int32_t Idx)
     return Eof() ? Book::Result::Eof : Book::Result::Accepted;
 }
 
-//
-//void SVScanner::Seek(std::string_view::iterator IPos)
-//{
-//    mPos = IPos;
-//}
 
-SVScanner::Numeric::Result SVScanner::ScanNumber()
+TScanner::Numeric::Result TScanner::ScanNumber()
 {
     Numeric Scanner(*this);
     if (!Scanner.Base2() && !Scanner.Base8() && !Scanner.Base16() && !Scanner.Base10()) return { Book::Result::Rejected, {} };
@@ -206,7 +206,7 @@ SVScanner::Numeric::Result SVScanner::ScanNumber()
  * @brief Scan literal string between quotes
  * @return string_view of the contents including the surrounding quotes.
  */
-std::pair<Book::Result, std::string_view> SVScanner::ScanLiteralString()
+std::pair<Book::Result, std::string_view> TScanner::ScanLiteralString()
 {
     StrAcc Buf;
     std::string_view::iterator A = mPos;
@@ -241,20 +241,23 @@ std::pair<Book::Result, std::string_view> SVScanner::ScanLiteralString()
 }
 
 
-std::string SVScanner::Mark()
+std::string TScanner::Mark()
 {
     // 1 - Locate Beginning of the line:
+    StrAcc Str;
     auto LBegin = mPos;
     auto LEnd   = mPos;
     // Beginning of the line:
     while((LBegin > mBegin) && (*LBegin != '\n') && (*LBegin != '\r')) --LBegin;
-    if(LBegin < mBegin) ++LBegin;
+    if(LBegin < mBegin) LBegin = mBegin;
     // End of line:
     while((LEnd < mEnd) && (*LEnd != '\n') && (*LEnd != '\r')) ++LEnd;
-    if(LEnd >= mEnd) --LEnd;
-    auto pos = (mPos-LBegin)-1; // ?
-    auto spc = std::string(pos,' ');
-    return std::string(LBegin, LEnd) + '\n' + spc + Utf::Glyph::CArrowUp;
+    if(LEnd > mEnd) LEnd = mEnd;
+    auto col = (mPos-LBegin); // ?
+    auto spc = std::string(col-1<=0? 1 : col-1,' ');
+    //Book::Debug() << ":---> nbspace: " << spc.length() << ":";
+    Str , '\n' , std::string(LBegin, LEnd) , '\n' , spc , Utf::Glyph::CArrowUp;
+    return Str();
 }
 
 
@@ -264,7 +267,7 @@ std::string SVScanner::Mark()
  * @brief const char* at the beginning of the Text.
  * @return string_view::iterator ( const char* );
  */
-SVScanner::Iterator SVScanner::Begin()
+TScanner::Iterator TScanner::Begin()
 {
     return mBegin; /// << The start if this Scanner
 }
@@ -274,17 +277,17 @@ SVScanner::Iterator SVScanner::Begin()
  * @brief const char* at the end of the Text.
  * @return string_view::iterator ( const char* );
  */
-SVScanner::Iterator SVScanner::End()
+TScanner::Iterator TScanner::End()
 {
     return mEnd; //< the end of this scanner.
 }
 
-void SVScanner::Push()
+void TScanner::Push()
 {
     PStack.push(mPos);
 }
 
-bool SVScanner::Pop()
+bool TScanner::Pop()
 {
     if(PStack.empty()) return false;
     mPos = PStack.top();
@@ -292,27 +295,27 @@ bool SVScanner::Pop()
     return true;
 }
 
-Book::Result SVScanner::Reposition(std::size_t Offset)
+Book::Result TScanner::Reposition(std::size_t Offset)
 {
     if(Eof()) return Book::Result::Rejected;
     mPos += Offset;
     return Result::Accepted;
 }
 
-SVScanner::Iterator SVScanner::StartSequence()
+TScanner::Iterator TScanner::StartSequence()
 {
     Push();
     return mPos;
 }
 
-std::pair<SVScanner::Iterator,SVScanner::Iterator> SVScanner::EndSequence()
+std::pair<TScanner::Iterator,TScanner::Iterator> TScanner::EndSequence()
 {
     auto I = PStack.top();
     PStack.pop();
     return {I, mPos};
 }
 
-std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::function<Book::Result()>& ScannerFn)
+std::pair<TScanner::Iterator, TScanner::Iterator> TScanner::Scan(const std::function<Book::Result()>& ScannerFn)
 {
     StartSequence();
     if(!!ScannerFn())
@@ -330,9 +333,13 @@ std::pair<SVScanner::Iterator, SVScanner::Iterator> SVScanner::Scan(const std::f
  * @return Accepted if found, Rejected if not.
  * @todo Add more result codes to Book::Enum::Code !
  */
-Book::Result SVScanner::Seek(const std::string_view &Seq)
+Book::Result TScanner::Seek(const std::string_view &Seq)
 {
-    auto pos = Text.find(Seq,mPos-mBegin);
+
+    Sync();
+    auto sv= std::string_view(mBegin, mEnd-mBegin);
+    auto pos = sv.find(Seq,mLocation.Col);
+
     if(pos == std::string_view::npos)
         return Book::Result::Rejected;
     mPos = mBegin+pos;
@@ -341,7 +348,7 @@ Book::Result SVScanner::Seek(const std::string_view &Seq)
 }
 
 
-SVScanner::LocationData const& SVScanner::LocationData::operator>>(std::string &Out) const
+TScanner::LocationData const& TScanner::LocationData::operator>>(std::string &Out) const
 {
     StrAcc OutStr="%d,%d";
     OutStr << Line << Col;//  << Offset;
@@ -349,14 +356,14 @@ SVScanner::LocationData const& SVScanner::LocationData::operator>>(std::string &
     return *this;
 }
 
-SVScanner::Numeric::Numeric(SVScanner &Tx):Text(Tx), End(Tx.mEnd), Pos(Tx.mPos), Begin(Tx.mPos){}
+TScanner::Numeric::Numeric(TScanner &Tx):Text(Tx), End(Tx.mEnd), Pos(Tx.mPos), Begin(Tx.mPos){}
 
-Book::Result SVScanner::Numeric::operator()()
+Book::Result TScanner::Numeric::operator()()
 {
     return Book::Result::Ok;
 }
 
-Book::Result SVScanner::Numeric::Base2()
+Book::Result TScanner::Numeric::Base2()
 {
     // 0b11010101010101010101010101010101010                --> Parsed all
     // 0b1101'0101'01010101'''''''0101'0101'0101'0101'0100'1010  --> Parsed all
@@ -415,7 +422,7 @@ Loop2:
     return Book::Result::Accepted;
 }
 
-Book::Result SVScanner::Numeric::Base8()
+Book::Result TScanner::Numeric::Base8()
 {
     auto A = Text();
     StrAcc Buf;
@@ -460,7 +467,7 @@ Book::Result SVScanner::Numeric::Base8()
 
 }
 
-Book::Result SVScanner::Numeric::Base10()
+Book::Result TScanner::Numeric::Base10()
 {
     AppBook::Debug() << " Base 2,8,16 rejected then:";
     auto A = Text(); // Get the current iterrator value...
@@ -523,7 +530,7 @@ Book::Result SVScanner::Numeric::Base10()
     return Book::Result::Accepted;
 }
 
-Book::Result SVScanner::Numeric::Base16()
+Book::Result TScanner::Numeric::Base16()
 {
     AppBook::Debug() << " Base 2,8 rejected - then:";
     auto A = Text();
@@ -564,12 +571,12 @@ loop16:
     return Book::Result::Accepted;
 }
 
-void SVScanner::Numeric::Sign()
+void TScanner::Numeric::Sign()
 {
 
 }
 
-void SVScanner::Numeric::Details::ScaleValue()
+void TScanner::Numeric::Details::ScaleValue()
 {
 
 
