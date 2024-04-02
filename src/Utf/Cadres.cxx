@@ -195,6 +195,7 @@ Cadre::FrameData &Cadre::FrameData::operator=(Cadre::FrameMat const FrameModel)
     HL  = _[{FrameModel.Left, 0             , FrameModel.Right, 0              , 0}].data();
     BR  = _[{FrameModel.Left, FrameModel.Top, 0               , 0              , 0}].data();
     BL  = _[{0              , FrameModel.Top, FrameModel.Right, 0              , 0}].data();
+    TR  = _[{FrameModel.Left, 0             , 0               , FrameModel.Down, 0}].data();
     TL  = _[{0              , 0             , FrameModel.Right, FrameModel.Down, 0}].data();
     return *this;
 }
