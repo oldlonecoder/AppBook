@@ -36,8 +36,6 @@
 class APPBOOK_EXPORTS StrAcc final
 {
 
-
-
     std::string _d; ///< private std::string instance;
     std::string::size_type _ArgPos = std::string::npos;
 public:

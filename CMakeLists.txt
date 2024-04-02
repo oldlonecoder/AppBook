@@ -49,6 +49,8 @@ add_library(
     include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
     src/Book/ApplicationBase.cxx
     include/AppBook/Book/ApplicationBase.h
+    include/AppBook/Utf/Cadres.h
+    src/Utf/Cadres.cxx
 
 )
 

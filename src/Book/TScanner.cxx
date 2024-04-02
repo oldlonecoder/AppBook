@@ -249,9 +249,9 @@ std::string TScanner::Mark()
     while((LEnd < mEnd) && (*LEnd != '\n') && (*LEnd != '\r')) ++LEnd;
     if(LEnd > mEnd) LEnd = mEnd;
     auto col = (mPos-LBegin); // ?
-    auto spc = std::string(col-1<=0? 1 : col-1,' ');
+    auto spc = std::string(col-1<=0? 0 : col,' ');
     //Book::Debug() << ":---> nbspace: " << spc.length() << ":";
-    Str , '\n' , std::string(LBegin, LEnd) , '\n' , spc , Utf::Glyph::CArrowUp;
+    Str , '\n' , std::string(LBegin, LEnd+1) , '\n' , spc , Utf::Glyph::CArrowUp;
     return Str();
 }
 

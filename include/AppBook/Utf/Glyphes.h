@@ -240,22 +240,8 @@ struct APPBOOK_EXPORTS Glyph
     static constexpr Type Stop               = 103;
     static Glyph::DataArray Data;
 
-    static Glyph::Type Scan(std::string GlyphName);
+    static Glyph::Type Scan(const std::string& GlyphName);
     static std::string Name(Glyph::Type Gh);
-
-// From [https://github.com/ArthurSonzogni/FTXUI]
-// Adapted for AppBook::Util::Glyph.
-    struct APPBOOK_EXPORTS FrameMat
-    {
-        uint8_t Left : 2;
-        uint8_t Top  : 2;
-        uint8_t Right: 2;
-        uint8_t Down : 2;
-        uint8_t Round: 1;
-    };
-
-    using FrameMatDataDictionary = std::map<std::string, Glyph::FrameMat>;
-
 
 };
 
@@ -418,7 +404,6 @@ struct APPBOOK_EXPORTS AccentFR
     static constexpr T L_ugrave = "ù";
     static constexpr T L_ucric  = "û";
     static constexpr T L_icirc  = "î";
-
     static constexpr T L_Agrave = "À";
     static constexpr T L_Acirc  = "Â";
     static constexpr T L_Cedile = "Ç";

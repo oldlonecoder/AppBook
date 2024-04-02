@@ -5,10 +5,6 @@
 #include "AppBook/Book/ApplicationBase.h"
 #include <csignal>
 
-namespace Book
-{
-} // Book#include <csignal>
-
 
 #define src_location std::source_location::current()
 #define out_fun     std::cout << src_location.function_name() << " :" <<
@@ -19,7 +15,7 @@ void sig_int( int s )
 {
     //rem::push_interrupted() << " dump messages stream and exit:";
     //rem::clear(nullptr);
-    std::cerr << "\n---------------------------------------\n sig interrupt caugh - flushing Book contents.\n ";
+    std::cerr << "\n---------------------------------------\n sig interrupt caught - flushing Book contents.\n ";
     AppBook::Close();
     exit(3);
 }
@@ -35,8 +31,7 @@ void sig_fault( int s)
 
 void sig_abort( int s)
 {
-    //rem::push_aborted() << " dump messages stream and exit:";
-    //rem::clear(nullptr);
+
     std::cerr << s << '\n';
     AppBook::Close(); //< Safe close - Only closes once - Can be called multiple times
     exit(127);
@@ -105,15 +100,8 @@ Book::Result ApplicationBase::Setup()
     Book::Select()["BookApi"]["Journal"];
     Book::Debug() << "\" Install signals:";
     ApplicationBase::InstallSignals();
-    Book::Debug() <<  " Creating section: " << "Skel :\n";
-    auto& Sec = AppBook::CreateSection("Skel");
 
-    Book::Debug() <<  " This section in Skel: '" << Sec.Id() << ":";
-    Sec.Open();
-    Sec.CreateSectionContents("Skel-Library.journal");
-    Book::Select()["Skel"]["Skel-Library.journal"];
-
-    Book::Debug() << " ApplicationBase Skel library journal started...";
+    Book::Debug() << " ApplicationBase starting...";
     return Result::Success;
 }
 
