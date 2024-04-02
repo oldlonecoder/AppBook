@@ -47,6 +47,8 @@ add_library(
     include/AppBook/Util/CArgs.h src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
     include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
+    src/Book/ApplicationBase.cxx
+    include/AppBook/Book/ApplicationBase.h
 
 )
 

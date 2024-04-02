@@ -98,7 +98,7 @@ AppBook &AppBook::Self()
 AppBook::AppBook()
 {
     if(!AppBook::Application_Book)
-        throw AppBook::Exception("Application Book must be instantiated through the static AppBook::Open('BookName')!");
+        throw AppBook::Exception("ApplicationBase Book must be instantiated through the static AppBook::Open('BookName')!");
 
 }
 
@@ -145,7 +145,7 @@ AppBook& AppBook::Open(const std::string& BookName)
 //    if(R != Book::Result::Success)
 //        throw AppBook::Exception(" Open Book failed!");
 
-    out_fun " Application Book " << AppBook::Instance().Id() << "  Created\n";
+    out_fun " ApplicationBase Book " << AppBook::Instance().Id() << "  Created\n";
 
     Fs::file_time_type htime;
     auto Path = Fs::current_path();
@@ -230,7 +230,7 @@ AppBook::Section &AppBook::operator[](std::string_view section_id)
 
     if(!AppBook::Application_Book)
     {
-        e << "Application Book not Opened! Instantiate through AppBook::Open('BookName')";
+        e << "ApplicationBase Book not Opened! Instantiate through AppBook::Open('BookName')";
         throw AppBook::Exception(e());
     }
 
@@ -333,7 +333,7 @@ AppBook &AppBook::Instance()
     if(!AppBook::Application_Book)
     {
         StrAcc Str;
-        Str << Color::Red4 << "Error: " << Color::White << " Application Book was not created! ";
+        Str << Color::Red4 << "Error: " << Color::White << " ApplicationBase Book was not created! ";
         throw AppBook::Exception(Str());
     }
     return *AppBook::Application_Book;
@@ -365,7 +365,7 @@ void AppBook::ThrowOnNoStream()
             Msg << "\n --> Output file stream of " << Ins.current_stream->Parent<AppBook::Section>()->Id() << " was not set yet.";
     }
     else
-        Msg << " --> The Application Book was not yet created.\n";
+        Msg << " --> The ApplicationBase Book was not yet created.\n";
 
     throw AppBook::Exception(Msg());
 }

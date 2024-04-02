@@ -157,10 +157,10 @@ int main(int argc, char** argv)
     std::signal(SIGSEGV, sig_fault);
     std::signal(SIGABRT, sig_abort);
 
-    AppBook& Livre = AppBook::Open("Application");
+    AppBook& Livre = AppBook::Open("ApplicationBase");
     Livre.Descriptions =
 R"(
-<Icon:School; fg:Yellow>This is the development of the <fg:White>[<fg:Lime>Application <fg:LightCyan3>Book <fg:BlueViolet>API<fg:White>]<fg/>
+<Icon:School; fg:Yellow>This is the development of the <fg:White>[<fg:Lime>ApplicationBase <fg:LightCyan3>Book <fg:BlueViolet>API<fg:White>]<fg/>
 --------------------------------------------------------
 )";
 
