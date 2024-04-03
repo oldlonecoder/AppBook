@@ -9,8 +9,6 @@ class DevApp
     std::vector<std::string_view> inArgs{};
 
 
-
-
 public:
 
     DevApp() = default;

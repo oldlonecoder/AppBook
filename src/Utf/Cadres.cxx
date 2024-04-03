@@ -171,6 +171,7 @@ bool Cadre::FrameMat::operator<(Cadre::FrameMat RHS) const
     if (Down > RHS.Down)   { return  false; }
     if (Round < RHS.Round) { return  true;  }
     if (Round > RHS.Round) { return  false; }
+    return false;
 }
 
 /*!
