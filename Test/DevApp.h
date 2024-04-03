@@ -7,6 +7,10 @@ class DevApp
 
     Cmd::CArgs Args;
     std::vector<std::string_view> inArgs{};
+
+
+
+
 public:
 
     DevApp() = default;
@@ -23,6 +27,8 @@ public:
     Book::Action Defaults(Cmd::Switch& arg);
     
     Cmd::CArgs Arguments() { return Args; }
+
+
 };
 
 

@@ -151,5 +151,3 @@ private:
     mutable typename Delegate::Accumulator* _acc{ nullptr };
 };
 
-
-

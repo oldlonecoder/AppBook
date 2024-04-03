@@ -61,6 +61,8 @@ Book::Result DevApp::SetupArgs()
 
 Book::Result DevApp::Run()
 {
+
+
     (void)Args.Process();
     return Book::Result::Ok;
 }
@@ -150,6 +152,7 @@ Book::Action DevApp::Defaults(Cmd::Switch &arg)
 }
 
 
+
 int main(int argc, char** argv)
 {
 
@@ -194,10 +197,10 @@ R"(
         //
         AppBook::Out() << Color::Reset << test.Arguments().Usage();
     }
-    catch(std::exception& e)
-    {
-        std::cout << "\n\nstd::exception caught:\n[" << Color::Ansi(Color::LightCoral) << e.what() << Color::Ansi(Color::Reset) << "]\n\n";
-    }
+    //catch(std::exception& e)
+    //{
+    //    std::cout << "\n\nstd::exception caught:\n[" << Color::Ansi(Color::LightCoral) << e.what() << Color::Ansi(Color::Reset) << "]\n\n";
+    //}
     catch(const char* msg)
     {
         std::cout << "\n\n global exception caught:\n[" << Color::Ansi(Color::LightCoral) << msg << Color::Ansi(Color::Reset) << "]\n\n";

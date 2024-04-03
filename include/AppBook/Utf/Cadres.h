@@ -32,6 +32,10 @@ struct APPBOOK_EXPORTS Cadre
     Color::Pair Colors;     ///< Colours of the Box::Frame
     Rect R;          ///< Box ...geometry
 
+/*!
+ * @brief 1v x 4h matrix for addressing Frame components
+ * @note  : Source : https://github.com/ArthurSonzogni/FTXUI/blob/main/src/ftxui/screen/string.cpp
+ */
     struct APPBOOK_EXPORTS FrameMat
     {
         uint8_t Left : 2;
@@ -41,7 +45,6 @@ struct APPBOOK_EXPORTS Cadre
         uint8_t Round: 1;
 
         bool operator < (Cadre::FrameMat RHS) const;
-        //int operator <=> (Cadre::FrameMat RHS);
     };
 
     struct APPBOOK_EXPORTS FrameData
@@ -74,7 +77,7 @@ struct APPBOOK_EXPORTS Cadre
 
 */
 
-    Cadre::FrameMat Model{2,2,2,2,0}; ///< Frame model to apply to FrameData.
+    Cadre::FrameMat Model{2,2,2,2,0}; ///< (default) Frame model to apply to FrameData.
     static std::map<std::string_view, Cadre::FrameMat> FrameMatrix;
 };
 
