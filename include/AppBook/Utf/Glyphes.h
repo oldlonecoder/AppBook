@@ -13,7 +13,6 @@
 #pragma once
 
 #include <AppBook/Exports.h>
-
 #include <map>
 #include <vector>
 #include <string>
@@ -241,6 +240,7 @@ struct APPBOOK_EXPORTS Glyph
     static Glyph::DataArray Data;
 
     static Glyph::Type Scan(const std::string& GlyphName);
+    static std::pair<bool, Glyph::Type> ScanName(const std::string& GlyphName);
     static std::string Name(Glyph::Type Gh);
 
 };
@@ -420,6 +420,7 @@ struct APPBOOK_EXPORTS AccentFR
     static std::vector<AccentFR::T> Data;
     static std::vector<std::string_view> Name;
     static AccentFR::Type GetEnum(std::string_view AccName);
+    static std::pair<bool, AccentFR::Type> ScanName(std::string_view AccName);
 };
 
 

@@ -5,7 +5,12 @@
 #include <map>
 
 
-bool operator !(Book::Enums::Code C){ return (C != Book::Result::Accepted) && (C != Book::Result::Ok) && (C != Book::Result::Success); }
+bool operator !(Book::Enums::Code C)
+{
+    return (C != Book::Result::Accepted) &&
+            (C != Book::Result::Ok) &&
+             (C != Book::Result::Success);
+}
 
 namespace Book::Enums
 {

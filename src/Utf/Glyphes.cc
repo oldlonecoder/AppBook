@@ -97,6 +97,42 @@ AccentFR::Type AccentFR::GetEnum(std::string_view AccName)
     return Type::Err;
 }
 
+std::pair<bool, AccentFR::Type> AccentFR::ScanName(std::string_view AccName)
+{
+    std::map<std::string_view, AccentFR::Type> Map =
+        {
+            {"agrave", agrave},
+            {"acirc",  acirc},
+            {"cedile", cedile},
+            {"eacute", eacute},
+            {"egrave", egrave},
+            {"ecirc",  ecirc},
+            {"etrema", etrema},
+            {"itrema", itrema},
+            {"ocirc",  ocirc},
+            {"ugrave", ugrave},
+            {"ucirc",  ucirc},
+            {"icirc",  icirc},
+            {"Agrave", Agrave},
+            {"Acirc",  Acirc},
+            {"Cedile", Cedile},
+            {"Eacute", Eacute},
+            {"Egrave", Egrave},
+            {"Ecirc",  Ecirc},
+            {"Etrema", Etrema},
+            {"Itrema", Itrema},
+            {"Ocirc",  Ocirc},
+            {"Ugrave", Ugrave},
+            {"Ucirc",  Ucirc},
+            {"Icirc",  Icirc}
+        };
+    for (auto const &[k, t]: Map)
+    {
+        if (k == AccName) return {true, t};
+    }
+    return {false, Type::Err};
+}
+
 
 
 Glyph::DataArray Glyph::Data =
@@ -227,7 +263,7 @@ std::map<Glyph::Type, std::string> IcNamesMap =
         {Glyph::Err1               ,"Err1"},
         {Glyph::Flag               ,"Flag"},
         {Glyph::Bolt               ,"Bolt"},
-        {Glyph::Success            ,"Success "},
+        {Glyph::Success            ,"Success"},
         {Glyph::SmallDot           ,"SmallDot"},
         {Glyph::BigDot             ,"BigDot"},
         {Glyph::Ball1              ,"Ball1"},
@@ -262,7 +298,7 @@ std::map<Glyph::Type, std::string> IcNamesMap =
         {Glyph::Arch               ,"Arch"},
         {Glyph::Home               ,"Home"},
         {Glyph::File               ,"File"},
-        {Glyph::ThumbDown          ,"ThumbDown "},
+        {Glyph::ThumbDown          ,"ThumbDown"},
         {Glyph::GithubCircle       ,"GithubCircle"},
         {Glyph::GithubFolder       ,"GithubFolder"},
         {Glyph::Windows            ,"Windows"},
@@ -309,7 +345,7 @@ std::map<Glyph::Type, std::string> IcNamesMap =
         {Glyph::NotePad            ,"NotePad"},
         {Glyph::Books              ,"Books"},
         {Glyph::Send               ,"Send"},
-        {Glyph::Receive,"Receive"},
+        {Glyph::Receive            ,"Receive"},
         {Glyph::Email              ,"Email"},
         {Glyph::Email2             ,"Email2"},
         {Glyph::NullPtr            ,"NullPtr"},
@@ -325,6 +361,17 @@ Glyph::Type Glyph::Scan(const std::string& GhName)
     }
     return 0;
 }
+
+std::pair<bool, Glyph::Type> Glyph::ScanName(const std::string& GlyphName)
+{
+    for (auto& [N,Str] : IcNamesMap)
+    {
+        if(GlyphName == Str) return {true, N};
+    }
+    return {false, 0};
+}
+
+
 
 std::string Glyph::Name(Type Gh)
 {
