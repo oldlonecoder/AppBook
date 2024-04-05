@@ -31,7 +31,7 @@ std::vector<Color::Data> ColorDB =
     {Color::Olive,            "Olive"/*#808000	*/, 0x80, 0x80, 0x00},//#808000	rgb(128,128,0)	hsl(60,100%,25%)
     {Color::Navy,             "Navy"/*#000080	*/, 0x00, 0x00, 0x80},//#000080	rgb(0,0,128)	hsl(240,100%,25%)
     {Color::Purple,           "Purple"/*#800080	*/, 0x80, 0x00, 0x80},//#800080	rgb(128,0,128)	hsl(300,100%,25%)
-    {Color::Cyan,             "bookl"/*#008080	*/, 0x00, 0x80, 0x80},//#008080	rgb(0,128,128)	hsl(180,100%,25%)
+    {Color::Cyan,             "Cyan"/*#008080	*/, 0x00, 0x80, 0x80},//#008080	rgb(0,128,128)	hsl(180,100%,25%)
     {Color::Silver,           "Silver"/*#c0c0c0	*/, 0xc0, 0xc0, 0xc0},//#c0c0c0	rgb(192,192,192)	hsl(0,0%,75%)
     {Color::Grey,             "Grey"/*#808080	*/, 0x80, 0x80, 0x80},//#808080	rgb(128,128,128)	hsl(0,0%,50%)
     {Color::Red,              "Red"/*#ff0000	rgb(*/, 0xff, 0x00, 0x00},//#ff0000	rgb(255,0,0)	hsl(0,100%,50%)
