@@ -194,7 +194,7 @@ public:
 
     static std::string MakeStr(const char* B, const char* E);
     static std::string Now(const std::string& str_fmt);
-
+    bool Empty() { return _d.empty(); }
     template<typename T> static std::string ToBinary(T _arg, bool padd = false, int f = 128)
     {
         uint8_t seq;

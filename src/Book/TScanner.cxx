@@ -432,7 +432,7 @@ Loop2:
         goto Loop2;
     }
 
-    if(A==Begin) return Book::Result::Rejected;
+    if((A==Begin) || (Buf.Empty())) return Book::Result::Rejected;// DUH!!!
     //AppBook::Debug() << " Base2 : " << Color::Yellow << Buf << Book::Fn::Endl << " Length: " << Color::LightCoral << Seq.length();
     NumDetails.Seq = {Begin, A};
     NumDetails.Value = std::stoi(Buf(), nullptr, 2);
@@ -478,6 +478,7 @@ Book::Result TScanner::Numeric::Base8()
     }
     //--A;
     //AppBook::Debug() << "Base8: A on '" << Color::Yellow << *A << Color::Reset << "' - Buffer: [" << Color::Yellow << Buf << Color::Reset << "]";
+    if(Buf.Empty()) return Book::Result::Rejected;
     NumDetails.Seq = {Begin, A};
     NumDetails.Value = std::stoi(Buf(), nullptr, 8);
     NumDetails.Base = Details::BaseSize::Octal;
@@ -584,7 +585,7 @@ loop16:
 //    << Color::White <<  " -> Buffer:["
 //    << Color::Yellow << Buf
 //    << Color::Reset << "] ";
-
+    if(Buf.Empty()) return Book::Result::Rejected;
     NumDetails.Value = std::stoi(Buf(), nullptr, 16);
     NumDetails.ScaleValue();
     return Book::Result::Accepted;
