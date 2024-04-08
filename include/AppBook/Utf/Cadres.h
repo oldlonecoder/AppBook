@@ -30,7 +30,9 @@ namespace Utf
 struct APPBOOK_EXPORTS Cadre
 {
     Color::Pair Colors;     ///< Colours of the Box::Frame
-    Rect R;          ///< Box ...geometry
+    Rect        R;          ///< Box ...geometry
+    WinBuffer   Win{};      ///<
+
 
 /*!
  * @brief 1v x 4h matrix for addressing Frame components
@@ -61,6 +63,7 @@ struct APPBOOK_EXPORTS Cadre
         Utf::Glyph::T CTD;///< Cross Top-towards-Down
         Utf::Glyph::T CDT;///< Cross Down-towards-Top
         Cadre::FrameData& operator = (Cadre::FrameMat FrameModel);
+
     }Frame{ "┏", "┓", "┗", "┛", "━", "┃", "╋", "┫", "┣", "┳", "┻" }; ///< By ...default, hardcode the ...default model.
 /*           ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃
              ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┃    ┗━━{x,x,x,0,0}
@@ -79,6 +82,12 @@ struct APPBOOK_EXPORTS Cadre
 
     Cadre::FrameMat Model{2,2,2,2,0}; ///< (default) Frame model to apply to FrameData.
     static std::map<std::string_view, Cadre::FrameMat> FrameMatrix;
+    enum Index : int
+    {
+        TopLeft=0, TopRight, BottomLeft, BottomRight, Horizontal, Vertical, Cross, VerticalTowardsLeft, VerticalTowardsRight, TopTowardsDown, DownTowardsUp
+    };
+    // .Frame[Mem & CharMask]; Enum: Cadre::TopLeft
+
 };
 
 

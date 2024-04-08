@@ -2,6 +2,7 @@
 //#include <source_location>
 #include "AppBook/Book/StmlText.h"
 #include "AppBook/Util/StrBreak.h"
+#include <AppBook/Utf/Cadres.h>
 
 #include <csignal>
 
@@ -45,8 +46,6 @@ DevApp::DevApp(const std::string& TestName, int argc, char** argv){
     for (int i = 1; i < argc; i++)
         inArgs.emplace_back(argv[i]);
 }
-
-
 
 
 
@@ -183,7 +182,9 @@ R"(
             AppBook::Out() << Book::Enums::Fn::Weekday << ' ' << Book::Enums::Fn::Stamp << Book::Enums::Fn::Endl << head;
 
         AppBook::Test() << Color::LightGreen << Utf::Glyph::Success << Color::Reset << " Passed!";
-
+        Utf::Cadre Cadre;
+        Book::Test() << " StringLength of Frame : TopLeft [" << Color::Yellow << Cadre.Frame.TL << Color::Reset << "]: " << std::string(Cadre.Frame.TL).length();
+        Book::Debug() << "Sizeof the Frame components MAP: " << Utf::Cadre::FrameMatrix.size();
         AppBook::Info() << "Last line, committing Section::Contents and closing the book:";
         AppBook::Out() << "-----------------------------------------------------------------";
         
