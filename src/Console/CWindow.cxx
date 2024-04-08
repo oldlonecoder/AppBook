@@ -70,11 +70,6 @@ CWindow::Char &CWindow::Char::operator=(CWindow::Char::Type d_)
     return *this;
 }
 
-CWindow::Char &CWindow::Char::operator=(CWindow::Type d_)
-{
-    Mem = *d_;
-    return *this;
-}
 
 CWindow::Char &CWindow::Char::operator=(char d_)
 {
@@ -141,7 +136,7 @@ CWindow::Char &CWindow::Char::operator<<(Utf::AccentFR::Type a_)
     return str;
 }
 
-[[maybe_unused]] CWindow::Char &CWindow::Char::ResetAttributes(CWindow::Char::Type bits_)
+[[maybe_unused]] CWindow::Char &CWindow::Char::ResetAttributes(CWindow::Char::Type)
 {
     Book::Status() << " This feature is not determined in this context, then not implemented yet";
     return *this;
@@ -164,331 +159,11 @@ std::string CWindow::Char::Details() const
 }
 
 
-#pragma endregion Char
+#pragma endregion CWindow_Char
 
 
-//
 
-//
-//CWindow::CWindow(Object *ParentObject): OwnerParent(ParentObject){}
-//
-//CWindow::~CWindow()
-//{
-//    delete [] MemoryBloc;
-//}
-//
-//Dim CWindow::Dimensions()
-//{
-//
-//    return BlocGeometry.Dwh;
-//}
-//
-//CWindow::Char* CWindow::Alloc(Dim dim_)
-//{
-//    if(dim_)
-//        BlocGeometry.Assign({}, dim_);
-//
-//    delete [] MemoryBloc;
-//    MemoryBloc = new Char [dim_.W * dim_.H + 1];
-//    return MemoryBloc;
-//}
-//
-//
-//CWindow::Char* CWindow::Realloc(Dim dim_)
-//{
-//    if(!dim_)
-//        throw AppBook::Exception()[ AppBook::Except() << Book::Result::Unexpected << " unset Dimensions" ];
-//
-//    BlocGeometry.Assign({},dim_);
-//
-//    delete [] MemoryBloc;
-//    MemoryBloc = new Char[dim_.W * dim_.H + 1];
-//    return MemoryBloc;
-//}
-//
-//
-//
-//void CWindow::Dealloc()
-//{
-//    delete [] MemoryBloc;
-//    MemoryBloc = nullptr;
-//    BlocGeometry = {};
-//}
-//
-//
-//CWindow::Char* CWindow::Peek(const Point &pt_)
-//{
-//    auto* p = MemoryBloc + (pt_.X + pt_.Y * BlocGeometry.Dwh.W);
-//    if (!BlocGeometry[pt_])
-//        return nullptr;
-//
-//    return p;
-//}
-//
-//Rect CWindow::Geometry()
-//{
-//    return BlocGeometry;
-//}
-//
-//int CWindow::Width() const
-//{
-//    return BlocGeometry.Dwh.W;
-//}
-//
-//int CWindow::Height() const
-//{
-//    return BlocGeometry.Dwh.H;
-//}
-//
-//
-//
-//Book::Result CWindow::Clear()
-//{
-//    if (!MemoryBloc)
-//        throw AppBook::Exception()[ AppBook::Fatal() << " Attempt to clear a null VDC"];
-//
-//    auto* C = MemoryBloc;
-//    auto blk = BlocGeometry.Dwh.W * BlocGeometry.Dwh.H;
-//    for (int x = 0; x < blk; x++) *C++ = D;
-//    return Book::Result::Accepted;
-//}
-//
-//Book::Result CWindow::Clear(const Rect &r_)
-//{
-//    Rect R;
-//    if(r_)
-//        R = Rect({}, BlocGeometry.Dwh) & r_;
-//    else
-//        return Clear();
-//    if(!MemoryBloc)
-//        throw AppBook::Exception()[AppBook::Fatal() << "Attempt to clear a null CWindow"];
-//
-//    if(!R)
-//        return Book::Result::Rejected;
-//
-//    for(int y = R.A.Y; y <= R.B.Y; y++)
-//    {
-//        Char* C = Peek({R.A.X, y});
-//        for(int x = 0; x < R.Width(); x++) *C++ = D;
-//    }
-//
-//    return Book::Result::Accepted;
-//}
-//
-//
-//
-//Book::Result CWindow::Clear(CWindow::Char::Type a_, const Rect &r_)
-//{
-//    auto A = D;
-//    D = a_;
-//    auto Ok = Clear(r_);
-//    D = A;
-//    return Ok;
-//}
-//
-//
-//CWindow::Painter::Painter(CWindow *DC, Rect R, CWindow::Char* Attr):Dc(DC), Wh(R), DefAttr(Attr)
-//{
-//
-//}
-//
-//CWindow::Painter &CWindow::Painter::operator<<(Color::Code aColorID)
-//{
-//    Char.SetFg(aColorID);
-//    return *this;
-//}
-//
-//
-//
-///**
-// * @brief Assigns the IconAttr to the cell's attr bit field and the Icon Code ID to the ascci bit field
-// *
-// * @param aIconID
-// * @return painter& ( ref to self )
-// * @author &copy; 2022, Serge Lussier, lussier.serge@gmail.com ( oldlonecoder )
-// */
-//CWindow::Painter &CWindow::Painter::operator<<(Utf::Glyph::Type aIconID)
-//{
-//    CWindow::Char Cell = Char;
-//
-//    *Cursor = (Cell << aIconID).Mem;
-//    Cell = *Cursor;
-//    ++Cursor;
-//    Char = Cell;
-//    *Cursor = (Char << ' ').Mem;
-//
-//    return *this;
-//}
-//
-///**
-// * @brief Writes string \a aStr into the painter's backbuffer vdc
-// *
-// * @param aStr
-// * @return painter& (ref to self )
-// *
-// * @note This painter version does not handle justify flags, nor checks the logical line and columns boundaries - Only the linear-bloc limit.
-// * @author &copy; 2022, Serge Lussier, lussier.serge@gmail.com ( oldlonecoder )
-// */
-//CWindow::Painter &CWindow::Painter::operator<<(const std::string &aStr)
-//{
-//    Point Pt = Position();
-//    auto C = aStr.begin();
-//    //diagnostic::debug() << "painter <<  \"" << aStr << "\" @" << (std::string)pt << " -> in " << _r.to_string();
-//    while ((C != aStr.end()) && Wh[Pt])
-//    {
-//        *Cursor = (Char << *C++).Mem; // Ouais... Pas mal pété; A bit risky, doing three things in the very same statement...
-//        ++Cursor;
-//        Pt.X++;
-//    }
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::operator<<(const StrAcc &aStr)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::operator<<(const Point &XY)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::operator<<(const char *aStr)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::operator<<(Utf::AccentFR::Type aAcc)
-//{
-//    return *this;
-//}
-//
-//
-///**
-// * @brief operator << overload acting as Painter::GotoXY
-// *
-// * @param XY coordinate point into the painter's subregion.
-// * @return CWindow::Painter& ( ref to self )
-// * @author &copy; 2022, Serge Lussier, lussier.serge@gmail.com ( oldlonecoder )
-// */
-//CWindow::Painter &CWindow::Painter::GotoXY(Point XY)
-//{
-//    Point Pt = XY + Wh.A; // + {0,0} by default;
-//    if (!Wh[Pt])
-//        throw AppBook::Exception()[AppBook::Fatal() << Book::Fn::Endl << " : " << (std::string)XY << " is out of range in " << Wh.to_string()];
-//
-//    Cursor = Dc->Peek(Pt);
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetColors(Color::Pair pair_)
-//{
-//    Char.SetColors(pair_);
-//
-//    return *this;
-//}
-//
-//Book::Result CWindow::Painter::SetupGeometry()
-//{
-//    //diagnostic::debug(sfnl) < " painter _dc's '" < color::Chartreuse6 <  "Geometry: " <  _dc->geometry();
-//    if(!Wh)
-//        Wh = Dc->Geometry();
-//    else
-//        Wh = Dc->Geometry()  & Wh;
-//
-//    if (!Wh)
-//        throw AppBook::Exception()[AppBook::Fatal() << ": " << Book::Fn::Endl << " - Attempt to < Construct > a painter object using invalid Geometry : " << (std::string)Wh];
-//
-//    //diagnostic::debug(sfnll) < " Configured Geometry:" < color::Yellow < _r < color::Reset < " :";
-//    Cursor = Dc->Peek(Wh.A);
-//    //diagnostic::debug(SourceLocation) <<  VDC::Cell{ *_cursor }.Details();
-//    return Book::Result::Accepted;
-//}
-//
-//CWindow::Painter &CWindow::Painter::Clear()
-//{
-//    AppBook::Debug() << (std::string)Wh;
-//    auto* CC = Cursor;
-//    Cursor = Dc->Peek(Wh.A);
-//    Char << ' ';
-//    Char.SetFg(CWindow::Char(DefAttr).Fg());
-//
-//    for(int y = 0; y< Wh.Height(); y++)
-//    {
-//        GotoXY({ 0,y });
-//        for (int X = 0; X < Wh.Width(); X++) *Cursor++ = Char.Mem;
-//    }
-//
-//    Cursor = CC;
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetBits(Justify::Type aBits)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetHcenter(bool S)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetVcenter(bool S)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetCenter(bool S)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetWordWrap(bool S)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetBg(Color::Code aBg)
-//{
-//    return *this;
-//}
-//
-//CWindow::Painter &CWindow::Painter::SetFg(Color::Code aFg)
-//{
-//    return *this;
-//}
-//
-//
-//
-///*!
-//    @brief Computes coordinates within the painter's bloc from the linear index (cursor) location.
-//
-//    @param none
-//    @return computed point.
-//    @note none
-//    @author &copy; 2018,2023; Serge Lussier;oldlonecoder (lussier.serge@gmail.com)
-//*/
-//Point CWindow::Painter::Position() const
-//{
-//    auto* B = Dc->MemoryBloc;
-//    int dx = static_cast<int>(Cursor-B);
-//    return { dx % Dc->Width(), dx / Dc->Width() };
-//}
-//
-//CWindow::Painter &CWindow::Painter::NextChar()
-//{
-//    auto Pt = Position();
-//    Pt.X++;
-//    if(!Wh[Pt])
-//    {
-//
-//    }
-//    return *this;
-//}
-//
-#pragma endregion CWindow
-//
-
+#pragma region CWindow
 
 CWindow::CWindow(Util::Object *ParentObj, const std::string &Id) : Object(ParentObj, Id){}
 
@@ -553,108 +228,282 @@ Book::Result CWindow::ReAlloc()
     return Alloc();
 }
 
+CWindow::Pencil &CWindow::BeginWrite(Rect Geom, CWindow::Char::Type Attr)
+{
+    return *(new Pencil(this, Attr, Geom));
+}
+
+Book::Result CWindow::EndWrite(CWindow::Pencil &Pen)
+{
+    delete &Pen;
+    return Result::Ok;
+}
+
+Book::Result CWindow::operator>>(StrAcc &Acc)
+{
+//    vdc::type p = mem_->peek(xy_);
+//    w_ = w_ == 0 ? mem_->width() - xy_.x
+//                 : w_ > mem_->width() - xy_.x ? mem_->width() - xy_.x : w_;
+//    //w_ =
+//    vdc::cell cell=p;
+//    vdc::cell prev_cell=p;
+//    using ansi = tux::attr<textattr::format::ansi256>;
+//    for(int x = 0; x< w_; x++)
+//    {
+//        if (prev_cell.bg() != cell.bg()) (*terminal) << ansi::bg(cell.bg());
+//        if (prev_cell.fg() != cell.fg()) (*terminal) << ansi::fg(cell.fg());
+//        if (cell.mem & vdc::cell::UGlyph)
+//        {
+//            auto Ic =  cell.icon_id();
+//            write(1, Icon::Data[Ic], std::strlen(Icon::Data[Ic]));
+//        }
+//        else
+//            write(1,&cell.mem,1);
+//
+//        prev_cell = p++;
+//        cell = p;
+//    }
+
+    CWindow::Char PrevCell = Buffer[0][0];
+
+    for(int Y=0; Y<R.Height(); Y++)
+    {
+        PrevCell = Buffer[Y][0];
+        for(int X = 0; X< R.Width(); X++)
+        {
+            auto D = Buffer[Y][X];
+            if(D.Mem & CWindow::Char::Frame)
+            {
+                Utf::Cadre Cadre;
+                Acc << *Cadre.Data[static_cast<int>(D.Mem & CWindow::Char::CharMask)];
+                PrevCell = D;
+                continue; // Colors or any other attributes changes on Frame is bypassed (rejected).
+            }
+            if(D.Bg() != PrevCell.Bg())         Acc << Color::AnsiBg(D.Bg());
+            if(D.Fg() != PrevCell.Fg())         Acc << Color::Ansi(D.Fg());
+            if(D.Mem & CWindow::Char::UGlyph)
+            {
+                Acc << D.IconID();
+            }
+            else // Can't have an ASCII character -> and -> a Glyph at the same position.
+                Acc << static_cast<char>(D.Mem & CWindow::Char::CharMask);
+            PrevCell = D;
+        }
+        Acc << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal as in this AppBook API/Framework
+    }
+    return Result::Ok;
+}
 
 
-
-
-
-
-
-
-
+#pragma endregion CWindow
 
 
 
 #pragma region CWindowPencil
 
-int CWindow::Pencil::Width()
+int CWindow::Pencil::Width() const
 {
-    return 0;
+    return R.Width();
 }
 
-int CWindow::Pencil::Height()
+int CWindow::Pencil::Height() const
 {
-    return 0;
+    return R.Height();
 }
 
-CWindow::Pencil::Pencil(CWindow *W, CWindow::Char::Type DefaultAttr, Rect Sub)
-{
+CWindow::Pencil::Pencil(CWindow *W, CWindow::Char::Type DefaultAttr, Rect Sub):Util::Object(W, "CWindow::Pencil"),
+Window(W), A(DefaultAttr), R(Sub){}
 
+//CWindow::Pencil::~Pencil(){}
+
+
+
+
+
+
+#define CHECKOOB if(CursorXY.X >= R.Width()) \
+{                                            \
+   Book::Error() << " Out of boundaries";    \
+   return *this;\
 }
-
-CWindow::Pencil::~Pencil()
-{
-
-}
-
+/*!
+ * @brief Write a std::string contents onto the CWindow's internal Buffer at the current inner Cursor position.
+ *
+ * <li>Content must be non-formatted string because the length cannot be calculated from this method then surely the pre-formatted length is invalid.</li>
+ * <li>Write length is cut at the end of the current line in the buffer.</li>
+ * <li> (for now) Inner CursorXY is advanced but only on the current line, so Position({X,Y}) must be manually set for each line
+ * @param Input
+ * @return Ref-To-Self
+ * @note Write will be prevented or stop as soon the CursorXY reaches the end of the current line.
+ */
 CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
 {
+    int Delta = std::min(static_cast<int>(Input.length()), (R.Width() - CursorXY.X));
+
+    if(Delta <= 0)
+    {
+        Book::Error() << "Out of boundaries or ";
+        return *this;
+    }
+    auto Src = Input.begin();
+    auto& Line = Window->Buffer[CursorXY.Y];
+    for(int X=CursorXY.X; (X < R.Width()) && (Src != Input.end()); X++, Src++)
+    {
+        Line[X] = A & ~(CWindow::Char::CharMask) | *Src;
+        if(!++(*this)) return *this; // Double check while INC CursorXY.X ( prefix INC )
+    }
     return *this;
 }
 
+
+/*!
+ * @brief
+ * @param C
+ * @return
+ */
 CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
 {
+    CHECKOOB
+    Window->Buffer[CursorXY.Y][CursorXY.X] = C;
+    ++(*this);
     return *this;
 }
 
 CWindow::Pencil &CWindow::Pencil::operator<<(char C)
 {
+    CHECKOOB
+    Window->Buffer[CursorXY.Y][CursorXY.X] = (A & ~CWindow::Char::CharMask) | C;
+    ++(*this);
     return *this;
 }
 
+
+/*!
+ * @brief Set the Foreground Color attribute
+ * @param C Color::Code enumeration.
+ *
+ * @return Ref-To_Self
+ * @note As of this stage, only the Foreground is addressed from this particular method.
+ */
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
 {
+    CHECKOOB
+    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
+    D = ~(D.Mem & CWindow::Char::FGMask) | (C << CWindow::Char::FGShift);
     return *this;
 }
+
 
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
 {
+    CHECKOOB
+    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
+    D = ~(D.Mem & CWindow::Char::CMask) | (Colors.Bg << CWindow::Char::BGShift) | (Colors.Fg << CWindow::Char::FGShift);
     return *this;
 }
 
-CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::T Ic)
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::Type Ic)
 {
+    CHECKOOB
+    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
+    D = (D.Mem & ~(CWindow::Char::UTFMASK | CWindow::Char::CharMask)) | CWindow::Char::UGlyph | Ic;
     return *this;
 }
 
-CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::T Ac)
+CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::Type Ac)
 {
+    CHECKOOB
+    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
+    D = (D.Mem & ~CWindow::Char::CharMask) | CWindow::Char::Accent | Ac;
     return *this;
 }
 
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Cadre::Index If)
 {
+    CHECKOOB
+    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
+    D = (D.Mem & ~(CWindow::Char::AttrMask | CWindow::Char::CharMask)) | CWindow::Char::Frame | If;
     return *this;
 }
 
+
 Point CWindow::Pencil::Position(Point XY)
 {
-    return Point();
+    if(((XY.X < 0) || (XY.X >= R.Width()))|| ((XY.Y < 0) || (XY.Y >= R.Height())))
+        AppBook::Exception() [Book::Except() << " Out of bounds..."];
+
+    CursorXY = XY;
+    return CursorXY;
 }
 
-void CWindow::Pencil::Clear(CWindow::Char::Type A)
+void CWindow::Pencil::Clear(CWindow::Char::Type Attr)
 {
+    A = Attr;
+    for(auto Y = 0; Y < R.Height(); Y++)
+    {
+        for(int X = 0; X < R.Width(); X++)
+        {
+            Window->Buffer[Y+Window->R.A.Y][X+Window->R.A.X].Mem = Attr;
+        }
+    }
+}
+
+
+/*!
+ * @brief  Prefix increment
+ *
+ * @note Increments X axe.
+ * @return bool
+ */
+bool CWindow::Pencil::operator++()
+{
+    if(CursorXY.X >= R.Width()) return false;
+    ++CursorXY.X;
+    return true;
+}
+
+
+
+/*!
+ * @brief  Postfix increment
+ *
+ * @note Increments Y axe.
+ * @return bool
+ */
+bool CWindow::Pencil::operator++(int)
+{
+    if(CursorXY.Y >= R.Height()) return false;
+    ++CursorXY.Y;
+    return true;
 
 }
 
-Point CWindow::Pencil::operator++()
+/*!
+ * @brief  Prefix decrement
+ *
+ * @note Decrements X axe.
+ * @return bool
+ */
+bool CWindow::Pencil::operator--()
 {
-    return Point();
+    if(CursorXY.X < 0) return false;
+    --CursorXY.X;
+    return true;
 }
 
-Point CWindow::Pencil::operator++(int)
-{
-    return Point();
-}
 
-Point CWindow::Pencil::operator--()
+/*!
+ * @brief  Postfix decrement
+ *
+ * @note Decrements X axe.
+ * @return bool
+ */
+bool CWindow::Pencil::operator--(int)
 {
-    return Point();
-}
-
-Point CWindow::Pencil::operator--(int)
-{
-    return Point();
+    if(CursorXY.Y < 0) return false;
+    --CursorXY.Y;
+    return true;
 }
 
 #pragma endregion CWindowPencil

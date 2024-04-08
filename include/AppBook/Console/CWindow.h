@@ -129,35 +129,40 @@ public:
     {
         CWindow* Window{nullptr};
         Rect     R{};
-        Point    XY{}; ///< The Origin is {0,0}
-        int Width();
-        int Height();
+        Point    CursorXY{}; ///< The Origin is {0,0}
+        [[nodiscard]] int Width() const;
+        [[nodiscard]] int Height() const;
+        CWindow::Char::Type A{0x010420};
+
 
         Pencil(CWindow* W, CWindow::Char::Type DefaultAttr, Rect Sub);
-        ~Pencil() override;
+        ~Pencil() override = default;
 
         Pencil& operator << (const std::string& Input);
         Pencil& operator << (CWindow::Char C);
         Pencil& operator << (char C);
         Pencil& operator << (Color::Code C);
         Pencil& operator << (Color::Pair Colors);
-        Pencil& operator << (Utf::Glyph::T Ic);
-        Pencil& operator << (Utf::AccentFR::T Ac);
+        Pencil& operator << (Utf::Glyph::Type Ic);
+        Pencil& operator << (Utf::AccentFR::Type Ac);
         Pencil& operator << (Utf::Cadre::Index If);
 
         Point Position(Point XY={});
         void Clear(CWindow::Char::Type A = 0x010420);
 
-        Point operator++();
-        Point operator++(int);
-        Point operator--();
-        Point operator--(int);
+        bool operator++();
+        bool operator++(int);
+        bool operator--();
+        bool operator--(int);
 
     };
 
     std::vector<CWindow::Char>& operator[](size_t Line);
 
+    CWindow::Pencil& BeginWrite(Rect Geom={}, CWindow::Char::Type Attr=0x010420);
+    static Book::Result     EndWrite(CWindow::Pencil& Pen);
 
+    Book::Result operator >>(StrAcc& Acc);
 private:
     CWindow::Char::Matrix Buffer{};
     CWindow::Char::Type   A{0x010220};

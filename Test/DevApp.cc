@@ -183,7 +183,7 @@ R"(
 
         AppBook::Test() << Color::LightGreen << Utf::Glyph::Success << Color::Reset << " Passed!";
         Utf::Cadre Cadre;
-        Book::Test() << " StringLength of Frame : TopLeft [" << Color::Yellow << Cadre.Frame.TL << Color::Reset << "]: " << std::string(Cadre.Frame.TL).length();
+        Book::Test() << " StringLength of Frame : TopLeft [" << Color::Yellow << *Cadre.Data[Utf::Cadre::Cross] << Color::Reset << "]: " << std::string(*Cadre.Data[Utf::Cadre::Cross]).length();
         Book::Debug() << "Sizeof the Frame components MAP: " << Utf::Cadre::FrameMatrix.size();
         AppBook::Info() << "Last line, committing Section::Contents and closing the book:";
         AppBook::Out() << "-----------------------------------------------------------------";
