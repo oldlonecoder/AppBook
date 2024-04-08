@@ -82,6 +82,7 @@ struct APPBOOK_EXPORTS Cadre
 
     Cadre::FrameMat Model{2,2,2,2,0}; ///< (default) Frame model to apply to FrameData.
     static std::map<std::string_view, Cadre::FrameMat> FrameMatrix;
+    const char** Data[11] = {&Frame.TL, &Frame.TR,&Frame.BL,&Frame.BR,&Frame.HL,&Frame.VL,&Frame.CVH,&Frame.CRL,&Frame.CLR,&Frame.CTD,&Frame.CDT};
     enum Index : int
     {
         TopLeft=0, TopRight, BottomLeft, BottomRight, Horizontal, Vertical, Cross, VerticalTowardsLeft, VerticalTowardsRight, TopTowardsDown, DownTowardsUp
