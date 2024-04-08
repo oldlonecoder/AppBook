@@ -67,7 +67,7 @@ Book::Enums::Code CArgs::Input(const std::vector<std::string_view>& StrArray)
     {
         auto Next = Query(Sv);
 
-        AppBook::Out() << Color::Cyan << "Cargs::Input" << Color::White << '(' << Color::Yellow << Sv << Color::White << "):";
+        AppBook::Debug() << Color::Cyan << "Cargs::Input" << Color::White << '(' << Color::Yellow << Sv << Color::White << "):";
 
         if(Next == Args.end())
         {
@@ -78,7 +78,7 @@ Book::Enums::Code CArgs::Input(const std::vector<std::string_view>& StrArray)
                 (*A)->Arguments.emplace_back(Sv);
                 ++(*A)->Count;
                 (*A)->Enabled = true;
-                AppBook::Out() << Color::Yellow << (*A)->Name << Color::Reset << " Arg:" << (*A)->Count << " '" << Sv << '\'';
+                AppBook::Debug() << Color::Yellow << (*A)->Name << Color::Reset << " Arg:" << (*A)->Count << " '" << Sv << '\'';
             }
             else
             {
@@ -86,7 +86,7 @@ Book::Enums::Code CArgs::Input(const std::vector<std::string_view>& StrArray)
                 Defaults.Arguments.emplace_back(Sv);
                 ++Defaults.Count;
                 Defaults.Enabled = true;
-                AppBook::Out() << Color::Yellow << Defaults.Name << Color::Reset << " Arg:" << Defaults.Count << " '" << Sv << '\'';
+                AppBook::Debug() << Color::Yellow << Defaults.Name << Color::Reset << " Arg:" << Defaults.Count << " '" << Sv << '\'';
             }
         }
         else
