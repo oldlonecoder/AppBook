@@ -23,8 +23,8 @@
 struct APPBOOK_EXPORTS Point
 {
 
-    int X = 0;
-    int Y = 0;
+    int X = -1;
+    int Y = -1;
 
     using Array = std::vector<Point>;
     using Iterator = Point::Array::iterator;

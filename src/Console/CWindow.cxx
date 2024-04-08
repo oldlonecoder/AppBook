@@ -168,7 +168,7 @@ std::string CWindow::Char::Details() const
 
 
 //
-//#pragma region CWindow
+
 //
 //CWindow::CWindow(Object *ParentObject): OwnerParent(ParentObject){}
 //
@@ -486,7 +486,7 @@ std::string CWindow::Char::Details() const
 //    return *this;
 //}
 //
-//#pragma endregion CWindow
+#pragma endregion CWindow
 //
 
 
@@ -516,22 +516,26 @@ Book::Result CWindow::Alloc()
 
 void CWindow::Clear()
 {
-
+    for(auto &L : Buffer)
+        for(auto& C: L)
+            C = (A & ~(Char::CMask | Char::CharMask)) | 0x20;
 }
 
 void CWindow::SetGeometry(Dim Wh)
 {
-
+    R = {Point{0,0},Dim{Wh.W,Wh.H}};
+    Alloc();
 }
+
 
 int CWindow::Width()
 {
-    return 0;
+    return R.Width();
 }
 
 int CWindow::Height()
 {
-    return 0;
+    return R.Height();
 }
 
 std::vector<CWindow::Char> &CWindow::operator[](size_t Line)
@@ -543,6 +547,118 @@ std::vector<CWindow::Char> &CWindow::operator[](size_t Line)
     return Buffer[Line];
 
 }
+
+Book::Result CWindow::ReAlloc()
+{
+    return Alloc();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma region CWindowPencil
+
+int CWindow::Pencil::Width()
+{
+    return 0;
+}
+
+int CWindow::Pencil::Height()
+{
+    return 0;
+}
+
+CWindow::Pencil::Pencil(CWindow *W, CWindow::Char::Type DefaultAttr, Rect Sub)
+{
+
+}
+
+CWindow::Pencil::~Pencil()
+{
+
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(char C)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::T Ic)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::T Ac)
+{
+    return *this;
+}
+
+CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Cadre::Index If)
+{
+    return *this;
+}
+
+Point CWindow::Pencil::Position(Point XY)
+{
+    return Point();
+}
+
+void CWindow::Pencil::Clear(CWindow::Char::Type A)
+{
+
+}
+
+Point CWindow::Pencil::operator++()
+{
+    return Point();
+}
+
+Point CWindow::Pencil::operator++(int)
+{
+    return Point();
+}
+
+Point CWindow::Pencil::operator--()
+{
+    return Point();
+}
+
+Point CWindow::Pencil::operator--(int)
+{
+    return Point();
+}
+
+#pragma endregion CWindowPencil
+
 
 } // Book::ConIO
 

@@ -22,7 +22,8 @@
 #pragma once
 #include <AppBook/Util/Geometry.h>
 #include <AppBook/Util/Object.h>
-
+#include <AppBook/Utf/Cadres.h>
+#include <AppBook/Utf/Glyphes.h>
 namespace Book::ConIO
 {
 
@@ -127,12 +128,36 @@ public:
     struct APPBOOK_EXPORTS Pencil : public Util::Object
     {
         CWindow* Window{nullptr};
-        Rect     SubRegion{};
+        Rect     R{};
+        Point    XY{}; ///< The Origin is {0,0}
         int Width();
         int Height();
+
+        Pencil(CWindow* W, CWindow::Char::Type DefaultAttr, Rect Sub);
+        ~Pencil() override;
+
+        Pencil& operator << (const std::string& Input);
+        Pencil& operator << (CWindow::Char C);
+        Pencil& operator << (char C);
+        Pencil& operator << (Color::Code C);
+        Pencil& operator << (Color::Pair Colors);
+        Pencil& operator << (Utf::Glyph::T Ic);
+        Pencil& operator << (Utf::AccentFR::T Ac);
+        Pencil& operator << (Utf::Cadre::Index If);
+
+        Point Position(Point XY={});
+        void Clear(CWindow::Char::Type A = 0x010420);
+
+        Point operator++();
+        Point operator++(int);
+        Point operator--();
+        Point operator--(int);
+
     };
 
     std::vector<CWindow::Char>& operator[](size_t Line);
+
+
 private:
     CWindow::Char::Matrix Buffer{};
     CWindow::Char::Type   A{0x010220};
