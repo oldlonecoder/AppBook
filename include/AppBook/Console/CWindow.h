@@ -24,6 +24,10 @@
 #include <AppBook/Util/Object.h>
 #include <AppBook/Utf/Cadres.h>
 #include <AppBook/Utf/Glyphes.h>
+#include <AppBook/Console/UiEnums.h>
+
+
+
 namespace Book::ConIO
 {
 
@@ -33,7 +37,7 @@ class APPBOOK_EXPORTS CWindow: public Util::Object
     Rect    R{};
     using Type = uint32_t*;
 
-
+    Ui::WClass::Type Flags{ Ui::WClass::Frame };
 
 public:
 
@@ -55,7 +59,7 @@ public:
     struct APPBOOK_EXPORTS Char
     {
         using Type = uint32_t;
-        Type  Mem{0x040120};
+        Type  Mem{0xffff20};
 
 
         static constexpr uint32_t CharMask	= 0x000000FF;
@@ -63,7 +67,7 @@ public:
         static constexpr uint32_t BGMask	= 0x00FF0000;
         static constexpr uint32_t CMask		= 0x00FFFF00;
         static constexpr uint32_t AttrMask	= 0xFF000000;
-        static constexpr uint32_t UTFMASK	= 0x11000000;
+        static constexpr uint32_t UTFMASK	= 0xF10000FF;
         // ==================Attributes==========================
         static constexpr uint32_t UGlyph 	= 0x01000000;
         static constexpr uint32_t Underline = 0x02000000;
@@ -71,6 +75,7 @@ public:
         static constexpr uint32_t Blink 	= 0x08000000;
         static constexpr uint32_t Accent 	= 0x10000000;
         static constexpr uint32_t Frame 	= 0x20000000;
+
         // ==============Bit Shift ============================
         static constexpr int FGShift = 0x08;
         static constexpr int BGShift = 0x10;
@@ -92,7 +97,6 @@ public:
         [[maybe_unused]] CWindow::Char& SetColors(Color::Pair& c_);
 
         CWindow::Char& operator=(CWindow::Char::Type d_);
-        CWindow::Char& operator=(CWindow::Type d_);
         CWindow::Char& operator=(char d_);
 
         [[nodiscard]] Color::Code Fg() const;
@@ -129,10 +133,10 @@ public:
     {
         CWindow* Window{nullptr};
         Rect     R{};
-        Point    CursorXY{}; ///< The Origin is {0,0}
+        Point    CursorXY{0,0}; ///< The Origin is {0,0}
         [[nodiscard]] int Width() const;
         [[nodiscard]] int Height() const;
-        CWindow::Char::Type A{0x010420};
+        CWindow::Char::Type A{0xffff20};
 
 
         Pencil(CWindow* W, CWindow::Char::Type DefaultAttr, Rect Sub);
@@ -148,7 +152,7 @@ public:
         Pencil& operator << (Utf::Cadre::Index If);
 
         Point Position(Point XY={});
-        void Clear(CWindow::Char::Type A = 0x010420);
+        void Clear(CWindow::Char::Type A = 0xffff20);
 
         bool operator++();
         bool operator++(int);
@@ -159,13 +163,14 @@ public:
 
     std::vector<CWindow::Char>& operator[](size_t Line);
 
-    CWindow::Pencil& BeginWrite(Rect Geom={}, CWindow::Char::Type Attr=0x010420);
-    static Book::Result     EndWrite(CWindow::Pencil& Pen);
+    CWindow::Pencil& BeginWrite(Rect Geom={}, CWindow::Char::Type Attr=0xffff20);
+    Book::Result     EndWrite(CWindow::Pencil& Pen);
 
     Book::Result operator >>(StrAcc& Acc);
+    void DrawFrame();
 private:
     CWindow::Char::Matrix Buffer{};
-    CWindow::Char::Type   A{0x010220};
+    CWindow::Char::Type   A{0xffff20};
 
 
 

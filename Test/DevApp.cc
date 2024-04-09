@@ -51,9 +51,10 @@ DevApp::DevApp(const std::string& TestName, int argc, char** argv){
 
 Book::Result DevApp::SetupArgs()
 {
-    (Args << Cmd::Switch{"StrBreak test",   "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
+    (Args << Cmd::Switch{"StrBreak test",  "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
     (Args << Cmd::Switch{"Test TScanner",  "-s",  "--TScanner", "Test TScanner", 0 }).Connect(this, &DevApp::SVScanTest);
-    (Args << Cmd::Switch{"Dummy test",      "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
+    (Args << Cmd::Switch{"Dummy test",     "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
+    (Args << Cmd::Switch{"CWindow test",   "-n", "--ConsoleWindow", "Console/CWindow and Utf::Cadre tests",0 }).Connect(this, &DevApp::ConsoleWindowTest);
 
     return Args.Input(inArgs);
 }
@@ -150,6 +151,32 @@ Book::Action DevApp::Defaults(Cmd::Switch &arg)
     return Book::Action::Continue;
 }
 
+Book::Action DevApp::ConsoleWindowTest(Cmd::Switch &arg)
+{
+    AppBook::Message() << " Args:";
+    for(auto const& A: arg.Arguments)
+    {
+        AppBook::Out() << A;
+    }
+    R = {Point(0,0),Dim(20,9)};
+    Book::ConIO::CWindow Window(nullptr,"Test Window");
+    Window.SetGeometry(R.Dwh);
+    Window.Alloc();
+
+    auto& Pen = Window.BeginWrite(Rect(Point{1,1},Dim{18,2}));
+    Pen.Position({3,3});
+    Pen << "Hello "
+    << Color::Pair(Color::Grey100,Color::Reset)
+    << "World!!!";
+    Window.EndWrite(Pen);
+    Window.DrawFrame();
+    StrAcc Text;
+    Window >> Text;
+    Book::Debug() << " Utf::CWindow :";
+    Book::Out() << Text;
+
+    return Book::Action::Leave;
+}
 
 
 int main(int argc, char** argv)

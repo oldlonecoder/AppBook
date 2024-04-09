@@ -178,9 +178,13 @@ CWindow::~CWindow()
 
 Book::Result CWindow::Alloc()
 {
-    if(!R) return Book::Result::Empty;
+    if(!R)
+    {
+        Book::Error() << " Invalid Rect " << R;
+        return Book::Result::Empty;
+    }
     Buffer.resize(R.Height());
-    for(auto V: Buffer)
+    for(auto& V: Buffer)
     {
         V.resize(R.Width());
         for(auto& C: V)
@@ -230,6 +234,7 @@ Book::Result CWindow::ReAlloc()
 
 CWindow::Pencil &CWindow::BeginWrite(Rect Geom, CWindow::Char::Type Attr)
 {
+    if(!Geom) Geom = R;
     return *(new Pencil(this, Attr, Geom));
 }
 
@@ -241,37 +246,15 @@ Book::Result CWindow::EndWrite(CWindow::Pencil &Pen)
 
 Book::Result CWindow::operator>>(StrAcc &Acc)
 {
-//    vdc::type p = mem_->peek(xy_);
-//    w_ = w_ == 0 ? mem_->width() - xy_.x
-//                 : w_ > mem_->width() - xy_.x ? mem_->width() - xy_.x : w_;
-//    //w_ =
-//    vdc::cell cell=p;
-//    vdc::cell prev_cell=p;
-//    using ansi = tux::attr<textattr::format::ansi256>;
-//    for(int x = 0; x< w_; x++)
-//    {
-//        if (prev_cell.bg() != cell.bg()) (*terminal) << ansi::bg(cell.bg());
-//        if (prev_cell.fg() != cell.fg()) (*terminal) << ansi::fg(cell.fg());
-//        if (cell.mem & vdc::cell::UGlyph)
-//        {
-//            auto Ic =  cell.icon_id();
-//            write(1, Icon::Data[Ic], std::strlen(Icon::Data[Ic]));
-//        }
-//        else
-//            write(1,&cell.mem,1);
-//
-//        prev_cell = p++;
-//        cell = p;
-//    }
 
     CWindow::Char PrevCell = Buffer[0][0];
-
+    int Glyph=0;
     for(int Y=0; Y<R.Height(); Y++)
     {
         PrevCell = Buffer[Y][0];
         for(int X = 0; X< R.Width(); X++)
         {
-            auto D = Buffer[Y][X];
+            auto& D = Buffer[Y][X];
             if(D.Mem & CWindow::Char::Frame)
             {
                 Utf::Cadre Cadre;
@@ -279,8 +262,10 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
                 PrevCell = D;
                 continue; // Colors or any other attributes changes on Frame is bypassed (rejected).
             }
-            if(D.Bg() != PrevCell.Bg())         Acc << Color::AnsiBg(D.Bg());
-            if(D.Fg() != PrevCell.Fg())         Acc << Color::Ansi(D.Fg());
+            if(D.Bg() != PrevCell.Bg())
+                Acc << Color::AnsiBg(D.Bg());
+            if(D.Fg() != PrevCell.Fg())
+                Acc << D.Fg();// Color::Ansi(D.Fg());
             if(D.Mem & CWindow::Char::UGlyph)
             {
                 Acc << D.IconID();
@@ -289,9 +274,41 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
                 Acc << static_cast<char>(D.Mem & CWindow::Char::CharMask);
             PrevCell = D;
         }
-        Acc << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal as in this AppBook API/Framework
+
+        Acc << Color::Reset << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal as in this AppBook API/Framework
     }
     return Result::Ok;
+}
+
+void CWindow::DrawFrame()
+{
+    if(!R)
+        throw AppBook::Exception()[ Book::Except() << Utf::Glyph::Bomb << " Cannot draw a frame with no dimensions!"];
+    Utf::Cadre Cdr;
+    auto& Painter = BeginWrite();
+    Painter.Position({0,0});
+    Painter << Utf::Cadre::TopLeft;
+    Painter.Position({R.B.X, R.A.Y});
+    Painter << Utf::Cadre::TopRight;
+    Painter.Position({R.A.X, R.B.Y});
+    Painter << Utf::Cadre::BottomLeft;
+    Painter.Position({R.B.X, R.B.Y});
+    Painter << Utf::Cadre::BottomRight;
+    for(int X=1; X<R.Width()-1; X++)
+    {
+        Painter.Position({X,0});
+        Painter << Utf::Cadre::Horizontal;
+        Painter.Position({X,R.B.Y});
+        Painter << Utf::Cadre::Horizontal;
+    }
+    for(int Y=1; Y<R.Height()-1; Y++)
+    {
+        Painter.Position({0,Y});
+        Painter << Utf::Cadre::Vertical;
+        Painter.Position({R.B.X,Y});
+        Painter << Utf::Cadre::Vertical;
+    }
+    EndWrite(Painter);
 }
 
 
@@ -346,10 +363,10 @@ CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
         return *this;
     }
     auto Src = Input.begin();
-    auto& Line = Window->Buffer[CursorXY.Y];
+    auto& Line = Window->Buffer[CursorXY.Y+R.A.Y];
     for(int X=CursorXY.X; (X < R.Width()) && (Src != Input.end()); X++, Src++)
     {
-        Line[X] = A & ~(CWindow::Char::CharMask) | *Src;
+        Line[X+R.A.X] = A & ~(CWindow::Char::CharMask) | *Src;
         if(!++(*this)) return *this; // Double check while INC CursorXY.X ( prefix INC )
     }
     return *this;
@@ -364,7 +381,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
 CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
 {
     CHECKOOB
-    Window->Buffer[CursorXY.Y][CursorXY.X] = C;
+    Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X] = C;
     ++(*this);
     return *this;
 }
@@ -372,7 +389,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
 CWindow::Pencil &CWindow::Pencil::operator<<(char C)
 {
     CHECKOOB
-    Window->Buffer[CursorXY.Y][CursorXY.X] = (A & ~CWindow::Char::CharMask) | C;
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~CWindow::Char::UTFMASK) | C;
     ++(*this);
     return *this;
 }
@@ -388,8 +405,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(char C)
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
 {
     CHECKOOB
-    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
-    D = ~(D.Mem & CWindow::Char::FGMask) | (C << CWindow::Char::FGShift);
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = A & ~(A & CWindow::Char::FGMask) | (C << CWindow::Char::FGShift);
     return *this;
 }
 
@@ -397,8 +413,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
 {
     CHECKOOB
-    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
-    D = ~(D.Mem & CWindow::Char::CMask) | (Colors.Bg << CWindow::Char::BGShift) | (Colors.Fg << CWindow::Char::FGShift);
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.Y].Mem = (A & ~CWindow::Char::CMask) | (Colors.Bg << CWindow::Char::BGShift) | (Colors.Fg << CWindow::Char::FGShift);
     return *this;
 }
 
@@ -406,32 +421,34 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::Type Ic)
 {
     CHECKOOB
-    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
-    D = (D.Mem & ~(CWindow::Char::UTFMASK | CWindow::Char::CharMask)) | CWindow::Char::UGlyph | Ic;
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~(CWindow::Char::UTFMASK|CWindow::Char::AttrMask)) | CWindow::Char::UGlyph | Ic;
+    A &= ~(CWindow::Char::UGlyph);
+    ++(*this);
+
     return *this;
 }
 
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::Type Ac)
 {
     CHECKOOB
-    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
-    D = (D.Mem & ~CWindow::Char::CharMask) | CWindow::Char::Accent | Ac;
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~CWindow::Char::UTFMASK) | CWindow::Char::Accent | Ac;
+    ++(*this);
     return *this;
 }
 
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Cadre::Index If)
 {
     CHECKOOB
-    auto& D = Window->Buffer[CursorXY.Y][CursorXY.X];
-    D = (D.Mem & ~(CWindow::Char::AttrMask | CWindow::Char::CharMask)) | CWindow::Char::Frame | If;
+    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~(CWindow::Char::AttrMask | CWindow::Char::UTFMASK)) | CWindow::Char::Frame | If;
+    ++(*this);
     return *this;
 }
 
 
 Point CWindow::Pencil::Position(Point XY)
 {
-    if(((XY.X < 0) || (XY.X >= R.Width()))|| ((XY.Y < 0) || (XY.Y >= R.Height())))
-        AppBook::Exception() [Book::Except() << " Out of bounds..."];
+    if((((XY.X) < 0) || (XY.X >= R.Width()))|| ((XY.Y < 0) || (XY.Y >= R.Height())))
+        AppBook::Exception() [Book::Except() << " Out of bounds :" << XY];
 
     CursorXY = XY;
     return CursorXY;

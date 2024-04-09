@@ -151,7 +151,7 @@ struct APPBOOK_EXPORTS Rect
      */
     explicit Rect(const Dim& dxy)
     {
-        A = {};
+        A = {0,0};
         Dwh = dxy;
         B = {A.X + Dwh.W - 1, A.Y + Dwh.H - 1};
     }

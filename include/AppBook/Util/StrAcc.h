@@ -134,7 +134,10 @@ public:
     {
         return Format(std::string(Ac));
     }
-
+    StrAcc& operator << (const std::string& Ac)
+    {
+        return Format(std::string(Ac));
+    }
 
     StrAcc& fill(char c, int count);
     template<typename T> StrAcc& operator , (const T& arg_) { return (*this) += arg_; }

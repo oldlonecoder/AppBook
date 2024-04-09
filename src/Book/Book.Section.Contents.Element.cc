@@ -383,9 +383,9 @@ AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operat
     return *this;
 }
 
-AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Rect R)
-{
-    Input(R.operator std::string());
-    return *this;
-}
-
+//AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Rect R)
+//{
+//    Input(R.operator std::string());
+//    return *this;
+//}
+//

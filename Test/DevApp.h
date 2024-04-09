@@ -1,14 +1,17 @@
 #pragma once
 
-#include "AppBook/Book/TScanner.h"
+#include <AppBook/Book/TScanner.h>
 #include <AppBook/Util/CArgs.h>
+#include <AppBook/Console/CWindow.h>
+#include <AppBook/Utf/Cadres.h>
 class DevApp
 {
 
     Cmd::CArgs Args;
     std::vector<std::string_view> inArgs{};
 
-
+    Rect R{};
+    Utf::Cadre  Cadre;
 public:
 
     DevApp() = default;
@@ -23,7 +26,7 @@ public:
     Book::Action SVScanTest(Cmd::Switch& arg);
     Book::Action DummyTest(Cmd::Switch& arg);
     Book::Action Defaults(Cmd::Switch& arg);
-    
+    Book::Action ConsoleWindowTest(Cmd::Switch& arg);
     Cmd::CArgs Arguments() { return Args; }
 
 
