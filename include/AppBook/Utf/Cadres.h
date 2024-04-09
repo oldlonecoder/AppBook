@@ -88,7 +88,11 @@ struct APPBOOK_EXPORTS Cadre
         TopLeft=0, TopRight, BottomLeft, BottomRight, Horizontal, Vertical, Cross, VerticalTowardsLeft, VerticalTowardsRight, TopTowardsDown, DownTowardsUp
     };
     // .Frame[Mem & CharMask]; Enum: Cadre::TopLeft
-
+    std::string operator [](Cadre::Index Ix)
+    {
+        //const char* -> std::string(const char*); // Creates a deep copy and that is what we want.
+        return *Data[Ix];
+    }
 };
 
 

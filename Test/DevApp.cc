@@ -181,9 +181,9 @@ R"(
         else
             AppBook::Out() << Book::Enums::Fn::Weekday << ' ' << Book::Enums::Fn::Stamp << Book::Enums::Fn::Endl << head;
 
-        AppBook::Test() << Color::LightGreen << Utf::Glyph::Success << Color::Reset << " Passed!";
-        Utf::Cadre Cadre;
-        Book::Test() << " StringLength of Frame : TopLeft [" << Color::Yellow << *Cadre.Data[Utf::Cadre::Cross] << Color::Reset << "]: " << std::string(*Cadre.Data[Utf::Cadre::Cross]).length();
+        auto FrameChar = Utf::Cadre()[Utf::Cadre::Cross];
+
+        Book::Test() << " StringLength of Frame : TopLeft [" << Color::Yellow << FrameChar << Color::Reset << "]: " << FrameChar.length();
         Book::Debug() << "Sizeof the Frame components MAP: " << Utf::Cadre::FrameMatrix.size();
         AppBook::Info() << "Last line, committing Section::Contents and closing the book:";
         AppBook::Out() << "-----------------------------------------------------------------";
