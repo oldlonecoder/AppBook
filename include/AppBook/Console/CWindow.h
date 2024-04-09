@@ -153,6 +153,8 @@ public:
 
         Point Position(Point XY={});
         void Clear(CWindow::Char::Type A = 0xffff20);
+        void Clear(Color::Code C);
+
 
         bool operator++();
         bool operator++(int);

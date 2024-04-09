@@ -158,16 +158,17 @@ Book::Action DevApp::ConsoleWindowTest(Cmd::Switch &arg)
     {
         AppBook::Out() << A;
     }
-    R = {Point(0,0),Dim(20,9)};
+    R = {Point(0,0),Dim(140,12)};
     Book::ConIO::CWindow Window(nullptr,"Test Window");
     Window.SetGeometry(R.Dwh);
     Window.Alloc();
 
-    auto& Pen = Window.BeginWrite(Rect(Point{1,1},Dim{18,2}));
+    auto& Pen = Window.BeginWrite(Rect(Point{1,1},Dim{138,11}));
     Pen.Position({3,3});
-    Pen << "Hello "
+    Pen.Clear(Color::Navy);
+    Pen << Color::LightGreen << "Hello "
     << Color::Pair(Color::Grey100,Color::Reset)
-    << "World!!!";
+    << "World!!!" << Color::Pair(Color::Reset,Color::Navy);
     Window.EndWrite(Pen);
     Window.DrawFrame();
     StrAcc Text;

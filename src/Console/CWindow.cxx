@@ -523,6 +523,19 @@ bool CWindow::Pencil::operator--(int)
     return true;
 }
 
+void CWindow::Pencil::Clear(Color::Code C)
+{
+    A = Char{A}.SetBg(C).Mem | 0x20;
+
+    for(auto Y = 0; Y < R.Height(); Y++)
+    {
+        for(int X = 0; X < R.Width(); X++)
+        {
+            Window->Buffer[Y+Window->R.A.Y][X+Window->R.A.X].Mem = A;
+        }
+    }
+}
+
 #pragma endregion CWindowPencil
 
 
