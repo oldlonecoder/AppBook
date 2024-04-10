@@ -27,7 +27,6 @@
 #include <AppBook/Console/UiEnums.h>
 
 
-
 namespace Book::ConIO
 {
 
@@ -38,6 +37,8 @@ class APPBOOK_EXPORTS CWindow: public Util::Object
     using Type = uint32_t*;
 
     Ui::WClass::Type Flags{ Ui::WClass::Frame };
+
+
     friend struct Console;
 public:
 
@@ -52,7 +53,7 @@ public:
     void Clear();
 
 
-    void SetGeometry(Dim Wh);
+    void SetGeometry(Rect Geo);
 
 
 

@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-10.
 //
 
-#include "Console.h"
+#include "AppBook/Console/Console.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -41,19 +41,21 @@ namespace Book::ConIO
 {
 
 
-Console* Console::Terminal{nullptr};
+
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 Book::Result Console::GotoXY(const Point &XY) // NOLINT(*-make-member-function-const)
 {
-    if(!Rect({0,0},Wh)[XY])
-    {
-        Book::Error() << Result::Rejected << " coord '" << (XY + Point(1,1)) << "' is out of console's geometry.";
-        return Book::Result::Rejected;
-    }
-
-    std::cout << "\033[" << XY.Y + 1 << ';' << XY.X + 1 << 'H';
+//    if(!Rect({0,0},Wh)[XY])
+//    {
+//        Book::Error() << Result::Rejected << " coord '" << (XY + Point(1,1)) << "' is out of console's geometry.";
+//        return Book::Result::Rejected;
+//    }
+    Cursor = XY;
+    StrAcc Acc = "\x1b[%d;%dH";
+    Acc << XY.Y+1 << XY.X + 1;
+    std::cout << Acc();
     fflush(stdout);
     return Result::Accepted;
 }
@@ -77,73 +79,28 @@ size_t Console::Write(const std::string &Text)
 
 void Console::Render(CWindow *W, Rect /*SubR*/)
 {
+    Cursor = W->R.A;
+    GotoXY(Cursor);
+    SetColor(W->Buffer[0][0].Colors());
 
-    Point Crs{W->R.A};
-
-    auto& PrevCell = W->Buffer[0][0];
+    Book::Debug() << " CWindow Coordinates:" << W->R.A;
 
     for(auto &Line : W->Buffer)
     {
-        Console::Terminal->GotoXY(Crs);
-        for(auto Col: Line) (*Console::Terminal) << (Col);
-        write(1,"\033[0m",4);
-        Crs += {0,1};
+        GotoXY(Cursor);
+        for(auto Col: Line) Write(Col);
+        write(1,"\033[0m\n",5);
+        Cursor = {W->R.A.X,Cursor.Y+1};
+        //Cursor.X=0;
     }
     fflush(stdout);
 }
 
-Console &Console::operator<<(const Color::Code& C)
-{
-    auto Seq = Color::Ansi(C);
-    (void)Write(Seq);
-    return *this;
-}
 
-Console &Console::operator<<(const Color::Pair& BgFg)
-{
-    Write(BgFg());
-    return *this;
-}
-
-Console &Console::operator<<(const CWindow::Char& Char)
-{
-    static CWindow::Char Cell;
-    StrAcc Acc{};
-    if(Char.Mem & CWindow::Char::Frame)
-    {
-        Write(Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & CWindow::Char::CharMask)]);
-        return *this;
-    }
-    if(Char.Bg() != Cell.Bg())
-        Write(Color::AnsiBg(Char.Bg()));
-    if(Char.Fg() != Cell.Fg())
-        (*this) << Char.Fg();// Color::Ansi(D.Fg());
-
-    if(Char.Mem & CWindow::Char::UGlyph)
-    {
-        Point CXY = Cursor;
-        Acc << Char.IconID();
-        Write(Acc());
-        GotoXY({CXY.X+1,CXY.Y});
-    }
-    else // Can't have an ASCII character -> and -> a Glyph at the same position.
-        (*this) << static_cast<char>(Char.Mem & CWindow::Char::CharMask);
-    Cell = Char;
-    return *this;
-}
-
-
-
-
-Console &Console::operator<<(const char *Text)
-{
-    Write(Text);
-    return *this;
-}
 
 void Console::GetGeometry()
 {
-    if(!Console::Terminal) Console();
+
 
 #if defined(_WIN32)
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -156,24 +113,76 @@ void Console::GetGeometry()
 #elif defined(__linux__)
     struct winsize win{};
     ioctl(fileno(stdout), TIOCGWINSZ, &win);
-    Console::Terminal->Wh = {static_cast<int>(win.ws_col), static_cast<int>(win.ws_row)};
+    Wh = {static_cast<int>(win.ws_col), static_cast<int>(win.ws_row)};
 #endif // Windows/Linux
 
-    Book::Debug() << " ScreenSize: " << Color::Yellow << (std::string)Console::Terminal->Wh;
+    Book::Debug() << " ScreenSize: " << Color::Yellow << Wh;
 }
 
-Console &Console::operator<<(const char &C)
+
+size_t Console::Write(const char *Text)
 {
-    ::write(1, &C,1);
+    return Write(std::string(Text));
+}
+
+size_t Console::Write(const char &Char8)
+{
+    auto sz = ::write(1,&Char8,1);
     Cursor += {1,0};
-    return *this;
+    return sz;
+};
+
+void Console::SetFgColor(Color::Code Code)
+{
+    auto Seq = Color::Ansi(Code);
+    write(1,Seq.c_str(), Seq.length());
+    fflush(stdout);
 }
 
-Console::Console()
+void Console::SetColor(Color::Pair BgFg)
 {
-    if(Console::Terminal)
-        throw AppBook::Exception() [ Book::Except() << " Multiple instantiation singleton are Fatally rejected!"];
-    if(!Console::Terminal) Console::Terminal = this;
+    auto Seq = BgFg();
+    write(1,Seq.c_str(), Seq.length());
+    fflush(stdout);
+}
+
+size_t Console::Write(CWindow::Char Char)
+{
+    static CWindow::Char Cell;
+    StrAcc Acc{};
+    size_t sz{0};
+    if(Char.Bg() != Cell.Bg())
+    {
+        SetBgColor(Char.Bg());
+        Cell = Char;
+    }
+    if(Char.Fg() != Cell.Fg()) {
+        SetFgColor(Char.Fg());// Color::Ansi(D.Fg());
+        Cell = Char;
+    }
+    if(Char.Mem & CWindow::Char::Frame)
+        return Write(Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & CWindow::Char::CharMask)]);
+
+    if(Char.Mem & CWindow::Char::UGlyph)
+        return DrawIcon(Char.IconID());
+
+    return Write(static_cast<char>(Char.Mem & CWindow::Char::CharMask));
+}
+
+void Console::SetBgColor(Color::Code Code)
+{
+    auto Seq = Color::AnsiBg(Code);
+    write(1,Seq.c_str(), Seq.length());
+    fflush(stdout);
+}
+
+size_t Console::DrawIcon(Utf::Glyph::Type IcID)
+{
+    auto Seq = std::string(Utf::Glyph::Data[IcID]);
+    write(1,Seq.c_str(), Seq.length());
+    //Cursor += {1,0};
+    GotoXY(Cursor);
+    return Seq.length();
 }
 
 

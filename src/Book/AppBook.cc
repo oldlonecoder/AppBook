@@ -12,7 +12,7 @@ using Book::Enums::Code;
 using Book::Enums::Class;
 
 #define src_location std::source_location::current()
-#define out_fun     std::cout << src_location.function_name() << " :" <<
+#define out_fun     //std::cout << src_location.function_name() << " :" <<
 
 #define CHECK_BOOK \
 if(!AppBook::Application_Book  || !AppBook::Application_Book->current_stream || !AppBook::Application_Book->out_stream) AppBook::ThrowOnNoStream();
@@ -68,7 +68,7 @@ Book::Result AppBook::Init()
     loc << '/' << AppBook::Application_Book->Id() << ".Book";
     if(! Fs::exists(loc()) )
     {
-        out_fun " --> Create '" << loc() << "' subdirectory:" << std::endl;
+        //out_fun " --> Create '" << loc() << "' subdirectory:" << std::endl;
         Fs::create_directory(loc());
     }
     Fs::current_path(loc());
@@ -78,11 +78,11 @@ Book::Result AppBook::Init()
 
     // By default we set our out_stream to the address of the console's stdout. Subsequent creations of stack of elements will
     // set it to the given output stream file / or not,  so out_stream always points to a valid output file :
-    out_fun "Setting output stream to the std::cout address by default, will be replaced by subsequent section::content stream..." << std::endl;
+    //out_fun "Setting output stream to the //std::cout address by default, will be replaced by subsequent section::content stream..." << std::endl;
     AppBook::Application_Book->out_stream = &std::cout;
 
     // Result the ref to the (singleton) instance of the Book  :
-    out_fun ": AppBook::LocationPath is set and it is now in " << AppBook::LocationPath << std::endl;
+    //out_fun ": AppBook::LocationPath is set and it is now in " << AppBook::LocationPath << std::endl;
     return Book::Result::Success;
 }
 
@@ -145,14 +145,14 @@ AppBook& AppBook::Open(const std::string& BookName)
 //    if(R != Book::Result::Success)
 //        throw AppBook::Exception(" Open Book failed!");
 
-    out_fun " ApplicationBase Book " << AppBook::Instance().Id() << "  Created\n";
+    //out_fun " ApplicationBase Book " << AppBook::Instance().Id() << "  Created\n";
 
     Fs::file_time_type htime;
     auto Path = Fs::current_path();
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     StrAcc loc = Path.string().c_str();
 #else 
-    out_fun "current path: " << Path.c_str() << ":\n";
+    //out_fun "current path: " << Path.c_str() << ":\n";
 #endif
     
 
@@ -168,7 +168,7 @@ AppBook& AppBook::Open(const std::string& BookName)
             dir << " subdir : '" << Color::Yellow << item.path().c_str() << Color::Reset << '\n';
 #endif
             
-            std::cout << std::source_location::current().function_name() <<  ":" << dir();
+            //std::cout << std::source_location::current().function_name() <<  ":" << dir();
             if(!last_entry.is_set)
             {
                 last_entry.is_set = true;
@@ -188,7 +188,7 @@ AppBook& AppBook::Open(const std::string& BookName)
     }
     if(!last_entry.is_set)
     {
-        out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving ( Goto: ApiLog section create). \n";
+        //out_fun src_location.line() << " :"  << "This book has no section(s) yet (subdir is empty) - leaving ( Goto: ApiLog section create). \n";
 
 
          //throw AppBook::Exception("exception thrown from  AppBook::Open : no entry");
@@ -196,10 +196,10 @@ AppBook& AppBook::Open(const std::string& BookName)
     else {
 #if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
         AppBook::Self().starting_path = Fs::current_path().string().c_str();
-        std::cout << "last entry:" << last_entry.entry.path().string().c_str() << "\n";
+        //std::cout << "last entry:" << last_entry.entry.path().string().c_str() << "\n";
 #else
         AppBook::Self().starting_path = Fs::current_path().c_str();
-        std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
+        ////std::cout << "last entry:" << last_entry.entry.path().c_str() << "\n";
 #endif
     }
     AppBook::SetupBookApiJournal();
@@ -255,7 +255,7 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     check_location += '/';
     check_location += section_id;
 
-    std::cout << " checking '" << Color::Ansi(Color::Yellow) << check_location << Color::Ansi(Color::Reset) << "':\n";
+    ////std::cout << " checking '" << Color::Ansi(Color::Yellow) << check_location << Color::Ansi(Color::Reset) << "':\n";
 
 
     // -- Check instance os Section identified by section_id first:
@@ -264,13 +264,13 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
     for(;sit !=  AppBook::Application_Book->Sections.end(); sit++) if((*sit)->Id() == section_id) break;
     if(sit !=  AppBook::Application_Book->Sections.end())
     {
-        out_fun "Section '" << section_id << "' found and returning its instance.";
+        //out_fun "Section '" << section_id << "' found and returning its instance.";
         return *(*sit);
     }
     //-------------------------------------------------------------------------
 
     // -- Check if the Section already exists in the filesytem:
-    std::cout << " creating Section identified by  '" <<  AppBook::Application_Book->Id() << ":\n";
+    //std::cout << " creating Section identified by  '" <<  AppBook::Application_Book->Id() << ":\n";
     AppBook::Application_Book->Sections.push_back(new AppBook::Section( AppBook::Application_Book, section_id));
     AppBook::Section& s = * AppBook::Application_Book->Sections.back();
     s.Location = check_location;
@@ -283,16 +283,16 @@ AppBook::Section &AppBook::CreateSection(const std::string &section_id)
         err << "Section Location '" << Color::Yellow << check_location.c_str() << Color::Reset << "' already exists... Openning it.";
 #endif
         
-        std::cout << err() << "\n";
+        //std::cout << err() << "\n";
         return s;
     }
     //------------------------------------------------------------------------------------
 
     // Then create the Section Location in filesystem :
-    std::cout << " creating '" <<   AppBook::Application_Book->Id() << "' Location:\n";
+    //std::cout << " creating '" <<   AppBook::Application_Book->Id() << "' Location:\n";
     Fs::create_directory(s.Location);
     //------------------------------------------------------------------------------------
-    std::cout << __FUNCTION__ << " done.\n";
+    //std::cout << __FUNCTION__ << " done.\n";
 
     return s;
 }

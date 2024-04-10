@@ -46,7 +46,7 @@ Code AppBook::Section::Contents::Open()
 
     Filename = file(); // Keep the copy of the filename
 
-    std::cout << __PRETTY_FUNCTION__ << " - checking for existing '"<< Filename << "' :\n";
+    //std::cout << __PRETTY_FUNCTION__ << " - checking for existing '"<< Filename << "' :\n";
     OutputFile.open(file(),std::ios_base::out);
     if(!OutputFile.is_open())
     {
@@ -54,7 +54,7 @@ Code AppBook::Section::Contents::Open()
         str << file << "' for output!'";
         throw AppBook::Exception(str());
     }
-    std::cout << " file '" << Color::Ansi(Color::Yellow) << Filename << Color::Ansi(Color::Reset) << "' is open.\n";
+    //std::cout << " file '" << Color::Ansi(Color::Yellow) << Filename << Color::Ansi(Color::Reset) << "' is open.\n";
     StrAcc Msg;
     Msg << Color::DeepSkyBlue7 << Parent<AppBook::Section>()->Id() << Color::White << "::" << Color::Yellow <<  Id() << Color::White << " logs\n";
     OutputFile << Msg();
@@ -73,7 +73,7 @@ Code AppBook::Section::Contents::Close()
     Commit();
     OutputFile.flush();
     OutputFile.close();
-    std::cout << " file '" << Color::Ansi(Color::Yellow) << Filename << Color::Ansi(Color::Reset) << "' is closed.\n";
+    //std::cout << " file '" << Color::Ansi(Color::Yellow) << Filename << Color::Ansi(Color::Reset) << "' is closed.\n";
     return Code::Success;
 }
 

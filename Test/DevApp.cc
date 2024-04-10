@@ -153,7 +153,6 @@ Book::Action DevApp::Defaults(Cmd::Switch &arg)
 
 Book::Action DevApp::ConsoleWindowTest(Cmd::Switch &arg)
 {
-    Book::ConIO::Console::GetGeometry();
     AppBook::Message() << " Args:";
     for(auto const& A: arg.Arguments)
     {

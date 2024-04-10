@@ -41,7 +41,7 @@ Book::Enums::Code AppBook::Section::Close()
 AppBook::Section &AppBook::Section::Open()
 {
     // Get the Book (root) location.
-    std::cout << __PRETTY_FUNCTION__ << ": location:" << Location << ":\n";
+    //std::cout << __PRETTY_FUNCTION__ << ": location:" << Location << ":\n";
     if(!fs::exists(Location))
     {
         StrAcc err;
@@ -68,8 +68,8 @@ AppBook::Section::Contents &AppBook::Section::CreateSectionContents(const std::s
     Blocs.push_back(new AppBook::Section::Contents(this, stack_id));
     AppBook::Section::Contents& bs = *Blocs.back();
 
-    if(bs.Open() == Book::Enums::Code::Success)
-        std::cout << " bloc stack identified by [file] '" <<bs.Id() << "' has been successfuly created.\n";
+    if(bs.Open() == Book::Enums::Code::Success) ;
+        //std::cout << " bloc stack identified by [file] '" <<bs.Id() << "' has been successfuly created.\n";
 
     return *Blocs.back();
 }
@@ -82,7 +82,7 @@ AppBook::Section::Contents &AppBook::Section::operator[](const std::string &bloc
         {
             AppBook::Self().current_stream = blk;
             AppBook::Self().out_stream = &blk->OutputFile;
-            std::cout << " bloc stack " << bloc_id << " is now set as current stream at the Book scope.\n";
+            //std::cout << " bloc stack " << bloc_id << " is now set as current stream at the Book scope.\n";
             return *blk;
         }
     }

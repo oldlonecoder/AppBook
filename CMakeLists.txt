@@ -53,7 +53,7 @@ add_library(
     src/Utf/Cadres.cxx
     include/AppBook/Console/CWindow.h src/Console/CWindow.cxx
     include/AppBook/Console/UiEnums.h
-    include/AppBook/Console/Console.cxx
+    src/Console/Console.cxx
     include/AppBook/Console/Console.h
 
 )
@@ -102,4 +102,9 @@ add_custom_command(
 )
 
 
-add_subdirectory(Test)
+add_executable(Main.App Main.cxx)
+target_link_libraries(Main.App AppBook)
+
+
+
+#add_subdirectory(Test)

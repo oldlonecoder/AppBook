@@ -3,8 +3,9 @@
 //
 
 #include "AppBook/Console/CWindow.h"
-#include <AppBook/Book/AppBook.h>
-#include <AppBook/Console/Console.h>
+#include <AppBook/Book/ApplicationBase.h>
+
+
 
 
 /******************************************************************************************
@@ -202,9 +203,9 @@ void CWindow::Clear()
             C = (A & ~(Char::CMask | Char::CharMask)) | 0x20;
 }
 
-void CWindow::SetGeometry(Dim Wh)
+void CWindow::SetGeometry(Rect Geo)
 {
-    R.Resize(Dim{Wh.W,Wh.H});
+    R = Geo;
     Alloc();
 }
 
@@ -302,6 +303,7 @@ void CWindow::DrawFrame()
     Rect Rl = R;
     Rl -= R.A;
     Painter.Position({0,0});
+    Painter << Color::Pair({Color::Grey100,Color::Reset});
     Painter << Utf::Cadre::TopLeft;
     Painter.Position({Rl.B.X, Rl.A.Y});
     Painter << Utf::Cadre::TopRight;
@@ -328,8 +330,7 @@ void CWindow::DrawFrame()
 
 void CWindow::Draw(const Rect& SubR)
 {
-    Console::Render(this, SubR);
-
+    ApplicationBase::Instance().Console().Render(this, SubR);
 }
 
 
@@ -350,7 +351,10 @@ int CWindow::Pencil::Height() const
 }
 
 CWindow::Pencil::Pencil(CWindow *W, CWindow::Char::Type DefaultAttr, Rect Sub):Util::Object(W, "CWindow::Pencil"),
-Window(W), A(DefaultAttr), R(Sub -= W->R.A){}
+Window(W), A(DefaultAttr), R(Sub)
+{
+
+}
 
 //CWindow::Pencil::~Pencil(){}
 

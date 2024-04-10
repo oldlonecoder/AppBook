@@ -33,25 +33,22 @@ struct APPBOOK_EXPORTS Console
 
     Dim     Wh;
     Point   Cursor{0,0};
-    static Console* Terminal;
 
-    Console();
+    Console()=default;
+    ~Console() = default;
 
     Book::Result GotoXY(const Point& XY);
     size_t Write(const std::string& Text);
+    size_t Write(const char* Text);
+    size_t Write(const char& Char8);
+    size_t Write(CWindow::Char Char);
+    size_t DrawIcon(Utf::Glyph::Type IcID);
+    void Render(CWindow* W, Rect SubR);
+    void GetGeometry();
+    void SetFgColor(Color::Code Code);
+    void SetBgColor(Color::Code Code);
+    void SetColor(Color::Pair BgFg);
 
-    //...
-    static void Render(CWindow* W, Rect SubR);
-
-    static void GetGeometry();
-
-    Console& operator << (const Color::Code& C);
-    Console& operator << (const Color::Pair& BgFg);
-    Console& operator << (const CWindow::Char& Char);
-    Console& operator << (const char* Text);
-    Console& operator << (const char& C);
-
-    //Console& operator << (CWindow::Char::Type Char32);
 
 
 
