@@ -53,6 +53,8 @@ add_library(
     src/Utf/Cadres.cxx
     include/AppBook/Console/CWindow.h src/Console/CWindow.cxx
     include/AppBook/Console/UiEnums.h
+    include/AppBook/Console/Console.cxx
+    include/AppBook/Console/Console.h
 
 )
 

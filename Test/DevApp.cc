@@ -3,7 +3,7 @@
 #include "AppBook/Book/StmlText.h"
 #include "AppBook/Util/StrBreak.h"
 #include <AppBook/Utf/Cadres.h>
-
+#include <AppBook/Console/Console.h>
 #include <csignal>
 
 
@@ -153,29 +153,32 @@ Book::Action DevApp::Defaults(Cmd::Switch &arg)
 
 Book::Action DevApp::ConsoleWindowTest(Cmd::Switch &arg)
 {
+    Book::ConIO::Console::GetGeometry();
     AppBook::Message() << " Args:";
     for(auto const& A: arg.Arguments)
     {
         AppBook::Out() << A;
     }
-    R = {Point(0,0),Dim(140,12)};
+    R = {Point(2,2),Dim(140,12)};
     Book::ConIO::CWindow Window(nullptr,"Test Window");
     Window.SetGeometry(R.Dwh);
     Window.Alloc();
 
     auto& Pen = Window.BeginWrite(Rect(Point{1,1},Dim{138,11}));
     Pen.Position({3,3});
-    Pen.Clear(Color::Navy);
-    Pen << Color::LightGreen << "Hello "
+    //Pen.Clear(Color::Navy);
+    Pen << Color::LightGreen << Utf::Glyph::World
+    << Color::Yellow6 << "Hello "
     << Color::Pair(Color::Grey100,Color::Reset)
-    << "World!!!" << Color::Pair(Color::Reset,Color::Navy);
+    << "World!!!";
+
     Window.EndWrite(Pen);
     Window.DrawFrame();
     StrAcc Text;
     Window >> Text;
     Book::Debug() << " Utf::CWindow :";
     Book::Out() << Text;
-
+    Window.Draw();
     return Book::Action::Leave;
 }
 

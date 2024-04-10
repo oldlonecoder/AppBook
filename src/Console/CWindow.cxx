@@ -4,6 +4,8 @@
 
 #include "AppBook/Console/CWindow.h"
 #include <AppBook/Book/AppBook.h>
+#include <AppBook/Console/Console.h>
+
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -202,7 +204,7 @@ void CWindow::Clear()
 
 void CWindow::SetGeometry(Dim Wh)
 {
-    R = {Point{0,0},Dim{Wh.W,Wh.H}};
+    R.Resize(Dim{Wh.W,Wh.H});
     Alloc();
 }
 
@@ -234,7 +236,12 @@ Book::Result CWindow::ReAlloc()
 
 CWindow::Pencil &CWindow::BeginWrite(Rect Geom, CWindow::Char::Type Attr)
 {
-    if(!Geom) Geom = R;
+    if(!Geom)
+    {
+        Geom = R;
+        Geom -= R.A;
+    }
+
     return *(new Pencil(this, Attr, Geom));
 }
 
@@ -244,38 +251,44 @@ Book::Result CWindow::EndWrite(CWindow::Pencil &Pen)
     return Result::Ok;
 }
 
+
+
+/*!
+ * @brief Render inner Buffer to a StrAcc.
+ * @param Acc
+ * @return Always return Result::Ok ...
+ * @note Attention: Glyphes (Icons other than Accents) are forbidden using string unless the final output ( to the console gui )
+ *       is controlled by the Book::Console Renderer.
+ */
 Book::Result CWindow::operator>>(StrAcc &Acc)
 {
-
-    CWindow::Char PrevCell = Buffer[0][0];
-    int Glyph=0;
-    for(int Y=0; Y<R.Height(); Y++)
+    //int Glyph=0;
+    Utf::Cadre Cadre;
+    auto& PrevCell = Buffer[0][0];
+    for(auto& Line: Buffer)
     {
-        PrevCell = Buffer[Y][0];
-        for(int X = 0; X< R.Width(); X++)
+        for(auto& Col : Line)
         {
-            auto& D = Buffer[Y][X];
-            if(D.Mem & CWindow::Char::Frame)
+
+            if(Col.Mem & CWindow::Char::Frame)
             {
-                Utf::Cadre Cadre;
-                Acc << *Cadre.Data[static_cast<int>(D.Mem & CWindow::Char::CharMask)];
-                PrevCell = D;
+
+                Acc << Cadre[static_cast<Utf::Cadre::Index>(Col.Mem & CWindow::Char::CharMask)];
                 continue; // Colors or any other attributes changes on Frame is bypassed (rejected).
             }
-            if(D.Bg() != PrevCell.Bg())
-                Acc << Color::AnsiBg(D.Bg());
-            if(D.Fg() != PrevCell.Fg())
-                Acc << D.Fg();// Color::Ansi(D.Fg());
-            if(D.Mem & CWindow::Char::UGlyph)
+            if(Col.Bg() != PrevCell.Bg())
+                Acc << Color::AnsiBg(Col.Bg());
+            if(Col.Fg() != PrevCell.Fg())
+                Acc << Col.Fg();// Color::Ansi(D.Fg());
+            if(Col.Mem & CWindow::Char::UGlyph)
             {
-                Acc << D.IconID();
+                Acc << Col.IconID();
             }
             else // Can't have an ASCII character -> and -> a Glyph at the same position.
-                Acc << static_cast<char>(D.Mem & CWindow::Char::CharMask);
-            PrevCell = D;
+                Acc << static_cast<char>(Col.Mem & CWindow::Char::CharMask);
+            PrevCell = Col;
         }
-
-        Acc << Color::Reset << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal as in this AppBook API/Framework
+        Acc << Color::Reset << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal, for ex.: in this AppBook API/Framework
     }
     return Result::Ok;
 }
@@ -286,29 +299,37 @@ void CWindow::DrawFrame()
         throw AppBook::Exception()[ Book::Except() << Utf::Glyph::Bomb << " Cannot draw a frame with no dimensions!"];
     Utf::Cadre Cdr;
     auto& Painter = BeginWrite();
+    Rect Rl = R;
+    Rl -= R.A;
     Painter.Position({0,0});
     Painter << Utf::Cadre::TopLeft;
-    Painter.Position({R.B.X, R.A.Y});
+    Painter.Position({Rl.B.X, Rl.A.Y});
     Painter << Utf::Cadre::TopRight;
-    Painter.Position({R.A.X, R.B.Y});
+    Painter.Position({Rl.A.X, Rl.B.Y});
     Painter << Utf::Cadre::BottomLeft;
-    Painter.Position({R.B.X, R.B.Y});
+    Painter.Position({Rl.B.X, Rl.B.Y});
     Painter << Utf::Cadre::BottomRight;
     for(int X=1; X<R.Width()-1; X++)
     {
         Painter.Position({X,0});
         Painter << Utf::Cadre::Horizontal;
-        Painter.Position({X,R.B.Y});
+        Painter.Position({X,Rl.B.Y});
         Painter << Utf::Cadre::Horizontal;
     }
     for(int Y=1; Y<R.Height()-1; Y++)
     {
         Painter.Position({0,Y});
         Painter << Utf::Cadre::Vertical;
-        Painter.Position({R.B.X,Y});
+        Painter.Position({Rl.B.X,Y});
         Painter << Utf::Cadre::Vertical;
     }
     EndWrite(Painter);
+}
+
+void CWindow::Draw(const Rect& SubR)
+{
+    Console::Render(this, SubR);
+
 }
 
 
@@ -329,7 +350,7 @@ int CWindow::Pencil::Height() const
 }
 
 CWindow::Pencil::Pencil(CWindow *W, CWindow::Char::Type DefaultAttr, Rect Sub):Util::Object(W, "CWindow::Pencil"),
-Window(W), A(DefaultAttr), R(Sub){}
+Window(W), A(DefaultAttr), R(Sub -= W->R.A){}
 
 //CWindow::Pencil::~Pencil(){}
 
@@ -457,11 +478,13 @@ Point CWindow::Pencil::Position(Point XY)
 void CWindow::Pencil::Clear(CWindow::Char::Type Attr)
 {
     A = Attr;
+
+
     for(auto Y = 0; Y < R.Height(); Y++)
     {
         for(int X = 0; X < R.Width(); X++)
         {
-            Window->Buffer[Y+Window->R.A.Y][X+Window->R.A.X].Mem = Attr;
+            Window->Buffer[Y+R.A.Y][X+R.A.X].Mem = Attr;
         }
     }
 }

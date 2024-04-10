@@ -38,7 +38,7 @@ class APPBOOK_EXPORTS CWindow: public Util::Object
     using Type = uint32_t*;
 
     Ui::WClass::Type Flags{ Ui::WClass::Frame };
-
+    friend struct Console;
 public:
 
 
@@ -170,6 +170,9 @@ public:
 
     Book::Result operator >>(StrAcc& Acc);
     void DrawFrame();
+    void Draw(const Rect& SubR={});
+
+
 private:
     CWindow::Char::Matrix Buffer{};
     CWindow::Char::Type   A{0xffff20};
