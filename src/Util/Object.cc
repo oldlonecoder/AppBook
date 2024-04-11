@@ -23,7 +23,7 @@ Object::Object(Object *aparent, const std::string &aobj_name):
 
 Object::~Object()
 {
-
+    Detach();
     _Children.clear();
 }
 
@@ -80,9 +80,9 @@ Book::Enums::Code Object::Detach(Object *ObjPtr)
         _Children.erase(O);
         return Book::Enums::Code::Accepted;
     }
-    auto* P = Parent<Object>();
-    if(!P) return Book::Enums::Code::Rejected;
-    P->Detach(this);
+
+    if(!_Parent) return Book::Enums::Code::Rejected;
+    _Parent->Detach(this);
     return Book::Enums::Code::Accepted;
 }
 

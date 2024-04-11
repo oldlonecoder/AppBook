@@ -123,7 +123,6 @@ public:
         [[maybe_unused]] CWindow::Char& ResetAttributes(CWindow::Char::Type bits_);
         explicit operator std::string() const;
         [[nodiscard]] std::string Details() const;
-        using Matrix = std::vector<std::vector<CWindow::Char>>;
 
     };
 
@@ -164,7 +163,7 @@ public:
 
     };
 
-    std::vector<CWindow::Char>& operator[](size_t Line);
+    CWindow::Type Peek(Point XY);
 
     CWindow::Pencil& BeginWrite(Rect Geom={}, CWindow::Char::Type Attr=0xffff20);
     Book::Result     EndWrite(CWindow::Pencil& Pen);
@@ -175,7 +174,7 @@ public:
 
 
 private:
-    CWindow::Char::Matrix Buffer{};
+    CWindow::Type Buffer{nullptr};
     CWindow::Char::Type   A{0xffff20};
 
 

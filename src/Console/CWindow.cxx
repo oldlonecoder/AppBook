@@ -172,9 +172,7 @@ CWindow::CWindow(Util::Object *ParentObj, const std::string &Id) : Object(Parent
 
 CWindow::~CWindow()
 {
-    for(auto L: Buffer)
-        L.clear();
-    Buffer.clear();
+    //delete [] Buffer;
 }
 
 
@@ -186,27 +184,20 @@ Book::Result CWindow::Alloc()
         Book::Error() << " Invalid Rect " << R;
         return Book::Result::Empty;
     }
-    Buffer.resize(R.Height());
-    for(auto& V: Buffer)
-    {
-        V.resize(R.Width());
-        for(auto& C: V)
-            C = A;
-    }
+    Buffer = new CWindow::Char::Type[R.Dwh.Area()+R.Width()]; // Add an extra line for very small accidental overflow
     return Result::Ok;
 }
 
 void CWindow::Clear()
 {
-    for(auto &L : Buffer)
-        for(auto& C: L)
-            C = (A & ~(Char::CMask | Char::CharMask)) | 0x20;
+    auto Area = R.Dwh.Area();
+    for(int X=0; X < Area; X++) Buffer[X] = (A & ~Char::CharMask) | 0x20;
 }
 
 void CWindow::SetGeometry(Rect Geo)
 {
     R = Geo;
-    Alloc();
+    ReAlloc();
 }
 
 
@@ -220,20 +211,13 @@ int CWindow::Height()
     return R.Height();
 }
 
-std::vector<CWindow::Char> &CWindow::operator[](size_t Line)
-{
-    if(Line>=Buffer.size())
-    {
-        AppBook::Exception() [ Book::Except() << " Index out of boundaries" ];
-    }
-    return Buffer[Line];
-
-}
 
 Book::Result CWindow::ReAlloc()
 {
+    if(Buffer) delete [] Buffer;
     return Alloc();
 }
+
 
 CWindow::Pencil &CWindow::BeginWrite(Rect Geom, CWindow::Char::Type Attr)
 {
@@ -242,13 +226,14 @@ CWindow::Pencil &CWindow::BeginWrite(Rect Geom, CWindow::Char::Type Attr)
         Geom = R;
         Geom -= R.A;
     }
-
-    return *(new Pencil(this, Attr, Geom));
+    Pencil* Pen = new Pencil(this, Attr,Geom);
+    return *Pen;
 }
+
 
 Book::Result CWindow::EndWrite(CWindow::Pencil &Pen)
 {
-    delete &Pen;
+    //delete &Pen;
     return Result::Ok;
 }
 
@@ -265,29 +250,29 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
 {
     //int Glyph=0;
     Utf::Cadre Cadre;
-    auto& PrevCell = Buffer[0][0];
-    for(auto& Line: Buffer)
+    Type PrevCell = Buffer;
+    for(int Line = 0; Line < R.Height(); Line++)
     {
-        for(auto& Col : Line)
+        Type Crs = Peek({0,Line});
+        for(int Col=0; Col < R.Width(); Col++)
         {
 
-            if(Col.Mem & CWindow::Char::Frame)
+            if(*Crs & CWindow::Char::Frame)
             {
-
-                Acc << Cadre[static_cast<Utf::Cadre::Index>(Col.Mem & CWindow::Char::CharMask)];
+                Acc << Cadre[static_cast<Utf::Cadre::Index>(*Crs++ & CWindow::Char::CharMask)];
                 continue; // Colors or any other attributes changes on Frame is bypassed (rejected).
             }
-            if(Col.Bg() != PrevCell.Bg())
-                Acc << Color::AnsiBg(Col.Bg());
-            if(Col.Fg() != PrevCell.Fg())
-                Acc << Col.Fg();// Color::Ansi(D.Fg());
-            if(Col.Mem & CWindow::Char::UGlyph)
+            if(Char(*Crs).Bg() != Char(*PrevCell).Bg())
+                Acc << Color::AnsiBg(Char(*Crs).Bg());
+            if(Char(*Crs).Fg() != Char(*PrevCell).Fg())
+                Acc << Char(*Crs).Fg();
+            if(*Crs & CWindow::Char::UGlyph)
             {
-                Acc << Col.IconID();
+                Acc << Char(*Crs).IconID();
             }
             else // Can't have an ASCII character -> and -> a Glyph at the same position.
-                Acc << static_cast<char>(Col.Mem & CWindow::Char::CharMask);
-            PrevCell = Col;
+                Acc << static_cast<char>(*Crs & CWindow::Char::CharMask);
+            PrevCell = Crs++;
         }
         Acc << Color::Reset << '\n'; ///@note  Ambiguous Assignation because This 2D text would be written also in logging journal, for ex.: in this AppBook API/Framework
     }
@@ -331,6 +316,11 @@ void CWindow::DrawFrame()
 void CWindow::Draw(const Rect& SubR)
 {
     ApplicationBase::Instance().Console().Render(this, SubR);
+}
+
+CWindow::Type CWindow::Peek(Point XY)
+{
+    return Buffer + XY.Y*R.Width() + XY.X;
 }
 
 
@@ -388,10 +378,10 @@ CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
         return *this;
     }
     auto Src = Input.begin();
-    auto& Line = Window->Buffer[CursorXY.Y+R.A.Y];
+    CWindow::Type P = Window->Peek(CursorXY+R.A);
     for(int X=CursorXY.X; (X < R.Width()) && (Src != Input.end()); X++, Src++)
     {
-        Line[X+R.A.X] = A & ~(CWindow::Char::CharMask) | *Src;
+        *P++ = A & ~(CWindow::Char::CharMask) | *Src;
         if(!++(*this)) return *this; // Double check while INC CursorXY.X ( prefix INC )
     }
     return *this;
@@ -406,7 +396,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(const std::string &Input)
 CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
 {
     CHECKOOB
-    Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X] = C;
+    *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = C.Mem;
     ++(*this);
     return *this;
 }
@@ -414,7 +404,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(CWindow::Char C)
 CWindow::Pencil &CWindow::Pencil::operator<<(char C)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~CWindow::Char::UTFMASK) | C;
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = (A & ~CWindow::Char::UTFMASK) | C;
     ++(*this);
     return *this;
 }
@@ -430,7 +420,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(char C)
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = A & ~(A & CWindow::Char::FGMask) | (C << CWindow::Char::FGShift);
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = A & ~(A & CWindow::Char::FGMask) | (C << CWindow::Char::FGShift);
     return *this;
 }
 
@@ -438,7 +428,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Color::Code C)
 CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.Y].Mem = (A & ~CWindow::Char::CMask) | (Colors.Bg << CWindow::Char::BGShift) | (Colors.Fg << CWindow::Char::FGShift);
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.Y}) = (A & ~CWindow::Char::CMask) | (Colors.Bg << CWindow::Char::BGShift) | (Colors.Fg << CWindow::Char::FGShift);
     return *this;
 }
 
@@ -446,7 +436,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Color::Pair Colors)
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::Type Ic)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~(CWindow::Char::UTFMASK|CWindow::Char::AttrMask)) | CWindow::Char::UGlyph | Ic;
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = (A & ~(CWindow::Char::UTFMASK|CWindow::Char::AttrMask)) | CWindow::Char::UGlyph | Ic;
     A &= ~(CWindow::Char::UGlyph);
     ++(*this);
 
@@ -456,7 +446,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Glyph::Type Ic)
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::Type Ac)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~CWindow::Char::UTFMASK) | CWindow::Char::Accent | Ac;
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = (A & ~CWindow::Char::UTFMASK) | CWindow::Char::Accent | Ac;
     ++(*this);
     return *this;
 }
@@ -464,7 +454,7 @@ CWindow::Pencil &CWindow::Pencil::operator<<(Utf::AccentFR::Type Ac)
 CWindow::Pencil &CWindow::Pencil::operator<<(Utf::Cadre::Index If)
 {
     CHECKOOB
-    A = Window->Buffer[CursorXY.Y+R.A.Y][CursorXY.X+R.A.X].Mem = (A & ~(CWindow::Char::AttrMask | CWindow::Char::UTFMASK)) | CWindow::Char::Frame | If;
+    A = *Window->Peek({CursorXY.Y+R.A.Y,CursorXY.X+R.A.X}) = (A & ~(CWindow::Char::AttrMask | CWindow::Char::UTFMASK)) | CWindow::Char::Frame | If;
     ++(*this);
     return *this;
 }
@@ -488,7 +478,7 @@ void CWindow::Pencil::Clear(CWindow::Char::Type Attr)
     {
         for(int X = 0; X < R.Width(); X++)
         {
-            Window->Buffer[Y+R.A.Y][X+R.A.X].Mem = Attr;
+            *Window->Peek({Y+R.A.Y,X+R.A.X}) = Attr;
         }
     }
 }
@@ -558,7 +548,7 @@ void CWindow::Pencil::Clear(Color::Code C)
     {
         for(int X = 0; X < R.Width(); X++)
         {
-            Window->Buffer[Y+Window->R.A.Y][X+Window->R.A.X].Mem = A;
+            *Window->Peek({Y+Window->R.A.Y,X+Window->R.A.X}) = A;
         }
     }
 }

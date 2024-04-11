@@ -81,14 +81,15 @@ void Console::Render(CWindow *W, Rect /*SubR*/)
 {
     Cursor = W->R.A;
     GotoXY(Cursor);
-    SetColor(W->Buffer[0][0].Colors());
+    SetColor(CWindow::Char(W->Buffer[0]).Colors());
 
     Book::Debug() << " CWindow Coordinates:" << W->R.A;
 
-    for(auto &Line : W->Buffer)
+    for(int Line = 0; Line < W->R.Height(); Line++)
     {
         GotoXY(Cursor);
-        for(auto Col: Line) Write(Col);
+        CWindow::Type P = W->Peek({0,Line});
+        for(int Col=0; Col< W->Width(); Col++) Write(CWindow::Char(*P++));
         write(1,"\033[0m\n",5);
         Cursor = {W->R.A.X,Cursor.Y+1};
         //Cursor.X=0;
@@ -130,7 +131,7 @@ size_t Console::Write(const char &Char8)
     auto sz = ::write(1,&Char8,1);
     Cursor += {1,0};
     return sz;
-};
+}
 
 void Console::SetFgColor(Color::Code Code)
 {
@@ -150,7 +151,7 @@ size_t Console::Write(CWindow::Char Char)
 {
     static CWindow::Char Cell;
     StrAcc Acc{};
-    size_t sz{0};
+    //size_t sz{0};
     if(Char.Bg() != Cell.Bg())
     {
         SetBgColor(Char.Bg());
