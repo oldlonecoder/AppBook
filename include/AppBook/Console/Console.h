@@ -41,7 +41,6 @@ struct APPBOOK_EXPORTS Console
     size_t Write(const std::string& Text);
     size_t Write(const char* Text);
     size_t Write(const char& Char8);
-    size_t Write(CWindow::Char Char);
     size_t DrawIcon(Utf::Glyph::Type IcID);
     void Render(CWindow* W, Rect SubR);
     void GetGeometry();

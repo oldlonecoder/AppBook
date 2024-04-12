@@ -33,11 +33,10 @@ namespace Book::ConIO
 
 class APPBOOK_EXPORTS CWindow: public Util::Object
 {
-    Rect    R{};
     using Type = uint32_t*;
-
-    Ui::WClass::Type Flags{ Ui::WClass::Frame };
-
+    Point        ScreenXY{};
+    Rect                R{};  ///< Also contains inner Cursor
+    Ui::WClass::Type    Flags{ Ui::WClass::Frame };
 
     friend struct Console;
 public:
@@ -49,13 +48,11 @@ public:
 
     Book::Result Alloc();
     Book::Result ReAlloc();
-
+    void SetScreenPosition(const Point& XY) { ScreenXY = XY; }
     void Clear();
-
-
-    void SetGeometry(Rect Geo);
-
-
+    void SetGeometry(Point Geo);
+    int Width();
+    int Height();
 
     struct APPBOOK_EXPORTS Char
     {
@@ -126,21 +123,17 @@ public:
 
     };
 
-    int Width();
-    int Height();
-
-    struct APPBOOK_EXPORTS Pencil : public Util::Object
+    struct APPBOOK_EXPORTS Pencil
     {
         CWindow* Window{nullptr};
         Rect     R{};
-        Point    CursorXY{0,0}; ///< The Origin is {0,0}
         [[nodiscard]] int Width() const;
         [[nodiscard]] int Height() const;
         CWindow::Char::Type A{0xffff20};
 
 
         Pencil(CWindow* W, CWindow::Char::Type DefaultAttr, Rect Sub);
-        ~Pencil() override = default;
+        ~Pencil() = default;
 
         Pencil& operator << (const std::string& Input);
         Pencil& operator << (CWindow::Char C);
@@ -151,7 +144,7 @@ public:
         Pencil& operator << (Utf::AccentFR::Type Ac);
         Pencil& operator << (Utf::Cadre::Index If);
 
-        Point Position(Point XY={});
+        Book::Result Position(Point XY={});
         void Clear(CWindow::Char::Type A = 0xffff20);
         void Clear(Color::Code C);
 
@@ -163,11 +156,9 @@ public:
 
     };
 
-    CWindow::Type Peek(Point XY);
+    CWindow::Type Peek(const Rect& Area={});
 
-    CWindow::Pencil& BeginWrite(Rect Geom={}, CWindow::Char::Type Attr=0xffff20);
-    Book::Result     EndWrite(CWindow::Pencil& Pen);
-
+    CWindow::Pencil  GetPencil(Rect Geom={}, CWindow::Char::Type Attr=0xffff20);
     Book::Result operator >>(StrAcc& Acc);
     void DrawFrame();
     void Draw(const Rect& SubR={});

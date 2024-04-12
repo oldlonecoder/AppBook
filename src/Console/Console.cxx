@@ -79,20 +79,49 @@ size_t Console::Write(const std::string &Text)
 
 void Console::Render(CWindow *W, Rect /*SubR*/)
 {
-    Cursor = W->R.A;
-    GotoXY(Cursor);
+    Cursor = W->ScreenXY;
+    W->R.Home();
+    //GotoXY(Cursor);
     SetColor(CWindow::Char(W->Buffer[0]).Colors());
-
-    Book::Debug() << " CWindow Coordinates:" << W->R.A;
+    CWindow::Char PCell{*W->Peek(W->R)};
+    Book::Debug() << " CWindow Coordinates:" << W->ScreenXY;
 
     for(int Line = 0; Line < W->R.Height(); Line++)
     {
         GotoXY(Cursor);
-        CWindow::Type P = W->Peek({0,Line});
-        for(int Col=0; Col< W->Width(); Col++) Write(CWindow::Char(*P++));
+        CWindow::Type P = W->Peek(W->R);
+        for(int Col=0; Col< W->Width(); Col++)
+        {
+            CWindow::Char Char(*P++);
+            StrAcc Acc{};
+            if(Char.Bg() != PCell.Bg())
+            {
+                SetBgColor(Char.Bg());
+                PCell = Char;
+            }
+            if(Char.Fg() != PCell.Fg()) {
+                SetFgColor(Char.Fg());// Color::Ansi(D.Fg());
+                PCell = Char;
+            }
+            if(*Char & CWindow::Char::Frame) {
+                auto Str = Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & CWindow::Char::CharMask)];
+                write(1, Str.c_str(), Str.length());
+                Cursor += {1,0};
+                ++W->R;
+                continue;
+            }
+            if(*Char & CWindow::Char::UGlyph) {
+                DrawIcon(Char.IconID());
+                ++W->R;
+                //Cursor += {1,0};
+            }
+            else
+                Write(static_cast<char>(*Char & CWindow::Char::CharMask));
+            ++W->R;
+            Cursor += {1,0};
+        }
         write(1,"\033[0m\n",5);
-        Cursor = {W->R.A.X,Cursor.Y+1};
-        //Cursor.X=0;
+        Cursor = {W->ScreenXY.X,Cursor.Y+1};
     }
     fflush(stdout);
 }
@@ -129,7 +158,7 @@ size_t Console::Write(const char *Text)
 size_t Console::Write(const char &Char8)
 {
     auto sz = ::write(1,&Char8,1);
-    Cursor += {1,0};
+
     return sz;
 }
 
@@ -147,28 +176,7 @@ void Console::SetColor(Color::Pair BgFg)
     fflush(stdout);
 }
 
-size_t Console::Write(CWindow::Char Char)
-{
-    static CWindow::Char Cell;
-    StrAcc Acc{};
-    //size_t sz{0};
-    if(Char.Bg() != Cell.Bg())
-    {
-        SetBgColor(Char.Bg());
-        Cell = Char;
-    }
-    if(Char.Fg() != Cell.Fg()) {
-        SetFgColor(Char.Fg());// Color::Ansi(D.Fg());
-        Cell = Char;
-    }
-    if(Char.Mem & CWindow::Char::Frame)
-        return Write(Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & CWindow::Char::CharMask)]);
 
-    if(Char.Mem & CWindow::Char::UGlyph)
-        return DrawIcon(Char.IconID());
-
-    return Write(static_cast<char>(Char.Mem & CWindow::Char::CharMask));
-}
 
 void Console::SetBgColor(Color::Code Code)
 {
@@ -181,7 +189,6 @@ size_t Console::DrawIcon(Utf::Glyph::Type IcID)
 {
     auto Seq = std::string(Utf::Glyph::Data[IcID]);
     write(1,Seq.c_str(), Seq.length());
-    //Cursor += {1,0};
     GotoXY(Cursor);
     return Seq.length();
 }

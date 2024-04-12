@@ -31,20 +31,18 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     for (auto const &A: arg.Arguments) {
         AppBook::Out() << A;
     }
-    Rect R = {Point(2, 5), Dim(45, 9)};
     Book::ConIO::CWindow Window(nullptr, "Test Window");
-    Window.SetGeometry(R);
-    Window.Alloc();
+    Window.SetGeometry({45,9});
+    Window.SetScreenPosition({3,3});
+    auto Pen = Window.GetPencil(Rect(Point{1, 1}, Dim{Window.Width()-2, Window.Height()-2}));
 
-    auto &Pen = Window.BeginWrite(Rect(Point{1, 1}, Dim{138, 11}));
     Pen.Position({3, 3});
-    //Pen.Clear(Color::Navy);
+    Pen.Clear(Color::Navy);
     Pen << Color::LightGreen << Utf::Glyph::Admin
         << Color::Yellow6 << "Hello "
         << Color::Pair(Color::Grey100, Color::Reset)
         << "World!!!";
 
-    Window.EndWrite(Pen);
     Window.DrawFrame();
     StrAcc Text;
     Window >> Text;
