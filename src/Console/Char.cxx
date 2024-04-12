@@ -3,7 +3,7 @@
 //
 
 
-#include <AppBook/Console/CWindow.h>
+#include <AppBook/Console/Window.h>
 
 
 namespace Book::ConIO
@@ -13,67 +13,67 @@ namespace Book::ConIO
 #pragma region CWindow_Char
 
 
-CWindow::Char::Char(CWindow::Char::Type _Ch): Mem(_Ch){}
-CWindow::Char::Char(CWindow::Char* _C): Mem(_C->Mem){}
+Window::Char::Char(Window::Char::Type _Ch): Mem(_Ch){}
+Window::Char::Char(Window::Char* _C): Mem(_C->Mem){}
 
-CWindow::Char &CWindow::Char::SetFg(Color::Code fg_)
+Window::Char &Window::Char::SetFg(Color::Code fg_)
 {
     Mem = (Mem & ~FGMask) | (static_cast<Char::Type>(fg_) << FGShift);
     return *this;
 }
 
-CWindow::Char &CWindow::Char::SetBg(Color::Code bg_)
+Window::Char &Window::Char::SetBg(Color::Code bg_)
 {
     Mem = (Mem & ~BGMask) | (static_cast<Char::Type>(bg_) << BGShift);
     return *this;
 }
 
-[[maybe_unused]] CWindow::Char &CWindow::Char::SetAttributes(CWindow::Char::Type d_)
+[[maybe_unused]] Window::Char &Window::Char::SetAttributes(Window::Char::Type d_)
 {
     Mem = (Mem & ~AttrMask) | d_;
     return *this;
 }
 
 
-[[maybe_unused]] CWindow::Char &CWindow::Char::SetColors(Color::Pair &&c_)
+[[maybe_unused]] Window::Char &Window::Char::SetColors(Color::Pair &&c_)
 {
     return SetFg(c_.Fg).SetBg(c_.Bg);
 }
 
-[[maybe_unused]] CWindow::Char &CWindow::Char::SetColors(Color::Pair &c_)
+[[maybe_unused]] Window::Char &Window::Char::SetColors(Color::Pair &c_)
 {
     return SetFg(c_.Fg).SetBg(c_.Bg);
 }
 
-CWindow::Char &CWindow::Char::operator=(CWindow::Char::Type d_)
+Window::Char &Window::Char::operator=(Window::Char::Type d_)
 {
     Mem = d_;
     return *this;
 }
 
 
-CWindow::Char &CWindow::Char::operator=(char d_)
+Window::Char &Window::Char::operator=(char d_)
 {
     Mem = (Mem & ~CharMask) | d_;
     return *this;
 }
 
-Color::Code CWindow::Char::Fg() const
+Color::Code Window::Char::Fg() const
 {
     return static_cast<Color::Code>((Mem & FGMask) >> FGShift);
 }
 
-Color::Code CWindow::Char::Bg() const
+Color::Code Window::Char::Bg() const
 {
     return static_cast<Color::Code>((Mem & BGMask) >> BGShift);
 }
 
-[[maybe_unused]] Color::Pair CWindow::Char::Colors() const
+[[maybe_unused]] Color::Pair Window::Char::Colors() const
 {
     return {Fg(),Bg()};
 }
 
-[[maybe_unused]] Utf::Glyph::Type CWindow::Char::IconID() const
+[[maybe_unused]] Utf::Glyph::Type Window::Char::IconID() const
 {
     if (!(Mem & Char::UGlyph)) return Utf::Glyph::Poop;
     auto Ic = Mem & Char::CharMask;
@@ -81,55 +81,55 @@ Color::Code CWindow::Char::Bg() const
     return  Ic;
 }
 
-[[maybe_unused]] Utf::AccentFR::Type CWindow::Char::AccentID() const
+[[maybe_unused]] Utf::AccentFR::Type Window::Char::AccentID() const
 {
     auto AID = Mem & Char::CharMask;
     if (AID > Utf::AccentFR::Ucirc) return Utf::AccentFR::Agrave;
     return static_cast<Utf::AccentFR::Type>(AID);
 }
 
-uint8_t CWindow::Char::Ascii() const
+uint8_t Window::Char::Ascii() const
 {
     return Mem & CharMask;
 }
 
-[[maybe_unused]] uint16_t CWindow::Char::Attributes() const
+[[maybe_unused]] uint16_t Window::Char::Attributes() const
 {
     return (Mem & AttrMask) >> ATShift;
 }
 
-CWindow::Char &CWindow::Char::operator<<(Utf::Glyph::Type i_)
+Window::Char &Window::Char::operator<<(Utf::Glyph::Type i_)
 {
     Mem = (Mem & ~CharMask) | i_ | UGlyph;
     return *this;
 }
 
-CWindow::Char &CWindow::Char::operator<<(Utf::AccentFR::Type a_)
+Window::Char &Window::Char::operator<<(Utf::AccentFR::Type a_)
 {
     Mem = (Mem & ~CharMask) | a_ | Accent;
     return *this;
 }
 
-[[maybe_unused]] std::string CWindow::Char::RenderColors() const
+[[maybe_unused]] std::string Window::Char::RenderColors() const
 {
     std::string str;
     str += Color::Ansi({Fg(),Bg()});
     return str;
 }
 
-[[maybe_unused]] CWindow::Char &CWindow::Char::ResetAttributes(CWindow::Char::Type)
+[[maybe_unused]] Window::Char &Window::Char::ResetAttributes(Window::Char::Type)
 {
     Book::Status() << " This feature is not determined in this context, then not implemented yet";
     return *this;
 }
 
 
-CWindow::Char::operator std::string() const
+Window::Char::operator std::string() const
 {
     return Details();
 }
 
-std::string CWindow::Char::Details() const
+std::string Window::Char::Details() const
 {
     StrAcc Str = "%s[Char:'%s%d%s'/Fg:'%s%s%s'/Bg:'%s%s%s']";
     Str << Color::White <<Color::Yellow << (int)Ascii() << Color::White

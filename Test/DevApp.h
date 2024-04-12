@@ -2,7 +2,7 @@
 
 #include <AppBook/Book/TScanner.h>
 #include <AppBook/Util/CArgs.h>
-#include <AppBook/Console/CWindow.h>
+#include <AppBook/Console/Window.h>
 #include <AppBook/Utf/Cadres.h>
 class DevApp
 {

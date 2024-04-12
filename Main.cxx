@@ -31,7 +31,7 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     for (auto const &A: arg.Arguments) {
         AppBook::Out() << A;
     }
-    Book::ConIO::CWindow Window(nullptr, "Test Window");
+    Book::ConIO::Window Window(nullptr, "Test Window");
     Window.SetGeometry({45,9});
     Window.SetScreenPosition({3,3});
     auto Pen = Window.GetPencil(Rect(Point{1, 1}, Dim{Window.Width()-2, Window.Height()-2}));
@@ -46,7 +46,7 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     Window.DrawFrame();
     StrAcc Text;
     Window >> Text;
-    Book::Debug() << " Utf::CWindow :";
+    Book::Debug() << " Utf::Window :";
     Book::Out() << Text;
     Window.Draw();
     return Book::Action::Leave;
@@ -66,7 +66,7 @@ Book::Result Application::Setup()
 
 
     //...
-    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConIO::CWindow on Console...",0 }).Connect(this, &Application::ConsoleWindowTest);
+    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConIO::Window on Console...",0 }).Connect(this, &Application::ConsoleWindowTest);
 
     return ProcessArguments();
 }
@@ -75,6 +75,6 @@ Book::Result Application::Setup()
 
 auto main(int argc, char** argv) -> int
 {
-    Book::Application App = Book::Application("AppBook:CWindow", argc,argv);
+    Book::Application App = Book::Application("AppBook:Window", argc,argv);
     return static_cast<int>(App.Run());
 }

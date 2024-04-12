@@ -20,13 +20,13 @@
  ******************************************************************************************/
 
 #pragma once
-#include <AppBook/Console/CWindow.h>
+#include <AppBook/Console/Window.h>
 
 
 namespace Book::ConIO
 {
 
-class CWindow;
+class Window;
 
 struct APPBOOK_EXPORTS Console
 {
@@ -42,7 +42,7 @@ struct APPBOOK_EXPORTS Console
     size_t Write(const char* Text);
     size_t Write(const char& Char8);
     size_t DrawIcon(Utf::Glyph::Type IcID);
-    void Render(CWindow* W, Rect SubR);
+    void Render(Window* W, Rect SubR);
     void GetGeometry();
     void SetFgColor(Color::Code Code);
     void SetBgColor(Color::Code Code);

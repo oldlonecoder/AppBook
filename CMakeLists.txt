@@ -49,7 +49,7 @@ add_library(
     include/AppBook/Book/TScanner.h                     src/Book/TScanner.cxx
     include/AppBook/Book/ApplicationBase.h              src/Book/ApplicationBase.cxx
     include/AppBook/Utf/Cadres.h                        src/Utf/Cadres.cxx
-    include/AppBook/Console/CWindow.h                   src/Console/CWindow.cxx src/Console/Char.cxx src/Console/Pencil.cxx
+    include/AppBook/Console/Window.h src/Console/Window.cxx src/Console/Char.cxx src/Console/Pencil.cxx
     include/AppBook/Console/UiEnums.h
     include/AppBook/Console/Console.h                   src/Console/Console.cxx
 

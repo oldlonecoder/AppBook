@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-08.
 //
 
-#include "AppBook/Console/CWindow.h"
+#include "AppBook/Console/Window.h"
 #include <AppBook/Book/ApplicationBase.h>
 
 
@@ -32,62 +32,52 @@
 namespace Book::ConIO
 {
 
-
+Rect Window::ScreenRect{};
 
 #pragma region CWindow
 
-CWindow::CWindow(Util::Object *ParentObj, const std::string &Id) : Object(ParentObj, Id){}
+Window::Window(Util::Object *ParentObj, const std::string &Id) : Object(ParentObj, Id){}
 
-CWindow::~CWindow()
+Window::~Window()
 {
-    delete [] Buffer;
+    Detach();
 }
 
 
 
-Book::Result CWindow::Alloc()
-{
-    if(!R)
-    {
-        Book::Error() << " Invalid Rect " << R;
-        return Book::Result::Empty;
-    }
-    Buffer = new CWindow::Char::Type[R.Dwh.Area()+R.Width()]; // Add an extra line in case of very small accidental overflow
-    return Result::Ok;
-}
 
-void CWindow::Clear()
+void Window::Clear()
 {
     auto Area = R.Dwh.Area();
     for(int X=0; X < Area; X++) Buffer[X] = (A & ~Char::CharMask) | 0x20;
 }
 
-void CWindow::SetGeometry(Point Geo)
+void Window::SetGeometry(Point Geo)
 {
     R = Rect({0,0},Geo);
     ReAlloc();
 }
 
 
-int CWindow::Width()
+int Window::Width()
 {
     return R.Width();
 }
 
-int CWindow::Height()
+int Window::Height()
 {
     return R.Height();
 }
 
 
-Book::Result CWindow::ReAlloc()
+Book::Result Window::ReAlloc()
 {
     if(Buffer) delete [] Buffer;
     return Alloc();
 }
 
 
-CWindow::Pencil CWindow::GetPencil(Rect Geom, CWindow::Char::Type Attr)
+Window::Pencil Window::GetPencil(Rect Geom, Window::Char::Type Attr)
 {
     if(!Geom)
     {
@@ -106,7 +96,7 @@ CWindow::Pencil CWindow::GetPencil(Rect Geom, CWindow::Char::Type Attr)
  * @note Attention: Glyphes (Icons other than Accents) are forbidden using string unless the final output ( to the console gui )
  *       is controlled by the Book::Console Renderer.
  */
-Book::Result CWindow::operator>>(StrAcc &Acc)
+Book::Result Window::operator>>(StrAcc &Acc)
 {
     //int Glyph=0;
     Utf::Cadre Cadre;
@@ -117,9 +107,9 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
         for(int Col=0; Col < R.Width(); Col++)
         {
 
-            if(*Crs & CWindow::Char::Frame)
+            if(*Crs & Window::Char::Frame)
             {
-                Acc << Cadre[static_cast<Utf::Cadre::Index>(*Crs++ & CWindow::Char::CharMask)];
+                Acc << Cadre[static_cast<Utf::Cadre::Index>(*Crs++ & Window::Char::CharMask)];
                 ++R;
                 continue; // Colors or any other attributes changes on Frame is bypassed (rejected).
             }
@@ -127,13 +117,13 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
                 Acc << Color::AnsiBg(Char(*Crs).Bg());
             if(Char(*Crs).Fg() != Char(*PrevCell).Fg())
                 Acc << Char(*Crs).Fg();
-            if(*Crs & CWindow::Char::UGlyph)
+            if(*Crs & Window::Char::UGlyph)
             {
                 Acc << Char(*Crs).IconID();
 
             }
             else // Can't have an ASCII character -> and -> a Glyph at the same position.
-                Acc << static_cast<char>(*Crs & CWindow::Char::CharMask);
+                Acc << static_cast<char>(*Crs & Window::Char::CharMask);
 
             PrevCell = Crs++;
             ++R;
@@ -143,7 +133,7 @@ Book::Result CWindow::operator>>(StrAcc &Acc)
     return Result::Ok;
 }
 
-void CWindow::DrawFrame()
+void Window::DrawFrame()
 {
     if(!R)
         throw AppBook::Exception()[ Book::Except() << Utf::Glyph::Bomb << " Cannot draw a frame with no dimensions!"];
@@ -176,16 +166,16 @@ void CWindow::DrawFrame()
 
 }
 
-void CWindow::Draw(const Rect& SubR)
+void Window::Draw(const Rect& SubR)
 {
     ApplicationBase::Instance().Console().Render(this, SubR);
 }
 
-CWindow::Type CWindow::Peek(const Rect& Area)
+Window::Type Window::Peek(const Rect& Area)
 {
     if(Area) {
         if (!R[Area.Cursor])
-            throw AppBook::Exception()[Book::Error() << " Peek at given coords are outside of this CWindow boundaries.(" << Area.Cursor << ") <--> (" << R << ")"];
+            throw AppBook::Exception()[Book::Error() << " Peek at given coords are outside of this Window boundaries.(" << Area.Cursor << ") <--> (" << R << ")"];
         return Buffer + Area.Cursor.Y*R.Width() + Area.Cursor.X;
     }
     return Buffer + R.Cursor.Y*R.Width() + R.Cursor.X;

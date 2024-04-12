@@ -77,22 +77,22 @@ size_t Console::Write(const std::string &Text)
     return ln;
 }
 
-void Console::Render(CWindow *W, Rect /*SubR*/)
+void Console::Render(Window *W, Rect /*SubR*/)
 {
     Cursor = W->ScreenXY;
     W->R.Home();
     //GotoXY(Cursor);
-    SetColor(CWindow::Char(W->Buffer[0]).Colors());
-    CWindow::Char PCell{*W->Peek(W->R)};
-    Book::Debug() << " CWindow Coordinates:" << W->ScreenXY;
+    SetColor(Window::Char(W->Buffer[0]).Colors());
+    Window::Char PCell{*W->Peek(W->R)};
+    Book::Debug() << " Window Coordinates:" << W->ScreenXY;
 
     for(int Line = 0; Line < W->R.Height(); Line++)
     {
         GotoXY(Cursor);
-        CWindow::Type P = W->Peek(W->R);
+        Window::Type P = W->Peek(W->R);
         for(int Col=0; Col< W->Width(); Col++)
         {
-            CWindow::Char Char(*P++);
+            Window::Char Char(*P++);
             StrAcc Acc{};
             if(Char.Bg() != PCell.Bg())
             {
@@ -103,20 +103,20 @@ void Console::Render(CWindow *W, Rect /*SubR*/)
                 SetFgColor(Char.Fg());// Color::Ansi(D.Fg());
                 PCell = Char;
             }
-            if(*Char & CWindow::Char::Frame) {
-                auto Str = Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & CWindow::Char::CharMask)];
+            if(*Char & Window::Char::Frame) {
+                auto Str = Utf::Cadre()[static_cast<Utf::Cadre::Index>(Char.Mem & Window::Char::CharMask)];
                 write(1, Str.c_str(), Str.length());
                 Cursor += {1,0};
                 ++W->R;
                 continue;
             }
-            if(*Char & CWindow::Char::UGlyph) {
+            if(*Char & Window::Char::UGlyph) {
                 DrawIcon(Char.IconID());
                 ++W->R;
                 //Cursor += {1,0};
             }
             else
-                Write(static_cast<char>(*Char & CWindow::Char::CharMask));
+                Write(static_cast<char>(*Char & Window::Char::CharMask));
             ++W->R;
             Cursor += {1,0};
         }
