@@ -54,8 +54,9 @@ add_library(
     #include/AppBook/ConsoleUI/Console.h src/ConsoleUI/Console.cxx
     #include/AppBook/ConsoleUI/Screen.cxx
     #include/AppBook/ConsoleUI/Screen.h
-    src/ConsoleUI/Char.cxx
-    include/AppBook/ConsoleUI/Char.h
+    include/AppBook/ConsoleUI/Char.h                            src/ConsoleUI/Char.cxx
+    include/AppBook/ConsoleUI/UiElement.h                       src/ConsoleUI/UiElement.cxx
+
 
 
 )

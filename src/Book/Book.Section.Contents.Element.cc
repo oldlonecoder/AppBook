@@ -231,7 +231,10 @@ AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operat
 
 AppBook::Section::Contents::Element &AppBook::Section::Contents::Element::operator<<(Book::Enums::Code E)
 {
-    Input(Book::Enums::CodeText(E));
+    auto [G, C] = CodeAttributes(E);
+    StrAcc Acc;
+    Acc << C << G << Book::Enums::CodeText(E);
+    Input(Acc());
     return *this;
 }
 

@@ -3,7 +3,7 @@
 //
 
 #include <AppBook/Book/ApplicationBase.h>
-#include <AppBook/ConsoleUI/Char.h>
+#include <AppBook/ConsoleUI/UiElement.h>
 namespace Book
 {
 
@@ -32,12 +32,16 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
         AppBook::Out() << A;
     }
 
-    ConsoleUI::Char C = ConsoleUI::Char::ClearScreen;
-    C | Color::Pair{Color::White, Color::DarkBlue} | Utf::Glyph::Admin;
-    StrAcc Acc="0x%08X";
-    Acc << C.M;
+    ConsoleUI::UiElement *Element = new ConsoleUI::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
 
-    Book::Debug() << "Char: " << Acc() << ";";
+    Element->SetGeometry(Dim{3,3});
+    //...
+
+    Element->Dispose();
+
+
+    //...
+    ConsoleUI::UiElement::PurgeGc();
     return Book::Action::Continue;
 }
 

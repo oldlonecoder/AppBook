@@ -50,6 +50,10 @@ enum class Code : uint8_t
     Overflow         , ///< buffer overflow
     Oob              , ///< buffer overflow
     Reimplement      ,
+    Done             ,
+    Complete         ,
+    Finish           ,
+    
 
 };
 

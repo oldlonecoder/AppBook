@@ -89,7 +89,7 @@ Char &Char::operator[](Char::Type ClrBits)
 
 Char &Char::operator|(Char::Type C)
 {
-    M |= C;
+    M = ClearUtf().M | C;
     return *this;
 }
 

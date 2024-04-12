@@ -60,6 +60,9 @@ std::map<Code, const char*> message_codes_dictionary = {
     {Code::Overflow,       "Buffer overflow"},
     {Code::Oob,            "Out of boundaries"},
     {Code::Reimplement,    "Need To be re-implemented IsIn derived instances"},
+    {Code::Done,           "Done"},
+    {Code::Complete,       "Completed"},
+    {Code::Finish,         "Finished"},
 };
 
 
@@ -148,8 +151,10 @@ std::map<Code, std::pair<Glyph::Type, Color::Pair>> codes_database={
     {Code::Locked    ,      {Glyph::Err3 ,           {Color::White             ,Color::Reset }}},
     {Code::Overflow  ,      {Glyph::DeadHead,        {Color::Red4              ,Color::Reset }}},
     {Code::Oob       ,      {Glyph::Alien,           {Color::Red4              ,Color::Reset }}},
-    {Code::Reimplement,{Glyph::Books,                {Color::Yellow            ,Color::Reset }}},
-
+    {Code::Reimplement,     {Glyph::Books,           {Color::Yellow            ,Color::Reset }}},
+    {Code::Done       ,     {Glyph::Success,         {Color::Yellow            ,Color::Reset }}},
+    {Code::Complete   ,     {Glyph::School,          {Color::Yellow            ,Color::Reset }}},
+    {Code::Finish     ,     {Glyph::CMarkCheck,      {Color::SpringGreen4      ,Color::Reset }}},
 };
 
 

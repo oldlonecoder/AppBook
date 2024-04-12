@@ -34,6 +34,7 @@ static constexpr Type Parent   = 0x0008;
 static constexpr Type Caption  = 0x0010;
 static constexpr Type Frame    = 0x0020;
 static constexpr Type Input    = 0x0040;
+static constexpr Type Element  = 0x0080; ///< Intentional always ON bit.
 
 //...
 }

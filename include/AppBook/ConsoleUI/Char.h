@@ -31,6 +31,7 @@ struct APPBOOK_EXPORTS Char
 {
     using Type = uint32_t;
     using Ptr  = Type*;
+    using Bloc = Char::Ptr;
 
     Type  M{0x00FFFF20}; ///< Will put default value somewhere else eventually...
 
