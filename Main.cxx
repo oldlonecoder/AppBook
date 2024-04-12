@@ -32,12 +32,17 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
         AppBook::Out() << A;
     }
 
-    ConsoleUI::UiElement *Element = new ConsoleUI::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
+    auto *Element = new ConsoleUI::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
 
     Element->SetGeometry(Dim{3,3});
-    //...
 
+    Element->GotoXY({1,1});
+    Element->SetBgColor(Color::LightCyan3);
+    Element->PutGlyph(Utf::Glyph::Admin);
+    //...
     Element->Dispose();
+    Book::ConsoleUI::Console::GotoXY({3,3});
+    std::cout << "Hey!!!!!!\n";
 
 
     //...

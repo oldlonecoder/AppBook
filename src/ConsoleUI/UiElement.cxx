@@ -158,5 +158,108 @@ void UiElement::Clear()
 }
 
 
+
+
+// Mostly for Frame Drawing/ Drawing on and around the Frame.
+void UiElement::TopLeft()
+{
+    R.GotoXY(R.A);
+}
+
+void UiElement::TopRight()
+{
+    R.GotoXY({R.B.X, R.A.Y});
+}
+
+void UiElement::Top()
+{
+    R.GotoXY({R.Cursor.X,R.A.Y});
+}
+
+void UiElement::Bottom()
+{
+    R.GotoXY({R.Cursor.X,R.B.Y});
+}
+
+void UiElement::BottomLeft()
+{
+    R.GotoXY({R.A.X,R.B.Y});
+}
+
+void UiElement::BottomRight()
+{
+    R.GotoXY(R.B);
+}
+
+
+// -------------------------------------------------------- Console ----------------------------------------------------------
+
+
+Point Console::Cursor{1,1};
+Dim   Console::Wh{0,0};
+
+
+
+
+
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#   include <Windows.h>
+#   include <stdlib.h>
+#   include <io.h>
+#   define write _write
+#elif defined(__linux__)
+#   include <sys/ioctl.h>
+#   include <unistd.h>
+
+#endif // Windows/Linux
+
+
+
+Book::Result Console::GetGeometry()
+{
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    Wh = {
+            {static_cast<int>(csbi.srWindow.Right - csbi.srWindow.Left + 1), static_cast<int>(csbi.srWindow.Bottom - csbi.srWindow.Top + 1)},
+            static_cast<int>(csbi.srWindow.Right - csbi.srWindow.Left + 1), static_cast<int>(csbi.srWindow.Bottom - csbi.srWindow.Top + 1)
+    };
+
+#elif defined(__linux__)
+    struct winsize win{};
+    ioctl(fileno(stdout), TIOCGWINSZ, &win);
+    Console::Wh = {static_cast<int>(win.ws_col), static_cast<int>(win.ws_row)};
+#endif // Windows/Linux
+
+    Book::Debug() << " ScreenSize: " << Color::Yellow << Console::Wh;
+    return Result::Done;
+}
+
+
+Book::Result Console::GotoXY(const Point &XY) // NOLINT(*-make-member-function-const)
+{
+//    if(!Rect({0,0},Wh)[XY])
+//    {
+//        Book::Error() << Result::Rejected << " coord '" << (XY + Point(1,1)) << "' is out of console's geometry.";
+//        return Book::Result::Rejected;
+//    }
+    Cursor = XY;
+    StrAcc Acc = "\x1b[%d;%dH";
+    Acc << XY.Y+1 << XY.X + 1;
+    std::cout << Acc();
+    fflush(stdout);
+    return Result::Accepted;
+}
+
+void Console::Home()
+{
+    GotoXY({1,1});
+}
+
+
+
 } // Book::ConsoleUI
 

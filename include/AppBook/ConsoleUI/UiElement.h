@@ -35,7 +35,7 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
 {
     Char::Bloc Bloc{nullptr};
     Rect R{};
-    Point ScreenXY{};
+    Point ScreenXY{1,1}; ///< TopLeft corner of the console screen.
     Char::Type    DefAttr{0x00FFFF20};
     Char::Ptr     EndBloc{nullptr};
     Ui::WClass::Type Class{Ui::WClass::Element};
@@ -59,6 +59,12 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
     void PutGlyph(Utf::Glyph::Type G);
     Book::Result WriteStr(const std::string& Txt);
     void Clear();
+    void TopLeft();
+    void TopRight();
+    void Top();
+    void Bottom();
+    void BottomLeft();
+    void BottomRight();
 
 
 #pragma endregion Drawings
@@ -72,6 +78,21 @@ protected:
     static size_t GcPush(UiElement* E);
 
 };
+
+
+struct Console
+{
+    static Point Cursor;
+    static Dim Wh;
+
+    static Book::Result  GetGeometry();
+    static Book::Result GotoXY(const Point &XY);
+    static void Home();
+
+
+};
+
+
 
 } // Book::ConsoleUI
 
