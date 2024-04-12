@@ -1,9 +1,8 @@
 //
-// Created by oldlonecoder on 24-04-10.
+// Created by oldlonecoder on 24-04-12.
 //
 
-//#ifndef APPBOOK_CONSOLE_H
-//#define APPBOOK_CONSOLE_H
+#include "Screen.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -19,41 +18,14 @@
  *   ----------------------------------------------------------------------------------   *
  ******************************************************************************************/
 
-#pragma once
-#include <AppBook/Console/Window.h>
+//#pragma once
 
 
-namespace Book::ConIO
+
+
+namespace Book
 {
-
-class Window;
-
-struct APPBOOK_EXPORTS Console
+namespace ConsoleUI
 {
-
-    Dim     Wh;
-    Point   Cursor{0,0};
-
-    Console()=default;
-    ~Console() = default;
-
-    Book::Result GotoXY(const Point& XY);
-    size_t Write(const std::string& Text);
-    size_t Write(const char* Text);
-    size_t Write(const char& Char8);
-    size_t DrawIcon(Utf::Glyph::Type IcID);
-    void Render(Window* W, Rect SubR);
-    void GetGeometry();
-    void SetFgColor(Color::Code Code);
-    void SetBgColor(Color::Code Code);
-    void SetColor(Color::Pair BgFg);
-
-
-
-
-
-};
-
-} // Book::ConIO
-
-//#endif //APPBOOK_CONSOLE_H
+} // ConsoleUI
+} // Book

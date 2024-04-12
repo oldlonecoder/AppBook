@@ -24,10 +24,10 @@
 #include <AppBook/Util/Object.h>
 #include <AppBook/Utf/Cadres.h>
 #include <AppBook/Utf/Glyphes.h>
-#include <AppBook/Console/UiEnums.h>
+#include <AppBook/ConsoleUI/UiEnums.h>
 
 
-namespace Book::ConIO
+namespace Book::ConsoleUI
 {
 
 
@@ -97,7 +97,7 @@ private:
 
 };
 
-} // Book::ConIO
+} // Book::ConsoleUI
 
 
 //#endif //APPBOOK_CWINDOW_H

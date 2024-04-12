@@ -104,7 +104,6 @@ Book::Result ApplicationBase::Setup()
     ApplicationBase::InstallSignals();
 
     Book::Debug() << " ApplicationBase starting...";
-    Con.GetGeometry();
 
     return Result::Success;
 }
@@ -117,10 +116,6 @@ ApplicationBase& ApplicationBase::Instance()
     return *_APP;
 }
 
-ConIO::Console &ApplicationBase::Console()
-{
-    return Con;
-}
 
 Book::Result ApplicationBase::ProcessArguments()
 {

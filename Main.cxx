@@ -3,7 +3,7 @@
 //
 
 #include <AppBook/Book/ApplicationBase.h>
-
+#include <AppBook/ConsoleUI/Char.h>
 namespace Book
 {
 
@@ -31,25 +31,14 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     for (auto const &A: arg.Arguments) {
         AppBook::Out() << A;
     }
-    Book::ConIO::Window Window(nullptr, "Test Window");
-    Window.SetGeometry({45,9});
-    Window.SetScreenPosition({3,3});
-    auto Pen = Window.GetPencil(Rect(Point{1, 1}, Dim{Window.Width()-2, Window.Height()-2}));
 
-    Pen.Position({3, 3});
-    Pen.Clear(Color::Navy);
-    Pen << Color::LightGreen << Utf::Glyph::Admin
-        << Color::Yellow6 << "Hello "
-        << Color::Pair(Color::Grey100, Color::Reset)
-        << "World!!!";
+    ConsoleUI::Char C = ConsoleUI::Char::ClearScreen;
+    C | Color::Pair{Color::White, Color::DarkBlue} | Utf::Glyph::Admin;
+    StrAcc Acc="0x%08X";
+    Acc << C.M;
 
-    Window.DrawFrame();
-    StrAcc Text;
-    Window >> Text;
-    Book::Debug() << " Utf::Window :";
-    Book::Out() << Text;
-    Window.Draw();
-    return Book::Action::Leave;
+    Book::Debug() << "Char: " << Acc() << ";";
+    return Book::Action::Continue;
 }
 
 
@@ -66,7 +55,7 @@ Book::Result Application::Setup()
 
 
     //...
-    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConIO::Window on Console...",0 }).Connect(this, &Application::ConsoleWindowTest);
+    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConsoleUI::Window on ConsoleUI...",0 }).Connect(this, &Application::ConsoleWindowTest);
 
     return ProcessArguments();
 }

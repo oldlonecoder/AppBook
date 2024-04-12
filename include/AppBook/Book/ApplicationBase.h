@@ -1,7 +1,6 @@
 
 #include <BookApplicationSkel/Interface.h>
 #include <AppBook/Util/Object.h>
-#include <AppBook/Console/Console.h>
 #include <AppBook/Util/CArgs.h>
 
 #pragma clang diagnostic push
@@ -14,7 +13,7 @@ class APPBOOK_EXPORTS ApplicationBase : public Util::Object
 
     static void InstallSignals();
     ApplicationBase();
-    ConIO::Console Con{};
+
 
 protected:
     virtual Result Setup(); ///< Call first from the derived::Setup(), then continue the Setting up...
@@ -26,7 +25,6 @@ public:
 
     virtual Result Run()=0;
     static ApplicationBase& Instance();
-    ConIO::Console& Console();
     Book::Result ProcessArguments();
 };
 

@@ -3,10 +3,10 @@
 //
 
 
-#include <AppBook/Console/Window.h>
+#include <AppBook/ConsoleUI/Window.h>
 
 
-namespace Book::ConIO
+namespace Book::ConsoleUI
 {
 
 

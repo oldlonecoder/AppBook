@@ -37,7 +37,7 @@
 
 
 
-namespace Book::ConIO
+namespace Book::ConsoleUI
 {
 
 
@@ -194,5 +194,5 @@ size_t Console::DrawIcon(Utf::Glyph::Type IcID)
 }
 
 
-} // Book::ConIO
+} // Book::ConsoleUI
 #pragma clang diagnostic pop

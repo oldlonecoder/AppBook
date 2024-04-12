@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-08.
 //
 
-#include "AppBook/Console/Window.h"
+#include "AppBook/ConsoleUI/Window.h"
 #include <AppBook/Book/ApplicationBase.h>
 
 
@@ -29,7 +29,7 @@
 // Boook !@! lol
 
 
-namespace Book::ConIO
+namespace Book::ConsoleUI
 {
 
 Rect Window::ScreenRect{};
@@ -94,7 +94,7 @@ Window::Pencil Window::GetPencil(Rect Geom, Window::Char::Type Attr)
  * @param Acc
  * @return Always return Result::Ok ...
  * @note Attention: Glyphes (Icons other than Accents) are forbidden using string unless the final output ( to the console gui )
- *       is controlled by the Book::Console Renderer.
+ *       is controlled by the Book::ConsoleUI Renderer.
  */
 Book::Result Window::operator>>(StrAcc &Acc)
 {
@@ -188,5 +188,5 @@ Window::Type Window::Peek(const Rect& Area)
 
 
 
-} // Book::ConIO
+} // Book::ConsoleUI
 

@@ -42,18 +42,20 @@ add_library(
     include/AppBook/Util/Object.h src/Util/Object.cc
     include/AppBook/Util/Geometry.h src/Util/Geometry.cc
     include/AppBook/Book/StmlText.h src/Book/StmlText.cc
-    include/AppBook/Book/AppBook.h                      src/Book/AppBook.cc src/Book/Book.Section.cc src/Book/Book.Section.Contents.cc src/Book/Book.Section.Contents.Element.cc
-    include/AppBook/Util/Delegate.h                     src/Util/Delegate.cc
-    include/AppBook/Util/CArgs.h                        src/Util/CArgs.cc
+    include/AppBook/Book/AppBook.h src/Book/AppBook.cc src/Book/Book.Section.cc src/Book/Book.Section.Contents.cc src/Book/Book.Section.Contents.Element.cc
+    include/AppBook/Util/Delegate.h src/Util/Delegate.cc
+    include/AppBook/Util/CArgs.h src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
-    include/AppBook/Book/TScanner.h                     src/Book/TScanner.cxx
-    include/AppBook/Book/ApplicationBase.h              src/Book/ApplicationBase.cxx
-    include/AppBook/Utf/Cadres.h                        src/Utf/Cadres.cxx
-    include/AppBook/Console/Window.h src/Console/Window.cxx src/Console/Char.cxx src/Console/Pencil.cxx
-    include/AppBook/Console/UiEnums.h
-    include/AppBook/Console/Console.h                   src/Console/Console.cxx
-
-
+    include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
+    include/AppBook/Book/ApplicationBase.h src/Book/ApplicationBase.cxx
+    include/AppBook/Utf/Cadres.h src/Utf/Cadres.cxx
+    #include/AppBook/ConsoleUI/Window.h src/ConsoleUI/Window.cxx src/ConsoleUI/CharBBB.cxx src/ConsoleUI/Pencil.cxx
+    include/AppBook/ConsoleUI/UiEnums.h
+    #include/AppBook/ConsoleUI/Console.h src/ConsoleUI/Console.cxx
+    #include/AppBook/ConsoleUI/Screen.cxx
+    #include/AppBook/ConsoleUI/Screen.h
+    src/ConsoleUI/Char.cxx
+    include/AppBook/ConsoleUI/Char.h
 
 
 )

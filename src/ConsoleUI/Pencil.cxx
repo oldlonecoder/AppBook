@@ -6,7 +6,7 @@
 #include <AppBook/Console/Window.h>
 
 
-namespace Book::ConIO
+namespace Book::ConsoleUI
 {
 
 
