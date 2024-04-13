@@ -21,6 +21,7 @@
 
 #pragma once
 #include <AppBook/ConsoleUI/UiEnums.h>
+#include <AppBook/Utf/Cadres.h>
 
 
 namespace Book::ConsoleUI
@@ -93,7 +94,11 @@ struct APPBOOK_EXPORTS Char
     Char& operator|(Utf::Glyph::Type Ic);
     Char& operator|(Utf::AccentFR::Type Ac);
 
-
+    Color::Code BackgroundColor();
+    Color::Code ForegroundColor();
+    std::pair<bool, Utf::Glyph::T>  Graphen();
+    std::pair<bool, std::string> FrameChar();
+    std::pair<bool, std::string> AccentFlag();
 
 
 };

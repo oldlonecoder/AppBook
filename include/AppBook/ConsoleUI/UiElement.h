@@ -89,7 +89,10 @@ struct Console
     static Book::Result GotoXY(const Point &XY);
     static void Home();
 
-
+    static Book::Result RenderElement(UiElement* El, Rect /*SubR*/);
+    static void SetBackgroundColor(Color::Code Color);
+    static void SetForegroundColor(Color::Code Color);
+    static size_t Write(const  std::string& Text, bool isGlyph=false);
 };
 
 

@@ -39,6 +39,7 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     Element->GotoXY({1,1});
     Element->SetBgColor(Color::LightCyan3);
     Element->PutGlyph(Utf::Glyph::Admin);
+    ConsoleUI::Console::RenderElement(Element,{});
     //...
     Element->Dispose();
     Book::ConsoleUI::Console::GotoXY({3,3});

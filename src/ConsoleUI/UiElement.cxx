@@ -3,6 +3,7 @@
 //
 
 #include "AppBook/ConsoleUI/UiElement.h"
+#include <AppBook/Utf/Cadres.h>
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -259,6 +260,85 @@ void Console::Home()
     GotoXY({1,1});
 }
 
+
+/*!
+ * @brief Render Ui Element on console screen
+ * @param El
+ * @return Always return Book::Result::Done;
+ * @note Attention: Actually developing and experimenting this Console code... There is nothing about Rectangle managements ( Clipping/intersection/visibility...etc...) !!
+ */
+Book::Result Console::RenderElement(UiElement *El, Rect)
+{
+    GotoXY(El->ScreenXY /* + SubR.A */);
+    /* Rect ScreenArea = Rect({0,0},Wh) / SubR; */
+    El->R.Home();
+    auto Prev = El->At();
+    Console::SetBackgroundColor(Char(El->Bloc[0]).BackgroundColor());
+    Console::SetForegroundColor(Char(El->Bloc[0]).ForegroundColor());
+
+    for(int Line=0; Line< El->R.Height(); Line++)
+    {
+        El->R.GotoXY({El->R.A.X,El->R.A.Y+Line});
+        Console::GotoXY(Point(Point(El->R.A.X, El->R.A.Y+Line) + El->ScreenXY));
+        Char::Ptr P = El->At();
+        for(int Col=0; Col<El->R.Width(); Col++)
+        {
+            Char PrevChar{Prev++};
+            Char Cell{P++};
+            if(Cell.BackgroundColor() != PrevChar.BackgroundColor())
+                SetBackgroundColor(Cell.BackgroundColor());
+            if(Cell.ForegroundColor() != PrevChar.ForegroundColor())
+                SetForegroundColor(Cell.ForegroundColor());
+            if(auto [b,AccStr] = Cell.AccentFlag(); b)
+            {
+                Write(AccStr);
+                continue;
+            }
+            if(auto [b,IcStr] = Cell.Graphen(); b)
+            {
+                Write(IcStr,true);
+                continue;
+            }
+            /// No Cadre components here...
+            write(1,(char*)&Cell.M,1);
+            Console::Cursor.X++;
+        }
+
+    }
+    return Result::Done;
+}
+
+void Console::SetBackgroundColor(Color::Code Color)
+{
+    auto Acc = Color::Ansi(Color);
+    write(1, Acc.c_str(), Acc.length());
+}
+
+void Console::SetForegroundColor(Color::Code Color)
+{
+    auto Acc = Color::AnsiBg(Color);
+    write(1, Acc.c_str(), Acc.length());
+}
+
+
+/*!
+ * @brief Commit contents on screen
+ * @param Text
+ * @param isGlyph
+ * @return size of text.
+ * @note As of this stage, nothing is checked.
+ */
+size_t Console::Write(const std::string &Text, bool isGlyph)
+{
+    auto sz = write(1, Text.c_str(), Text.length());
+    if(isGlyph)
+    {
+        Cursor.X++;
+        return sz;
+    }
+    Cursor.X += (int)sz;
+    return 0;
+}
 
 
 } // Book::ConsoleUI
