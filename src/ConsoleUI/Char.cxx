@@ -141,7 +141,8 @@ Char &Char::SetFg(Color::Code F)
 
 Char &Char::SetBg(Color::Code B)
 {
-    return ClearBg() | (Char::Type)(B << BGShift);
+    ClearBg();
+    M|=  B << BGShift;
 }
 
 Char &Char::SetBgFg(Color::Pair Cp)

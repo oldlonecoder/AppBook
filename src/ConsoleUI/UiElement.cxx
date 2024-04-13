@@ -280,6 +280,7 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
         El->R.GotoXY({El->R.A.X,El->R.A.Y+Line});
         Console::GotoXY(Point(Point(El->R.A.X, El->R.A.Y+Line) + El->ScreenXY));
         Char* Cell = El->At();
+        PrevCell->SetBgFg({Color::Reset,Color::Reset});
         for(int Col=0; Col<El->R.Width(); Col++)
         {
 
@@ -291,16 +292,19 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
             if(auto [b,AccStr] = Cell->AccentFlag(); b)
             {
                 Write(AccStr);
+                ++Cell;
                 continue;
             }
             if(auto [b,IcStr] = Cell->Graphen(); b)
             {
                 Write(IcStr,true);
+                ++Cell;
                 continue;
             }
             /// No Cadre components here...
             write(1,(char*)&Cell->M,1);
             Console::Cursor.X++;
+            Cell++; //Oooooopsyyyy!
         }
         write(1,"\x1b[0m", 4);
 
