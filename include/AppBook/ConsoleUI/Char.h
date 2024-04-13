@@ -31,8 +31,8 @@ namespace Book::ConsoleUI
 struct APPBOOK_EXPORTS Char
 {
     using Type = uint32_t;
-    using Ptr  = Type*;
-    using Bloc = Char::Ptr;
+    using Ptr  = Char*;
+    using Bloc = Char*;
 
     Type  M{0x00FFFF20}; ///< Will put default value somewhere else eventually...
 
@@ -64,7 +64,7 @@ struct APPBOOK_EXPORTS Char
 
     Char(Char::Type Bits);
     Char(char C);
-    Char(Char::Type* Pc);
+    Char(Char* Pc);
 
     Char& operator = (Char::Type CBits);
     Char& operator = (char C);
@@ -94,11 +94,11 @@ struct APPBOOK_EXPORTS Char
     Char& operator|(Utf::Glyph::Type Ic);
     Char& operator|(Utf::AccentFR::Type Ac);
 
-    Color::Code BackgroundColor();
-    Color::Code ForegroundColor();
-    std::pair<bool, Utf::Glyph::T>  Graphen();
-    std::pair<bool, std::string> FrameChar();
-    std::pair<bool, std::string> AccentFlag();
+    Color::Code BackgroundColor() const;
+    Color::Code ForegroundColor() const;
+    std::pair<bool, Utf::Glyph::T>  Graphen() const;
+    std::pair<bool, std::string> FrameChar() const;
+    std::pair<bool, std::string> AccentFlag() const;
 
 
 };

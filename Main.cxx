@@ -37,7 +37,9 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     Element->SetGeometry(Dim{3,3});
 
     Element->GotoXY({1,1});
-    Element->SetBgColor(Color::LightCyan3);
+    Element->SetBgColor(Color::Yellow);
+    Element->SetFgColor(Color::Blue);
+    Element->Clear();
     Element->PutGlyph(Utf::Glyph::Admin);
     ConsoleUI::Console::RenderElement(Element,{});
     //...

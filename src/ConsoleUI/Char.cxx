@@ -89,7 +89,7 @@ Char &Char::operator[](Char::Type ClrBits)
 
 Char &Char::operator|(Char::Type C)
 {
-    M = ClearUtf().M | C;
+    M |= C;
     return *this;
 }
 
@@ -101,9 +101,8 @@ Char &Char::operator|(Color::Code C)
 
 Char &Char::operator|(Color::Pair Cp)
 {
-    ClearBgFg();
-    M|= static_cast<Char::Type>(Cp.Bg << BGShift) | static_cast<Char::Type>(Cp.Fg << FGShift);
-    return *this;
+    return ClearBgFg() | static_cast<Char::Type>(Cp.Bg << BGShift) | static_cast<Char::Type>(Cp.Fg << FGShift);
+    //return *this;
 }
 
 
@@ -156,7 +155,7 @@ Char::Char(Char::Type Bits): M(Bits){};
 
 Char::Char(char C): M(C){}
 
-Char::Char(Char::Type *Pc):M(*Pc){}
+Char::Char(Char *Pc):M(Pc->M){}
 
 
 Char &Char::operator=(Char::Type CBits)
@@ -178,33 +177,34 @@ Char &Char::operator=(Char::Type *CBits)
     return *this;
 }
 
-Color::Code Char::BackgroundColor()
+Color::Code Char::BackgroundColor() const
 {
     return static_cast<Color::Code>((M & BGMask) >> BGShift);
 }
 
-Color::Code Char::ForegroundColor()
+Color::Code Char::ForegroundColor() const
 {
     return static_cast<Color::Code>((M & FGMask) >> FGShift);
 }
 
-std::pair<bool, Utf::Glyph::T> Char::Graphen()
+std::pair<bool, Utf::Glyph::T> Char::Graphen() const
 {
     if(M & UGlyph) return {true, Utf::Glyph::Data[static_cast<Utf::Glyph::Type>(M&0xFF)]};
     return {};
 }
 
-std::pair<bool, std::string> Char::FrameChar()
+std::pair<bool, std::string> Char::FrameChar() const
 {
     if(M & Frame) return {true, Utf::Cadre()[static_cast<Utf::Cadre::Index>(M&0xFF)]};
     return {};
 }
 
-std::pair<bool, std::string> Char::AccentFlag()
+std::pair<bool, std::string> Char::AccentFlag() const
 {
     if(M & Char::Accent) return {true, Utf::AccentFR::Data[static_cast<Utf::AccentFR::Type>(M&0xFF)]};
     return {};
 }
+
 
 
 } // Book::ConsoleUI

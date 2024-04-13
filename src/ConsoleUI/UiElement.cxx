@@ -55,11 +55,12 @@ void UiElement::SetGeometry(const Dim& Geo)
 
 Book::Result UiElement::Alloc()
 {
-    if(Bloc) delete [] Bloc;
-    Bloc = new Char::Type[R.Dwh.Area()+R.Width()];
+    //if(Bloc)
+    delete [] Bloc;
+    Bloc = new Char[R.Dwh.Area()+R.Width()];
     Char::Ptr C = Bloc;
     EndBloc = Bloc + R.Dwh.Area();
-    for(;C < EndBloc; C++) *C = DefAttr;
+    for(;C < EndBloc; C++) C->M = DefAttr;
     return Result::Ok;
 }
 
@@ -99,7 +100,7 @@ Book::Result UiElement::GotoXY(const Point &XY)
 
 void UiElement::PutGlyph(Utf::Glyph::Type G)
 {
-    if(Char::Ptr P = At(); P) *P = (Char(*P).SetGlyph(G)).M;
+    if(Char::Ptr P = At(); P) P->SetGlyph(G) | Attr;
 }
 
 Book::Result UiElement::WriteStr(const std::string &Txt)
@@ -108,12 +109,13 @@ Book::Result UiElement::WriteStr(const std::string &Txt)
     for(auto C: Txt)
     {
         if(P > EndBloc) return Book::Result::Overflow;
-        *P++ = (Char(*P) | (Char::Type)C).M;
+        P->M |= (P->M& ~(Char::UtfMask | Char::BgFgMask)) | Attr | C;
+        ++P;
     }
     return Result::Ok;
 }
 
-Char::Ptr UiElement::At(const Point &XY)
+Char::Ptr UiElement::At(const Point &XY) const
 {
     Point CXY;
     if(!R[XY])
@@ -132,16 +134,16 @@ Char::Ptr UiElement::At(const Point &XY)
 void UiElement::SetFgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
-    Char::Ptr  P{At()};
-    *P = (Char(*P).SetFg(C)).M;
+    At()->SetFg(C);
+    Attr = Char(Attr).SetFg(C).M;
 }
 
 
 void UiElement::SetBgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
-    Char::Ptr  P{At()};
-    *P = (Char(*P).SetBg(C)).M;
+    At()->SetFg(C);
+    Attr = Char(Attr).SetFg(C).M;
 }
 
 void UiElement::SetColors(Color::Pair Cp)
@@ -150,12 +152,9 @@ void UiElement::SetColors(Color::Pair Cp)
     SetFgColor(Cp.Fg);
 }
 
-void UiElement::Clear()
+void UiElement::Clear() const
 {
-    for(Char::Ptr P = Bloc; P <= EndBloc; P++)
-    {
-        *P = DefAttr;
-    }
+    for(Char::Ptr P = Bloc; P <= EndBloc; P++) P->M = Attr | 0x20;
 }
 
 
@@ -272,37 +271,38 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
     GotoXY(El->ScreenXY /* + SubR.A */);
     /* Rect ScreenArea = Rect({0,0},Wh) / SubR; */
     El->R.Home();
-    auto Prev = El->At();
-    Console::SetBackgroundColor(Char(El->Bloc[0]).BackgroundColor());
-    Console::SetForegroundColor(Char(El->Bloc[0]).ForegroundColor());
+    auto PrevCell = El->At();
+    Console::SetBackgroundColor(El->Bloc[0].BackgroundColor());
+    Console::SetForegroundColor(El->Bloc[0].ForegroundColor());
 
     for(int Line=0; Line< El->R.Height(); Line++)
     {
         El->R.GotoXY({El->R.A.X,El->R.A.Y+Line});
         Console::GotoXY(Point(Point(El->R.A.X, El->R.A.Y+Line) + El->ScreenXY));
-        Char::Ptr P = El->At();
+        Char* Cell = El->At();
         for(int Col=0; Col<El->R.Width(); Col++)
         {
-            Char PrevChar{Prev++};
-            Char Cell{P++};
-            if(Cell.BackgroundColor() != PrevChar.BackgroundColor())
-                SetBackgroundColor(Cell.BackgroundColor());
-            if(Cell.ForegroundColor() != PrevChar.ForegroundColor())
-                SetForegroundColor(Cell.ForegroundColor());
-            if(auto [b,AccStr] = Cell.AccentFlag(); b)
+
+
+            if(Cell->BackgroundColor() != PrevCell->BackgroundColor())
+                SetBackgroundColor(Cell->BackgroundColor());
+            if(Cell->ForegroundColor() != PrevCell->ForegroundColor())
+                SetForegroundColor(Cell->ForegroundColor());
+            if(auto [b,AccStr] = Cell->AccentFlag(); b)
             {
                 Write(AccStr);
                 continue;
             }
-            if(auto [b,IcStr] = Cell.Graphen(); b)
+            if(auto [b,IcStr] = Cell->Graphen(); b)
             {
                 Write(IcStr,true);
                 continue;
             }
             /// No Cadre components here...
-            write(1,(char*)&Cell.M,1);
+            write(1,(char*)&Cell->M,1);
             Console::Cursor.X++;
         }
+        write(1,"\x1b[0m", 4);
 
     }
     return Result::Done;
