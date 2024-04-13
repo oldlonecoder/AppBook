@@ -142,8 +142,8 @@ void UiElement::SetFgColor(Color::Code C)
 void UiElement::SetBgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
-    At()->SetFg(C);
-    Attr = Char(Attr).SetFg(C).M;
+    At()->SetBg(C);
+    Attr = Char(Attr).SetBg(C).M;
 }
 
 void UiElement::SetColors(Color::Pair Cp)
@@ -309,18 +309,21 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
         write(1,"\x1b[0m", 4);
 
     }
+    if(El->Class & Ui::WClass::Frame)
+        Console::DrawFrame(El);
+
     return Result::Done;
 }
 
 void Console::SetBackgroundColor(Color::Code Color)
 {
-    auto Acc = Color::Ansi(Color);
+    auto Acc = Color::AnsiBg(Color);
     write(1, Acc.c_str(), Acc.length());
 }
 
 void Console::SetForegroundColor(Color::Code Color)
 {
-    auto Acc = Color::AnsiBg(Color);
+    auto Acc = Color::Ansi(Color);
     write(1, Acc.c_str(), Acc.length());
 }
 
@@ -342,6 +345,45 @@ size_t Console::Write(const std::string &Text, bool isGlyph)
     }
     Cursor.X += (int)sz;
     return 0;
+}
+
+void Console::DrawFrame(UiElement *El)
+{
+    Utf::Cadre Cadre;
+    Console::GotoXY(El->ScreenXY);
+    Console::SetBackgroundColor(Color::Blue);
+    Console::SetForegroundColor(Color::Grey100);
+    Console::Write(Cadre[Utf::Cadre::TopLeft]);
+
+    El->TopRight();
+    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::Write(Cadre[Utf::Cadre::TopRight]);
+
+    El->BottomLeft();
+    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::Write(Cadre[Utf::Cadre::BottomLeft]);
+
+    El->BottomRight();
+    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::Write(Cadre[Utf::Cadre::BottomRight]);
+
+    for(int Col=1; Col<El->R.Width()-1; Col++)
+    {
+        Console::GotoXY(El->ScreenXY + Point{Col, 0});
+        Console::Write(Cadre[Utf::Cadre::Horizontal]);
+        Console::GotoXY(El->ScreenXY + Point{Col, El->R.B.Y});
+        Console::Write(Cadre[Utf::Cadre::Horizontal]);
+    }
+
+    for(int Line=1; Line < El->R.Height()-1; Line++)
+    {
+        Console::GotoXY(El->ScreenXY + Point{El->R.A.X, El->R.A.Y+Line});
+        Console::Write(Cadre[Utf::Cadre::Vertical]);
+        Console::GotoXY(El->ScreenXY + Point{El->R.B.X, El->R.A.Y+Line});
+        Console::Write(Cadre[Utf::Cadre::Vertical]);
+
+    }
+
 }
 
 

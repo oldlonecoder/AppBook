@@ -240,7 +240,8 @@ Glyph::DataArray Glyph::Data =
         CEmail             ,
         CEmail2            ,
         CNullPtr           ,
-        CStop
+        CStop              ,
+        CDebian
 
     };
 
@@ -349,7 +350,8 @@ std::map<Glyph::Type, std::string> IcNamesMap =
         {Glyph::Email              ,"Email"},
         {Glyph::Email2             ,"Email2"},
         {Glyph::NullPtr            ,"NullPtr"},
-        {Glyph::Stop               ,"Stop"}
+        {Glyph::Stop               ,"Stop"},
+        {Glyph::Debian             ,"Debian"},
     };
 
 Glyph::Type Glyph::Scan(const std::string& GhName)

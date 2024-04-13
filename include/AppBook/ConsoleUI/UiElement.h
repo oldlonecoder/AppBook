@@ -96,6 +96,8 @@ struct Console
     static void SetBackgroundColor(Color::Code Color);
     static void SetForegroundColor(Color::Code Color);
     static size_t Write(const  std::string& Text, bool isGlyph=false);
+    static void DrawFrame(UiElement* El);
+
 };
 
 

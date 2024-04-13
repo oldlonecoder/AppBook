@@ -28,14 +28,14 @@ struct APPBOOK_EXPORTS Glyph
     using T = const char*;
     using Type = uint8_t;
     using DataArray = std::vector<Glyph::T>;
-    static constexpr T COk                   = "✓ ";       //  Ok “✓ ”
-    static constexpr T CComment              = "🗨 ";      //  Comment
-    static constexpr T CArrowRight           = "➜ ";       //  ArrowRight
-    static constexpr T CArrowLeft            = "⬅ ";       //  ArrowLeft
-    static constexpr T CArrowUp              = "⬆ ";       //  ArrowUp
-    static constexpr T CArrowDown            = "⬇ ";       //  ArrowDown
-    static constexpr T CArrowUpRight         = "⬈ ";       //  ArrowUpRight
-    static constexpr T CArrowUpLeft          = "⬉ ";       //  ArrowUpLeft
+    static constexpr T COk                   = "✓";       //  Ok “✓ ”
+    static constexpr T CComment              = "🗨";      //  Comment
+    static constexpr T CArrowRight           = "➜";       //  ArrowRight
+    static constexpr T CArrowLeft            = "⬅";       //  ArrowLeft
+    static constexpr T CArrowUp              = "⬆";       //  ArrowUp
+    static constexpr T CArrowDown            = "⬇";       //  ArrowDown
+    static constexpr T CArrowUpRight         = "⬈";       //  ArrowUpRight
+    static constexpr T CArrowUpLeft          = "⬉";       //  ArrowUpLeft
     static constexpr T CArrowDownRight       = "⬊ ";       //  ArrowDownRight
     static constexpr T CArrowDownLeft        = "⬋ ";       //  ArrowDownLeft
     static constexpr T CArrowHeadRight       = "➤ ";       //  ArrowHeadRight
@@ -45,7 +45,7 @@ struct APPBOOK_EXPORTS Glyph
     static constexpr T CErr1                 = "✘ ";       //  Err1
     static constexpr T CFlag                 = "⚑ ";       //  Flag
     static constexpr T CBolt                 = "⚡ ";       //  Butil_public
-    static constexpr T CSuccess              = "👍 ";       //  Success
+    static constexpr T CSuccess              = "👍";       //  Success
     static constexpr T CSmallDot             = "⚫ ";       //  SmallDot
     static constexpr T CBigDot               = "⬤ ";       //  BigDot
     static constexpr T CBall1                = "❶ ";       //  Ball1
@@ -113,7 +113,7 @@ struct APPBOOK_EXPORTS Glyph
     static constexpr T CWorldGrid            = "🌐 ";      //  WorldGrid
     static constexpr T CSchool               = "🎓 ";      //  School
     static constexpr T CHat                  = "🎩 ";      //  Hat
-    static constexpr T CAdmin                = "🏛 ";      //  Admin
+    static constexpr T CAdmin                = "🏛";      //  Admin
     static constexpr T CFabric               = "🏭 ";      //  Fabric
     static constexpr T CCat                  = "🐈 ";      //  Cat
     static constexpr T CFish                 = "🐟 ";      //  Fish
@@ -127,11 +127,12 @@ struct APPBOOK_EXPORTS Glyph
     static constexpr T CNotePad              = "📋 ";      //  NotePad
     static constexpr T CBooks                = "📚 ";      //  Books
     static constexpr T CSend                 = "📤 ";      //  Send
-    static constexpr T CRecieve              = "📥 ";      //  Receive
-    static constexpr T CEmail                = "📫 ";      //  Email
-    static constexpr T CEmail2               = "📬 ";      //  Email2
-    static constexpr T CNullPtr              = "👽 ";      //  NullPtr
-    static constexpr T CStop                 = "⏹ ";      //Stop;
+    static constexpr T CRecieve              = "📥";      //  Receive
+    static constexpr T CEmail                = "📫";      //  Email
+    static constexpr T CEmail2               = "📬";      //  Email2
+    static constexpr T CNullPtr              = "👽";      //  NullPtr
+    static constexpr T CStop                 = "⏹";      //Stop;
+    static constexpr T CDebian               = "";
 
     static constexpr Type Ok                 = 0;
     static constexpr Type Comment            = 1;
@@ -237,6 +238,7 @@ struct APPBOOK_EXPORTS Glyph
     static constexpr Type Email2             = 101;
     static constexpr Type NullPtr            = 102;
     static constexpr Type Stop               = 103;
+    static constexpr Type Debian             = 104;
     static Glyph::DataArray Data;
 
     static Glyph::Type Scan(const std::string& GlyphName);

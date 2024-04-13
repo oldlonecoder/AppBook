@@ -27,6 +27,7 @@ public:
 
 Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
 {
+    using ConsoleUI::Console;
     AppBook::Message() << " Args:";
     for (auto const &A: arg.Arguments) {
         AppBook::Out() << A;
@@ -34,17 +35,21 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
 
     auto *Element = new ConsoleUI::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
 
-    Element->SetGeometry(Dim{3,3});
+    Element->SetGeometry(Dim{20,3});
 
     Element->GotoXY({1,1});
-    Element->SetBgColor(Color::Yellow);
-    Element->SetFgColor(Color::Blue);
+    Element->SetFgColor(Color::Yellow);
+    Element->SetBgColor(Color::Blue);
     Element->Clear();
-    Element->PutGlyph(Utf::Glyph::Admin);
     ConsoleUI::Console::RenderElement(Element,{});
     //...
     Element->Dispose();
-    Book::ConsoleUI::Console::GotoXY({3,3});
+    Console::GotoXY({3,2});
+    Console::SetForegroundColor(Color::Maroon);
+    Console::SetBackgroundColor(Color::Blue);
+    Console::Write(Utf::Glyph::Data[Utf::Glyph::Debian],true);
+    Console::SetForegroundColor(Color::Reset);
+    Book::ConsoleUI::Console::GotoXY({3,5});
     std::cout << "Hey!!!!!!\n";
 
 
