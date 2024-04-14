@@ -60,7 +60,10 @@ static constexpr Type Selected= 0x200;
 
 }
 
-
+struct APPBOOK_EXPORTS AttrDB
+{
+    using
+};
 
 } // Book::Ui
 

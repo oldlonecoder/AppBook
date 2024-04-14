@@ -23,7 +23,7 @@ Object::Object(Object *aparent, const std::string &aobj_name):
 
 Object::~Object()
 {
-    Detach();
+    //Detach();
     _Children.clear();
 }
 

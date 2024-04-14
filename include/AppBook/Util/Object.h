@@ -61,15 +61,15 @@ public:
         return nullptr;
     }
 
-    template<typename T> [[maybe_unused]] Object::Array ChildrenOf()
+    template<typename T> [[maybe_unused]] std::vector<T*> ChildrenOfType()
     {
-        Object::Array l;
+        std::vector<T*> A;
         for(auto* o : _Children)
         {
             T* tp = dynamic_cast<T*>(o);
-            if(tp) l.push_back(tp);
+            if(tp) A.push_back(tp);
         }
-        return l;
+        return A;
     }
 
     [[nodiscard]] std::string Id() const { return _Id; }

@@ -68,17 +68,20 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
     void Bottom();
     void BottomLeft();
     void BottomRight();
+    virtual void Show();
 
 
 #pragma endregion Drawings
 
 
+    Book::Result Render(Rect SubR={});
 protected:
-    Book::Result Alloc();
 
+    Book::Result Alloc();
     Book::Result Resize();
     static Util::Object::Array Gc;
     static size_t GcPush(UiElement* E);
+
 
 };
 

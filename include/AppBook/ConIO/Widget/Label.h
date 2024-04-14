@@ -1,9 +1,9 @@
 //
-// Created by oldlonecoder on 24-04-13.
+// Created by oldlonecoder on 24-04-14.
 //
 
-//#ifndef APPBOOK_ICON_H
-//#define APPBOOK_ICON_H
+//#ifndef APPBOOK_LABEL_H
+//#define APPBOOK_LABEL_H
 /***************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
  *   serge.lussier@oldlonecoder.club                                       *
@@ -18,30 +18,28 @@
 
 
 #pragma once
-
-#include <AppBook/ConIO/UiElement.h>
-
+#include <AppBook/ConIO/Widget/Icon.h>
 
 
 namespace Book::Ui
 {
 
-struct APPBOOK_EXPORTS Icon : UiElement
+struct APPBOOK_EXPORTS Label: UiElement
 {
-    Utf::Glyph::Type Ic{Utf::Glyph::DeadHead};
 
-    Icon() = default;
-    Icon(Util::Object* ParentObj);
-    ~Icon() override = default;
+    Icon* LeftIcon{nullptr};
+    Icon* RightIcon{nullptr};
 
-    Icon& operator = (Utf::Glyph::Type IIc);
-    //...
-    std::string operator ()();
+    StrAcc Text{};
+    Label(Object* ParentObj, const std::string& LblText);
+    ~Label() override;
 
+    void SetPosition(Point XY);
+    void Show() override;
+    void SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C);
 
 };
 
 } // Book::Ui
 
-
-//#endif //APPBOOK_ICON_H
+//#endif //APPBOOK_LABEL_H

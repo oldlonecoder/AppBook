@@ -3,7 +3,7 @@
 //
 
 #include <AppBook/Book/ApplicationBase.h>
-#include <AppBook/ConIO/UiElement.h>
+#include <AppBook/ConIO/Widget/Label.h>
 namespace Book
 {
 
@@ -34,27 +34,27 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     }
 
     auto *Element = new Ui::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
+    auto *Label   = new Ui::Label(Element,"It's Debian Sir.");
+    Element->SetColors({Color::Blue,Color::Yellow});
+
+    Label->SetColors({Color::Blue,Color::Yellow});
+    Label->SetPosition({1,1});
+    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Blue,Color::Maroon});
 
     Element->SetGeometry(Dim{22,3});
 
     Element->GotoXY({1,1});
-    Element->SetFgColor(Color::Yellow);
-    Element->SetBgColor(Color::Blue);
-    Element->Clear();
-    Element->GotoXY({4,1});
-    Element->WriteStr("It's Debian Sir.");
-    Ui::Console::RenderElement(Element, {});
+    Element->SetColors({Color::Blue,Color::Yellow});
+
+    Element->Show();
+    Element->Render();
     //...
     Element->Dispose();
-    Console::GotoXY({3,2});
+    Console::GotoXY({1,Console::Cursor.Y+2});
     Console::SetForegroundColor(Color::Maroon);
-    Console::SetBackgroundColor(Color::Blue);
-    Console::Write(Utf::Glyph::Data[Utf::Glyph::Debian],true);
-    Console::SetForegroundColor(Color::Reset);
-    Book::Ui::Console::GotoXY({3,5});
-    std::cout << "Hey!!!!!!\n";
+    Console::SetBackgroundColor(Color::Reset);
 
-
+//    Console::Write(Utf::Glyph::Data[Utf::Glyph::Debian],true);
     //...
     Ui::UiElement::PurgeGc();
     return Book::Action::Continue;
@@ -74,7 +74,7 @@ Book::Result Application::Setup()
 
 
     //...
-    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConIO::Window on ConIO...",0 }).Connect(this, &Application::ConsoleWindowTest);
+    (Args << Cmd::Switch{"ConIO::Test",    "-w", "--WindowConsole","Test Book::ConIO::Window on ConIO...",0 }).Connect(this, &Application::ConsoleWindowTest);
 
     return ProcessArguments();
 }

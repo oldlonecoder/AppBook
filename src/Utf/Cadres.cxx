@@ -152,6 +152,12 @@ std::map<std::string_view, Cadre::FrameMat> Cadre::FrameMatrix = {
     {"╿", {0, 2, 0, 1, 0}}
 };
 
+Cadre &Cadre::operator=(Cadre::FrameMat ModelArg)
+{
+    Frame = ModelArg;
+    return *this;
+}
+
 
 /*!
  * @brief Mandatory operator less than for reverse map.

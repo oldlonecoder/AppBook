@@ -4,6 +4,7 @@
 
 #include "AppBook/ConIO/UiElement.h"
 #include <AppBook/Utf/Cadres.h>
+#include <AppBook/ConIO/Widget/Icon.h>
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -72,7 +73,7 @@ Book::Result UiElement::Resize()
 size_t UiElement::GcPush(UiElement* E)
 {
     for(auto* El : UiElement::Gc) if(E == El) return 0;
-    E->Detach();
+    //E->Detach();
     UiElement::Gc.push_back(E);
     return UiElement::Gc.size();
 }
@@ -87,6 +88,7 @@ size_t UiElement::PurgeGc()
 Book::Result UiElement::Dispose()
 {
     UiElement::GcPush(this);
+    for(auto Child : ChildrenOfType<UiElement>()) Child->Dispose();
     return Result::Ok;
 }
 
@@ -134,7 +136,7 @@ Char::Ptr UiElement::At(const Point &XY) const
 void UiElement::SetFgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
-    At()->SetFg(C);
+    //At()->SetFg(C);
     Attr = Char(Attr).SetFg(C).M;
 }
 
@@ -142,7 +144,7 @@ void UiElement::SetFgColor(Color::Code C)
 void UiElement::SetBgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
-    At()->SetBg(C);
+    //At()->SetBg(C);
     Attr = Char(Attr).SetBg(C).M;
 }
 
@@ -189,6 +191,27 @@ void UiElement::BottomLeft()
 void UiElement::BottomRight()
 {
     R.GotoXY(R.B);
+}
+
+void UiElement::Show()
+{
+    //...
+    Clear();
+    for(auto Child: ChildrenOfType<UiElement>()) Child->Show();
+    //...
+}
+
+Book::Result UiElement::Render(Rect SubR)
+{
+
+    Console::RenderElement(this,SubR);
+    auto ChildrenEl = ChildrenOfType<UiElement>();
+
+    for(auto Child : ChildrenEl)
+    {
+        Child->Render();
+    }
+    return Result::Done;
 }
 
 
@@ -279,7 +302,7 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
         El->R.GotoXY({El->R.A.X,El->R.A.Y+Line});
         Console::GotoXY(Point(Point(El->R.A.X, El->R.A.Y+Line) + El->ScreenXY));
         Char* Cell = El->At();
-        PrevCell->SetBgFg({Color::Reset,Color::Reset});
+        //PrevCell->SetBgFg({Color::Reset,Color::Reset});
         for(int Col=0; Col<El->R.Width(); Col++)
         {
 
@@ -314,7 +337,12 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
     }
     if(El->Class & Ui::WClass::Frame)
         Console::DrawFrame(El);
-
+    else
+    if(El->Class & WClass::Glyph)
+    {
+        Console::GotoXY(El->ScreenXY);
+        Write(Utf::Glyph::Data[El->As<Ui::Icon>()->Ic],true);
+    }
     return Result::Done;
 }
 
@@ -353,6 +381,8 @@ size_t Console::Write(const std::string &Text, bool isGlyph)
 void Console::DrawFrame(UiElement *El)
 {
     Utf::Cadre Cadre;
+    //Cadre = {2,2,2,2,0};
+
     Console::GotoXY(El->ScreenXY);
     Console::SetBackgroundColor(Color::Blue);
     Console::SetForegroundColor(Color::Grey100);

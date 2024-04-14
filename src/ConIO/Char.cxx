@@ -143,6 +143,7 @@ Char &Char::SetBg(Color::Code B)
 {
     ClearBg();
     M|=  B << BGShift;
+    return *this;
 }
 
 Char &Char::SetBgFg(Color::Pair Cp)

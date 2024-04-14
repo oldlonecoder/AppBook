@@ -87,6 +87,7 @@ struct APPBOOK_EXPORTS Cadre
     {
         TopLeft=0, TopRight, BottomLeft, BottomRight, Horizontal, Vertical, Cross, VerticalTowardsLeft, VerticalTowardsRight, TopTowardsDown, DownTowardsUp
     };
+    Cadre& operator=(Cadre::FrameMat Model);
     // .Frame[Mem & CharMask]; Enum: Cadre::TopLeft
     std::string operator [](Cadre::Index Ix)
     {

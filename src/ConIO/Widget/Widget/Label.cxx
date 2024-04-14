@@ -1,8 +1,8 @@
 //
-// Created by oldlonecoder on 24-04-13.
+// Created by oldlonecoder on 24-04-14.
 //
 
-#include "AppBook/ConIO/Widget/Icon.h"
+#include "AppBook/ConIO/Widget/Label.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -27,25 +27,46 @@ namespace Book::Ui
 {
 
 
-Icon::Icon(Util::Object *ParentObj): UiElement(ParentObj, Utf::Glyph::Data[Utf::Glyph::Alien], WClass::Glyph)
+
+
+Label::~Label()
 {
-    SetGeometry({1,1});
+    Text.Clear();
 }
 
-Icon &Icon::operator=(Utf::Glyph::Type IIc)
+Label::Label(Util::Object *ParentObj, const std::string &LblText) : UiElement(ParentObj, "Ui Label Group"),
+Text(LblText)
 {
-    Ic = IIc;
-    return *this;
+
+    auto W= Text.Len();
+    SetGeometry(Dim(static_cast<int>(W), 1));
+
 }
 
-std::string Icon::operator()()
-{
-    return Utf::Glyph::Data[Ic];
-}
-
-void Icon::SetPosition(Point XY)
+void Label::SetPosition(Point XY)
 {
     ScreenXY = Parent<UiElement>()->ScreenXY + XY;
 }
+
+void Label::Show()
+{
+    Book::Debug() << Text() ;
+    Clear();
+
+    GotoXY({2,0});
+    WriteStr(Text());
+
+}
+
+void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C)
+{
+    LeftIcon = new Icon(this);
+    *LeftIcon = G;
+    LeftIcon->SetColors(C);
+    auto W= Text.Len();
+    SetGeometry(Dim(static_cast<int>(W)+2, 1));
+    LeftIcon->SetPosition({0,0});
+}
+
 
 } // Book::Ui
