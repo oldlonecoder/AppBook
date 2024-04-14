@@ -34,28 +34,29 @@ add_library(
     ${TargetName}
     SHARED
     include/${TargetName}/Exports.h                              #global framework-wide macros definitions and dll export and import macros for MSVC.
-    include/${TargetName}/Util/StrAcc.h src/Util/StrAcc.cc
-    include/AppBook/Util/Colors.h src/Util/Colors.cc
-    include/AppBook/Utf/Glyphes.h src/Utf/Glyphes.cc
-    include/AppBook/Util/StrBreak.h src/Util/StrBreak.cc
-    include/AppBook/Book/BookEnums.h src/Book/BookEnums.cc
-    include/AppBook/Util/Object.h src/Util/Object.cc
-    include/AppBook/Util/Geometry.h src/Util/Geometry.cc
-    include/AppBook/Book/StmlText.h src/Book/StmlText.cc
-    include/AppBook/Book/AppBook.h src/Book/AppBook.cc src/Book/Book.Section.cc src/Book/Book.Section.Contents.cc src/Book/Book.Section.Contents.Element.cc
-    include/AppBook/Util/Delegate.h src/Util/Delegate.cc
-    include/AppBook/Util/CArgs.h src/Util/CArgs.cc
+    include/${TargetName}/Util/StrAcc.h                         src/Util/StrAcc.cc
+    include/AppBook/Util/Colors.h                               src/Util/Colors.cc
+    include/AppBook/Utf/Glyphes.h                               src/Utf/Glyphes.cc
+    include/AppBook/Util/StrBreak.h                             src/Util/StrBreak.cc
+    include/AppBook/Book/BookEnums.h                            src/Book/BookEnums.cc
+    include/AppBook/Util/Object.h                               src/Util/Object.cc
+    include/AppBook/Util/Geometry.h                             src/Util/Geometry.cc
+    include/AppBook/Book/StmlText.h                             src/Book/StmlText.cc
+    include/AppBook/Book/AppBook.h                              src/Book/AppBook.cc src/Book/Book.Section.cc src/Book/Book.Section.Contents.cc src/Book/Book.Section.Contents.Element.cc
+    include/AppBook/Util/Delegate.h                             src/Util/Delegate.cc
+    include/AppBook/Util/CArgs.h                                src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
-    include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
-    include/AppBook/Book/ApplicationBase.h src/Book/ApplicationBase.cxx
-    include/AppBook/Utf/Cadres.h src/Utf/Cadres.cxx
-    #include/AppBook/ConsoleUI/Window.h src/ConsoleUI/Window.cxx src/ConsoleUI/CharBBB.cxx src/ConsoleUI/Pencil.cxx
-    include/AppBook/ConsoleUI/UiEnums.h
-    #include/AppBook/ConsoleUI/Console.h src/ConsoleUI/Console.cxx
-    #include/AppBook/ConsoleUI/Screen.cxx
-    #include/AppBook/ConsoleUI/Screen.h
-    include/AppBook/ConsoleUI/Char.h                            src/ConsoleUI/Char.cxx
-    include/AppBook/ConsoleUI/UiElement.h                       src/ConsoleUI/UiElement.cxx
+    include/AppBook/Book/TScanner.h                             src/Book/TScanner.cxx
+    include/AppBook/Book/ApplicationBase.h                      src/Book/ApplicationBase.cxx
+    include/AppBook/Utf/Cadres.h                                src/Utf/Cadres.cxx
+    #include/AppBook/ConIO/Window.h src/ConIO/Window.cxx src/ConIO/CharBBB.cxx src/ConIO/Pencil.cxx
+    include/AppBook/ConIO/UiEnums.h
+    #include/AppBook/ConIO/Console.h src/ConIO/Console.cxx
+    #include/AppBook/ConIO/Screen.cxx
+    #include/AppBook/ConIO/Screen.h
+    include/AppBook/ConIO/Char.h                                src/ConIO/Char.cxx
+    include/AppBook/ConIO/UiElement.h                           src/ConIO/UiElement.cxx
+    src/ConIO/Widget/Widget/Icon.h                              src/ConIO/Widget/Widget/Icon.cxx
 
 
 

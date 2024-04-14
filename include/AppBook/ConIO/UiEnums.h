@@ -22,7 +22,7 @@
 
 #include <AppBook/Book/AppBook.h>
 
-namespace Ui
+namespace Book::Ui
 {
 namespace WClass
 {
@@ -35,6 +35,7 @@ static constexpr Type Caption  = 0x0010;
 static constexpr Type Frame    = 0x0020;
 static constexpr Type Input    = 0x0040;
 static constexpr Type Element  = 0x0080; ///< Intentional always ON bit.
+static constexpr Type Glyph    = 0x0100; ///< Intentional always ON bit.
 
 //...
 }

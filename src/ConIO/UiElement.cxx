@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-#include "AppBook/ConsoleUI/UiElement.h"
+#include "AppBook/ConIO/UiElement.h"
 #include <AppBook/Utf/Cadres.h>
 
 /******************************************************************************************
@@ -24,7 +24,7 @@
 
 
 
-namespace Book::ConsoleUI
+namespace Book::Ui
 {
 
 
@@ -44,7 +44,7 @@ UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass
 
 
 
-UiElement::UiElement(Book::ConsoleUI::UiElement *ParentObj, const std::string &UID, Ui::WClass::Type CC):Util::Object(ParentObj, UID),Class(CC|Ui::WClass::Element){}
+UiElement::UiElement(Book::Ui::UiElement *ParentObj, const std::string &UID, Ui::WClass::Type CC):Util::Object(ParentObj, UID),Class(CC | Ui::WClass::Element){}
 
 void UiElement::SetGeometry(const Dim& Geo)
 {
@@ -109,7 +109,7 @@ Book::Result UiElement::WriteStr(const std::string &Txt)
     for(auto C: Txt)
     {
         if(P > EndBloc) return Book::Result::Overflow;
-        P->M |= (P->M& ~(Char::UtfMask | Char::BgFgMask)) | Attr | C;
+        P->M |= (P->M & ~(Char::UtfMask | Char::BgFgMask)) | Attr | C;
         ++P;
     }
     return Result::Ok;
@@ -271,9 +271,8 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
     GotoXY(El->ScreenXY /* + SubR.A */);
     /* Rect ScreenArea = Rect({0,0},Wh) / SubR; */
     El->R.Home();
-    auto PrevCell = El->At();
-    Console::SetBackgroundColor(El->Bloc[0].BackgroundColor());
-    Console::SetForegroundColor(El->Bloc[0].ForegroundColor());
+    auto PrevCell = &El->Bloc[0];
+    Console::UseColors(PrevCell);
 
     for(int Line=0; Line< El->R.Height(); Line++)
     {
@@ -300,6 +299,10 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
                 Write(IcStr,true);
                 ++Cell;
                 continue;
+            }
+            if(Cell->M & Char::Underline)
+            {
+                Console::SetUnderline(true);
             }
             /// No Cadre components here...
             write(1,(char*)&Cell->M,1);
@@ -386,6 +389,20 @@ void Console::DrawFrame(UiElement *El)
 
 }
 
+void Console::UseColors(Char *E)
+{
+    Console::SetBackgroundColor(E->BackgroundColor());
+    Console::SetForegroundColor(E->ForegroundColor());
+}
 
-} // Book::ConsoleUI
+void Console::SetUnderline(bool U)
+{
+    if(U)
+        write(1, "\x1b[4m", 4);
+    else
+        write(1, "\x1b[0m", 4);
+}
+
+
+} // Book::ConIO
 

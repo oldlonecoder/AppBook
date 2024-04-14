@@ -22,12 +22,12 @@
 #pragma once
 
 #include <AppBook/Util/Object.h>
-#include <AppBook/ConsoleUI/Char.h>
+#include <AppBook/ConIO/Char.h>
 
 
 
 
-namespace Book::ConsoleUI
+namespace Book::Ui
 {
 
 
@@ -41,13 +41,13 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
 
 
     Char::Ptr     EndBloc{nullptr};
-    Ui::WClass::Type Class{Ui::WClass::Element};
+    WClass::Type Class{Ui::WClass::Element};
 
     UiElement() = default;
     ~UiElement() override;
 
-    explicit UiElement(Util::Object* ParentObj, const std::string& UID, Ui::WClass::Type CC = {Ui::WClass::Element});
-    UiElement(Book::ConsoleUI::UiElement* ParentObj, const std::string& UID, Ui::WClass::Type CC = {Ui::WClass::Element});
+    explicit UiElement(Util::Object* ParentObj, const std::string& UID,      Ui::WClass::Type CC = Ui::WClass::Element);
+    UiElement(Book::Ui::UiElement* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
 
     void SetGeometry(const Dim& Geo);
     Book::Result Dispose();
@@ -97,11 +97,13 @@ struct Console
     static void SetForegroundColor(Color::Code Color);
     static size_t Write(const  std::string& Text, bool isGlyph=false);
     static void DrawFrame(UiElement* El);
+    static void UseColors(Char* E);
+    static void SetUnderline(bool U);
 
 };
 
 
 
-} // Book::ConsoleUI
+} // Book::ConIO
 
 //#endif //APPBOOK_UIELEMENT_H

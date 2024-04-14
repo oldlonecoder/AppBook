@@ -20,11 +20,11 @@
  ******************************************************************************************/
 
 #pragma once
-#include <AppBook/ConsoleUI/UiEnums.h>
+#include <AppBook/ConIO/UiEnums.h>
 #include <AppBook/Utf/Cadres.h>
 
 
-namespace Book::ConsoleUI
+namespace Book::Ui
 {
 
 
@@ -85,6 +85,10 @@ struct APPBOOK_EXPORTS Char
     Char& SetFg(Color::Code F);
     Char& SetBg(Color::Code B);
     Char& SetBgFg(Color::Pair Cp);
+    Char& SetUnderLine(bool U=true);
+    Char& SetBlink(bool B=true);
+
+
 
     Char& Clear();
     Char& operator[](Char::Type ClrBits);
@@ -103,6 +107,6 @@ struct APPBOOK_EXPORTS Char
 
 };
 
-} // Book::ConsoleUI
+} // Book::ConIO
 
 //#endif //APPBOOK_CHAR_H

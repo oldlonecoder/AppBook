@@ -3,7 +3,7 @@
 //
 
 #include <AppBook/Book/ApplicationBase.h>
-#include <AppBook/ConsoleUI/UiElement.h>
+#include <AppBook/ConIO/UiElement.h>
 namespace Book
 {
 
@@ -27,21 +27,23 @@ public:
 
 Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
 {
-    using ConsoleUI::Console;
+    using Ui::Console;
     AppBook::Message() << " Args:";
     for (auto const &A: arg.Arguments) {
         AppBook::Out() << A;
     }
 
-    auto *Element = new ConsoleUI::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
+    auto *Element = new Ui::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
 
-    Element->SetGeometry(Dim{20,3});
+    Element->SetGeometry(Dim{22,3});
 
     Element->GotoXY({1,1});
     Element->SetFgColor(Color::Yellow);
     Element->SetBgColor(Color::Blue);
     Element->Clear();
-    ConsoleUI::Console::RenderElement(Element,{});
+    Element->GotoXY({4,1});
+    Element->WriteStr("It's Debian Sir.");
+    Ui::Console::RenderElement(Element, {});
     //...
     Element->Dispose();
     Console::GotoXY({3,2});
@@ -49,12 +51,12 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     Console::SetBackgroundColor(Color::Blue);
     Console::Write(Utf::Glyph::Data[Utf::Glyph::Debian],true);
     Console::SetForegroundColor(Color::Reset);
-    Book::ConsoleUI::Console::GotoXY({3,5});
+    Book::Ui::Console::GotoXY({3,5});
     std::cout << "Hey!!!!!!\n";
 
 
     //...
-    ConsoleUI::UiElement::PurgeGc();
+    Ui::UiElement::PurgeGc();
     return Book::Action::Continue;
 }
 
@@ -72,7 +74,7 @@ Book::Result Application::Setup()
 
 
     //...
-    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConsoleUI::Window on ConsoleUI...",0 }).Connect(this, &Application::ConsoleWindowTest);
+    (Args << Cmd::Switch{"CWindowTest",    "-w", "--WindowConsole","Test Book::ConIO::Window on ConIO...",0 }).Connect(this, &Application::ConsoleWindowTest);
 
     return ProcessArguments();
 }

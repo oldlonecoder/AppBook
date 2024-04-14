@@ -1,8 +1,8 @@
 //
-// Created by oldlonecoder on 24-04-12.
+// Created by oldlonecoder on 24-04-13.
 //
 
-#include "Screen.h"
+#include "Icon.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -23,9 +23,21 @@
 
 
 
-namespace Book
+namespace Book::Ui
 {
-namespace ConsoleUI
+
+
+Icon::Icon(Util::Object *ParentObj): UiElement(ParentObj, Utf::Glyph::Data[Utf::Glyph::Alien], WClass::Glyph){}
+
+Icon &Icon::operator=(Utf::Glyph::Type IIc)
 {
-} // ConsoleUI
-} // Book
+    Ic = IIc;
+    return *this;
+}
+
+std::string Icon::operator()()
+{
+    return Utf::Glyph::Data[Ic];
+}
+
+} // Book::Ui

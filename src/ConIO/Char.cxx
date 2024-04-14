@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-#include "AppBook/ConsoleUI/Char.h"
+#include "AppBook/ConIO/Char.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -23,7 +23,7 @@
 
 
 
-namespace Book::ConsoleUI
+namespace Book::Ui
 {
 
 
@@ -206,7 +206,26 @@ std::pair<bool, std::string> Char::AccentFlag() const
     return {};
 }
 
+Char &Char::SetUnderLine(bool U)
+{
+    if(!U)
+        M &= ~Char::Underline;
+    else
+        M |= Char::Underline;
+
+    return *this;
+}
+
+Char &Char::SetBlink(bool B)
+{
+    if(!B)
+        M &= ~Char::Blink;
+    else
+        M |= Char::Blink;
+
+    return *this;
+}
 
 
-} // Book::ConsoleUI
+} // Book::ConIO
 
