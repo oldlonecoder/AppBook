@@ -40,7 +40,10 @@ UiElement::~UiElement()
     Book::Debug()  << Color::Red << " ~" << Color::Grey100 << Id() << Color::Yellow << " Disposing Bloc -> " << Book::Result::Finish;
 }
 
-UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass::Type CC): Util::Object(ParentObj, UID),Class(CC|Ui::WClass::Element){}
+UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass::Type CC): Util::Object(ParentObj, UID),Class(CC|Ui::WClass::Element)
+{
+    Attr = Char(Attr).SetBgFg(AttrDB::DB["Element"][State::Active]).M;
+}
 
 
 
@@ -61,7 +64,7 @@ Book::Result UiElement::Alloc()
     Bloc = new Char[R.Dwh.Area()+R.Width()];
     Char::Ptr C = Bloc;
     EndBloc = Bloc + R.Dwh.Area();
-    for(;C < EndBloc; C++) C->M = DefAttr;
+    for(;C < EndBloc; C++) C->M = Attr;
     return Result::Ok;
 }
 
@@ -92,6 +95,10 @@ Book::Result UiElement::Dispose()
     return Result::Ok;
 }
 
+void UiElement::SetPosition(Point XY)
+{
+    PosXY = XY;
+}
 
 
 Book::Result UiElement::GotoXY(const Point &XY)
@@ -214,6 +221,19 @@ Book::Result UiElement::Render(Rect SubR)
     return Result::Done;
 }
 
+Point UiElement::GetScreenXY()
+{
+    Point XY = PosXY;
+    auto ParentUI = Parent<UiElement>();
+    while(ParentUI)
+    {
+        XY += ParentUI->PosXY;
+        ParentUI = ParentUI->Parent<UiElement>();
+    }
+    return XY;
+}
+
+
 
 // -------------------------------------------------------- Console ----------------------------------------------------------
 
@@ -291,8 +311,8 @@ void Console::Home()
  */
 Book::Result Console::RenderElement(UiElement *El, Rect)
 {
-    GotoXY(El->ScreenXY /* + SubR.A */);
-    /* Rect ScreenArea = Rect({0,0},Wh) / SubR; */
+    auto ScreenXY = El->GetScreenXY();
+    GotoXY(ScreenXY /* + SubR.A */);
     El->R.Home();
     auto PrevCell = &El->Bloc[0];
     Console::UseColors(PrevCell);
@@ -300,17 +320,16 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
     for(int Line=0; Line< El->R.Height(); Line++)
     {
         El->R.GotoXY({El->R.A.X,El->R.A.Y+Line});
-        Console::GotoXY(Point(Point(El->R.A.X, El->R.A.Y+Line) + El->ScreenXY));
+        Console::GotoXY(Point(El->R.A.X, El->R.A.Y+Line) + ScreenXY);
         Char* Cell = El->At();
-        //PrevCell->SetBgFg({Color::Reset,Color::Reset});
+
+        Console::SetColors(El->Attr);
         for(int Col=0; Col<El->R.Width(); Col++)
         {
-
-
             if(Cell->BackgroundColor() != PrevCell->BackgroundColor())
-                SetBackgroundColor(Cell->BackgroundColor());
+                Console::SetBackgroundColor(Cell->BackgroundColor());
             if(Cell->ForegroundColor() != PrevCell->ForegroundColor())
-                SetForegroundColor(Cell->ForegroundColor());
+                Console::SetForegroundColor(Cell->ForegroundColor());
             if(auto [b,AccStr] = Cell->AccentFlag(); b)
             {
                 Write(AccStr);
@@ -328,9 +347,10 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
                 Console::SetUnderline(true);
             }
             /// No Cadre components here...
-            write(1,(char*)&Cell->M,1);
+            char C = static_cast<char>(Cell->M&0xFF);
+            write(1,&C,1);
             Console::Cursor.X++;
-            Cell++; //Oooooopsyyyy!
+            PrevCell = Cell++; //Oooooopsyyyy!
         }
         write(1,"\x1b[0m", 4);
 
@@ -340,11 +360,14 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
     else
     if(El->Class & WClass::Glyph)
     {
-        Console::GotoXY(El->ScreenXY);
+        Console::SetColors(El->Attr);
+        Console::GotoXY(ScreenXY);
         Write(Utf::Glyph::Data[El->As<Ui::Icon>()->Ic],true);
     }
+    std::cout << "\x1b[0m";
     return Result::Done;
 }
+
 
 void Console::SetBackgroundColor(Color::Code Color)
 {
@@ -381,38 +404,41 @@ size_t Console::Write(const std::string &Text, bool isGlyph)
 void Console::DrawFrame(UiElement *El)
 {
     Utf::Cadre Cadre;
+    auto ScreenXY = El->GetScreenXY();
     //Cadre = {2,2,2,2,0};
+    Console::GotoXY(ScreenXY);
+    auto Cp = AttrDB::DB["Frame"][State::Active];
 
-    Console::GotoXY(El->ScreenXY);
-    Console::SetBackgroundColor(Color::Blue);
-    Console::SetForegroundColor(Color::Grey100);
+    Console::SetColors(Cp);
+    //Console::SetBackgroundColor(Color::Blue);
+    //Console::SetForegroundColor(Color::Grey100);
     Console::Write(Cadre[Utf::Cadre::TopLeft]);
 
     El->TopRight();
-    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::GotoXY(ScreenXY+El->R.Cursor);
     Console::Write(Cadre[Utf::Cadre::TopRight]);
 
     El->BottomLeft();
-    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::GotoXY(ScreenXY+El->R.Cursor);
     Console::Write(Cadre[Utf::Cadre::BottomLeft]);
 
     El->BottomRight();
-    Console::GotoXY(El->ScreenXY+El->R.Cursor);
+    Console::GotoXY(ScreenXY+El->R.Cursor);
     Console::Write(Cadre[Utf::Cadre::BottomRight]);
 
     for(int Col=1; Col<El->R.Width()-1; Col++)
     {
-        Console::GotoXY(El->ScreenXY + Point{Col, 0});
+        Console::GotoXY(ScreenXY + Point{Col, 0});
         Console::Write(Cadre[Utf::Cadre::Horizontal]);
-        Console::GotoXY(El->ScreenXY + Point{Col, El->R.B.Y});
+        Console::GotoXY(ScreenXY + Point{Col, El->R.B.Y});
         Console::Write(Cadre[Utf::Cadre::Horizontal]);
     }
 
     for(int Line=1; Line < El->R.Height()-1; Line++)
     {
-        Console::GotoXY(El->ScreenXY + Point{El->R.A.X, El->R.A.Y+Line});
+        Console::GotoXY(ScreenXY + Point{El->R.A.X, El->R.A.Y+Line});
         Console::Write(Cadre[Utf::Cadre::Vertical]);
-        Console::GotoXY(El->ScreenXY + Point{El->R.B.X, El->R.A.Y+Line});
+        Console::GotoXY(ScreenXY + Point{El->R.B.X, El->R.A.Y+Line});
         Console::Write(Cadre[Utf::Cadre::Vertical]);
 
     }
@@ -431,6 +457,20 @@ void Console::SetUnderline(bool U)
         write(1, "\x1b[4m", 4);
     else
         write(1, "\x1b[0m", 4);
+}
+
+void Console::SetColors(Char::Type E)
+{
+    auto Cp = Char(E).Colors(E);
+    Console::SetColors(Cp);
+
+}
+
+void Console::SetColors(Color::Pair Cp)
+{
+    auto Text = Cp();
+    write(1,Text.c_str(), Text.length());
+
 }
 
 

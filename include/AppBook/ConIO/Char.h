@@ -34,10 +34,10 @@ struct APPBOOK_EXPORTS Char
     using Ptr  = Char*;
     using Bloc = Char*;
 
-    Type  M{0x00FFFF20}; ///< Will put default value somewhere else eventually...
+    Type  M{0x00000020}; ///< Will put default value somewhere else eventually...
 
 
-    static constexpr Type ClearScreen{0x00FFFF20};
+    //static constexpr Type ClearScreen{0x00FFFF20};
 
 
     static constexpr uint32_t Mask	    = 0x000000FF;
@@ -103,7 +103,7 @@ struct APPBOOK_EXPORTS Char
     std::pair<bool, Utf::Glyph::T>  Graphen() const;
     std::pair<bool, std::string> FrameChar() const;
     std::pair<bool, std::string> AccentFlag() const;
-
+    Color::Pair  Colors(Char::Type E);
 
 };
 

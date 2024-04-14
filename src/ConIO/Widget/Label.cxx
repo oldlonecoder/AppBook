@@ -43,10 +43,6 @@ Text(LblText)
 
 }
 
-void Label::SetPosition(Point XY)
-{
-    ScreenXY = Parent<UiElement>()->ScreenXY + XY;
-}
 
 void Label::Show()
 {
@@ -66,6 +62,14 @@ void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C)
     auto W= Text.Len();
     SetGeometry(Dim(static_cast<int>(W)+2, 1));
     LeftIcon->SetPosition({0,0});
+}
+
+void Label::SetText(const std::string &NewText)
+{
+    Text = NewText;
+    auto W= Text.Len();
+    SetGeometry(Dim(static_cast<int>(W), 1));
+
 }
 
 

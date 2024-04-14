@@ -34,9 +34,9 @@ struct APPBOOK_EXPORTS Label: UiElement
     Label(Object* ParentObj, const std::string& LblText);
     ~Label() override;
 
-    void SetPosition(Point XY);
     void Show() override;
     void SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C);
+    void SetText(const std::string& NewText);
 
 };
 

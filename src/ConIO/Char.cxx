@@ -228,5 +228,21 @@ Char &Char::SetBlink(bool B)
 }
 
 
+
+/*!
+ * @brief Extract the colors pair from the given 32 bits integer
+ * @param E
+ * @return
+ */
+Color::Pair Char::Colors(Char::Type E)
+{
+    M= E;
+    Char C{E};
+    auto B = C.BackgroundColor();
+    auto F = C.ForegroundColor();
+    return {F,B};
+}
+
+
 } // Book::ConIO
 

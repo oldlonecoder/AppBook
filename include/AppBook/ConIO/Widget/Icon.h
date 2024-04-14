@@ -33,7 +33,6 @@ struct APPBOOK_EXPORTS Icon : UiElement
     Icon() = default;
     Icon(Util::Object* ParentObj);
     ~Icon() override = default;
-    void SetPosition(Point XY);
     Icon& operator = (Utf::Glyph::Type IIc);
     //...
     std::string operator ()();

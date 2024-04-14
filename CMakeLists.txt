@@ -52,9 +52,10 @@ add_library(
     include/AppBook/Utf/Cadres.h src/Utf/Cadres.cxx
     include/AppBook/ConIO/Char.h src/ConIO/Char.cxx
     include/AppBook/ConIO/UiElement.h src/ConIO/UiElement.cxx
-    include/AppBook/ConIO/Widget/Icon.h src/ConIO/Widget/Widget/Icon.cxx
-    src/ConIO/Widget/Widget/Label.cxx
+    include/AppBook/ConIO/Widget/Icon.h src/ConIO/Widget/Icon.cxx
+    src/ConIO/Widget/Label.cxx
     include/AppBook/ConIO/Widget/Label.h
+    src/ConIO/UiEnums.cxx
 
 
 )

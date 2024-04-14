@@ -62,7 +62,10 @@ static constexpr Type Selected= 0x200;
 
 struct APPBOOK_EXPORTS AttrDB
 {
-    using
+    using States =  std::map<State::Type, Color::Pair>;
+    using Elements = std::map<std::string, States>;
+
+    static AttrDB::Elements DB;
 };
 
 } // Book::Ui

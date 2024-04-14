@@ -35,13 +35,15 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
 {
     Char::Bloc Bloc{nullptr};
     Rect R{};
-    Point ScreenXY{1,1}; ///< TopLeft corner of the console screen.
-    Char::Type    DefAttr{0x00000020};
-    Char::Type    Attr{0x00000000};
+    Point PosXY{0,0}; ///< TopLeft corner of the console screen.
+
+
+    Char::Type    Attr{0x00000020};
 
 
     Char::Ptr     EndBloc{nullptr};
     WClass::Type Class{Ui::WClass::Element};
+    State::Type  St{State::Normal};
 
     UiElement() = default;
     ~UiElement() override;
@@ -69,11 +71,11 @@ struct APPBOOK_EXPORTS UiElement : public Util::Object
     void BottomLeft();
     void BottomRight();
     virtual void Show();
-
+    Point GetScreenXY();
 
 #pragma endregion Drawings
 
-
+    void SetPosition(Point XY);
     Book::Result Render(Rect SubR={});
 protected:
 
@@ -101,6 +103,8 @@ struct Console
     static size_t Write(const  std::string& Text, bool isGlyph=false);
     static void DrawFrame(UiElement* El);
     static void UseColors(Char* E);
+    static void SetColors(Char::Type E);
+    static void SetColors(Color::Pair Cp);
     static void SetUnderline(bool U);
 
 };

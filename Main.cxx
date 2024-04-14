@@ -34,28 +34,16 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     }
 
     auto *Element = new Ui::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
-    auto *Label   = new Ui::Label(Element,"It's Debian Sir.");
-    Element->SetColors({Color::Blue,Color::Yellow});
-
-    Label->SetColors({Color::Blue,Color::Yellow});
-    Label->SetPosition({1,1});
-    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Blue,Color::Maroon});
-
+    auto *Label   = new Ui::Label(Element,"It's Debian, Sir.");
+    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Maroon,Color::DarkBlue});
     Element->SetGeometry(Dim{22,3});
+    Label->SetPosition({1,1});
 
-    Element->GotoXY({1,1});
-    Element->SetColors({Color::Blue,Color::Yellow});
-
+    Element->SetPosition({40,2});
     Element->Show();
     Element->Render();
-    //...
     Element->Dispose();
-    Console::GotoXY({1,Console::Cursor.Y+2});
-    Console::SetForegroundColor(Color::Maroon);
-    Console::SetBackgroundColor(Color::Reset);
-
-//    Console::Write(Utf::Glyph::Data[Utf::Glyph::Debian],true);
-    //...
+    Console::GotoXY({1,6});
     Ui::UiElement::PurgeGc();
     return Book::Action::Continue;
 }
@@ -67,6 +55,7 @@ Book::Result Application::Run()
     Args.Process();
     return Book::Result::Ok;
 }
+
 
 Book::Result Application::Setup()
 {

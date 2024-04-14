@@ -43,9 +43,5 @@ std::string Icon::operator()()
     return Utf::Glyph::Data[Ic];
 }
 
-void Icon::SetPosition(Point XY)
-{
-    ScreenXY = Parent<UiElement>()->ScreenXY + XY;
-}
 
 } // Book::Ui
