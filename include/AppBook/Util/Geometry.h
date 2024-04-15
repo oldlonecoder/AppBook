@@ -20,7 +20,7 @@
 
 
 
-struct APPBOOK_EXPORTS Point
+struct APPBOOK_API Point
 {
 
     int X = -1;
@@ -55,7 +55,7 @@ struct APPBOOK_EXPORTS Point
     };
 
 
-struct APPBOOK_EXPORTS Dim
+struct APPBOOK_API Dim
 {
     int W = 0;
     int H = 0;
@@ -89,7 +89,7 @@ struct APPBOOK_EXPORTS Dim
  * @author oldlonecoder (lussier.serge@gmail.com)
  *
  */
-struct APPBOOK_EXPORTS Rect
+struct APPBOOK_API Rect
 {
 
     Point A{0,0};
@@ -162,7 +162,7 @@ struct APPBOOK_EXPORTS Rect
 };
 
 
-struct APPBOOK_EXPORTS WinBuffer
+struct APPBOOK_API WinBuffer
 {
     StrAcc * Win = nullptr;
     Point Cxy;

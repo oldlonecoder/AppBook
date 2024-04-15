@@ -88,13 +88,13 @@ enum class Action : uint8_t
 };
 
 
-std::string APPBOOK_EXPORTS ClassText(Book::Enums::Class Cls);
-std::string APPBOOK_EXPORTS CodeText(Book::Enums::Code Cod);
+std::string APPBOOK_API ClassText(Book::Enums::Class Cls);
+std::string APPBOOK_API CodeText(Book::Enums::Code Cod);
 
-std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS ClassAttributes(Book::Enums::Class Cls);
-std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS CodeAttributes(Book::Enums::Code cod);
-std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS FnAttributes(Book::Enums::Fn Fn);
-std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_EXPORTS ActionAttributes(Book::Enums::Fn Fn);
+std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_API ClassAttributes(Book::Enums::Class Cls);
+std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_API CodeAttributes(Book::Enums::Code cod);
+std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_API FnAttributes(Book::Enums::Fn Fn);
+std::pair<Utf::Glyph::Type, Color::Pair> APPBOOK_API ActionAttributes(Book::Enums::Fn Fn);
 
 
 }

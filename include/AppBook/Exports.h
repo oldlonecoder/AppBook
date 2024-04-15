@@ -24,9 +24,9 @@
 #   define _SCL_SECURE_NO_WARNINGS
 #   define NOMINMAX
 #   ifdef APPBOOKAPI_EXPORTS
-#       define APPBOOK_EXPORTS __declspec(dllexport)
+#       define APPBOOK_API __declspec(dllexport)
 #   else
-#       define APPBOOK_EXPORTS __declspec(dllimport)
+#       define APPBOOK_API __declspec(dllimport)
 #   endif
 
 #   include <Windows.H> // Must be included before anything else
@@ -36,7 +36,7 @@
 
 #   define __PRETTY_FUNCTION__ __FUNCSIG__
 #else
-#       define APPBOOK_EXPORTS
+#       define APPBOOK_API
 #endif
 
 //---------------------------------------------

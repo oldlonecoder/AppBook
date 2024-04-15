@@ -8,7 +8,7 @@
 namespace Book
 {
 
-class APPBOOK_EXPORTS ApplicationBase : public Util::Object
+class APPBOOK_API ApplicationBase : public Util::Object
 {
 
     static void InstallSignals();

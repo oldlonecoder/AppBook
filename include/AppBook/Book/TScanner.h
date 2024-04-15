@@ -160,7 +160,7 @@ class __attribute__ ((visibility ("hidden"))) MarkupProc
  * @author  &copy; 2024, Serge Lussier (oldlonecoder, serge.lussier\@oldlonecoder.club)
  *
  * */
-class APPBOOK_EXPORTS TScanner
+class APPBOOK_API TScanner
 {
     const char* mEnd{nullptr};
     const char* mPos{nullptr};
@@ -171,7 +171,7 @@ public:
 
     using Iterator = const char*;
 
-    struct APPBOOK_EXPORTS  [[maybe_unused]] Context
+    struct APPBOOK_API  [[maybe_unused]] Context
     {
         TScanner::Iterator Pos{nullptr};
         TScanner::Iterator Begin{nullptr};
@@ -179,13 +179,13 @@ public:
         //...
     };
 
-    struct APPBOOK_EXPORTS Numeric
+    struct APPBOOK_API Numeric
     {
     private:
         static TScanner Empty;
     public:
 
-        struct APPBOOK_EXPORTS Details
+        struct APPBOOK_API Details
         {
             std::string_view Seq;
             enum class BaseSize : char
@@ -250,7 +250,7 @@ public:
     };
 
 public:
-    struct APPBOOK_EXPORTS LocationData
+    struct APPBOOK_API LocationData
     {
         // { \n; \n\r; \r\n; \r }
         std::size_t Line{0};

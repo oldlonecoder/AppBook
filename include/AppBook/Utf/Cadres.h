@@ -27,7 +27,7 @@ namespace Utf
 {
 
 
-struct APPBOOK_EXPORTS Cadre
+struct APPBOOK_API Cadre
 {
     Color::Pair Colors;     ///< Colours of the Box::Frame
     Rect        R;          ///< Box ...geometry
@@ -38,7 +38,7 @@ struct APPBOOK_EXPORTS Cadre
  * @brief 1v x 4h matrix for addressing Frame components
  * @note  : Source : https://github.com/ArthurSonzogni/FTXUI/blob/main/src/ftxui/screen/string.cpp
  */
-    struct APPBOOK_EXPORTS FrameMat
+    struct APPBOOK_API FrameMat
     {
         uint8_t Left : 2;
         uint8_t Top  : 2;
@@ -49,7 +49,7 @@ struct APPBOOK_EXPORTS Cadre
         bool operator < (Cadre::FrameMat RHS) const;
     };
 
-    struct APPBOOK_EXPORTS FrameData
+    struct APPBOOK_API FrameData
     {
         Utf::Glyph::T TL; ///< Top Left
         Utf::Glyph::T TR; ///< Top Right

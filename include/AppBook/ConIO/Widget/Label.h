@@ -24,7 +24,7 @@
 namespace Book::Ui
 {
 
-struct APPBOOK_EXPORTS Label: UiElement
+struct APPBOOK_API Label: UiElement
 {
 
     Icon* LeftIcon{nullptr};

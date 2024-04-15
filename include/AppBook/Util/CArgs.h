@@ -22,7 +22,7 @@ namespace Cmd
 {
 
 
-struct APPBOOK_EXPORTS Switch
+struct APPBOOK_API Switch
 {
     using Data = std::vector<std::string_view>;
     using Array = std::vector<Switch*>;
@@ -51,7 +51,7 @@ struct APPBOOK_EXPORTS Switch
 };
 
 
-class APPBOOK_EXPORTS CArgs
+class APPBOOK_API CArgs
 {
 
     Switch::Array Args;

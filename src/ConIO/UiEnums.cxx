@@ -12,14 +12,20 @@ namespace Book::Ui
 AttrDB::Elements AttrDB::DB =
 {
     {"Element",{
-            {State::Active, {Color::Yellow, Color::DarkBlue}},
-            {State::Normal, {Color::Grey0, Color::DarkBlue}},
+            {State::Active, {Color::Yellow, Color::Blue}},
+            {State::Normal, {Color::Grey0, Color::Blue}},
             //...
         }
     },
     {"Frame", {
-        {State::Active, {Color::Grey100, Color::DarkBlue}},
-        {State::Normal, {Color::Grey0, Color::DarkBlue}},
+        {State::Active, {Color::Grey100, Color::Blue}},
+        {State::Normal, {Color::Grey0, Color::Blue}},
+        //...
+        }
+    },
+    {"Glyph", {
+        {State::Active, {Color::Red,Color::Blue}},
+        {State::Normal, {Color::Red,Color::Blue}},
         //...
         }
     }

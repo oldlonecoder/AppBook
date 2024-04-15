@@ -39,7 +39,7 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
     Element->SetGeometry(Dim{22,3});
     Label->SetPosition({1,1});
 
-    Element->SetPosition({40,2});
+    Element->SetPosition({2,2});
     Element->Show();
     Element->Render();
     Element->Dispose();

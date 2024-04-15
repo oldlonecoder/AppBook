@@ -28,7 +28,7 @@ namespace Book::Ui
 {
 
 
-struct APPBOOK_EXPORTS Char
+struct APPBOOK_API Char
 {
     using Type = uint32_t;
     using Ptr  = Char*;

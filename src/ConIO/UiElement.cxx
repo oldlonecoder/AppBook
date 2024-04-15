@@ -37,7 +37,10 @@ UiElement::~UiElement()
 {
     delete [] Bloc;
     Bloc = nullptr;
-    Book::Debug()  << Color::Red << " ~" << Color::Grey100 << Id() << Color::Yellow << " Disposing Bloc -> " << Book::Result::Finish;
+    StrAcc Msg;
+    Msg << Color::Red << " ~" << Color::Grey100 << Id() << Color::MediumPurple1 << " Disposing Bloc -> " << R.to_string();
+    //Book::Debug()  << Color::Red << " ~" << Color::Grey100 << Id() << Color::MediumPurple1 << " Disposing Bloc -> " << Book::Result::Done;
+    Book::Debug()  << Msg << Book::Result::Done;
 }
 
 UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass::Type CC): Util::Object(ParentObj, UID),Class(CC|Ui::WClass::Element)

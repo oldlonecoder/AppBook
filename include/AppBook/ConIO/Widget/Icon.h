@@ -26,7 +26,7 @@
 namespace Book::Ui
 {
 
-struct APPBOOK_EXPORTS Icon : UiElement
+struct APPBOOK_API Icon : UiElement
 {
     Utf::Glyph::Type Ic{Utf::Glyph::DeadHead};
 

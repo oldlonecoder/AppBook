@@ -18,7 +18,7 @@
 namespace Util
 {
 
-class  APPBOOK_EXPORTS Object
+class  APPBOOK_API Object
 {
 
 public:

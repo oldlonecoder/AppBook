@@ -31,7 +31,7 @@ namespace Book::Ui
 {
 
 
-struct APPBOOK_EXPORTS UiElement : public Util::Object
+struct APPBOOK_API UiElement : public Util::Object
 {
     Char::Bloc Bloc{nullptr};
     Rect R{};

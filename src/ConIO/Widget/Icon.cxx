@@ -27,9 +27,13 @@ namespace Book::Ui
 {
 
 
-Icon::Icon(Util::Object *ParentObj): UiElement(ParentObj, Utf::Glyph::Data[Utf::Glyph::Alien], WClass::Glyph)
+Icon::Icon(Util::Object *ParentObj): UiElement(ParentObj, Utf::Glyph::Data[Utf::Glyph::Debian], WClass::Glyph)
 {
+    std::string strid = "{ " + Id() +" }" + " Glyph Group";
+    SetId(strid);
     SetGeometry({1,1});
+    // Override Element's ColorPair
+    Attr = Char(Attr).SetBgFg(AttrDB::DB["Glyph"][State::Active]).M;
 }
 
 Icon &Icon::operator=(Utf::Glyph::Type IIc)

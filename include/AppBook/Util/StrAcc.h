@@ -33,7 +33,7 @@
 #include <AppBook/Utf/Glyphes.h>
 
 
-class APPBOOK_EXPORTS StrAcc final
+class APPBOOK_API StrAcc final
 {
 
     std::string _d; ///< private std::string instance;

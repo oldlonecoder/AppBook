@@ -104,7 +104,7 @@ Book::Result ApplicationBase::Setup()
     ApplicationBase::InstallSignals();
 
     Book::Debug() << " ApplicationBase starting...";
-
+    // ... And threads? Not from here. (yet?)
     return Result::Success;
 }
 

@@ -54,14 +54,14 @@ void Label::Show()
 
 }
 
-void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C)
+void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair)
 {
     LeftIcon = new Icon(this);
     *LeftIcon = G;
-    LeftIcon->SetColors(C);
+    //LeftIcon->SetColors(C);
     auto W= Text.Len();
     SetGeometry(Dim(static_cast<int>(W)+2, 1));
-    LeftIcon->SetPosition({0,0});
+    LeftIcon->SetPosition({1,0});
 }
 
 void Label::SetText(const std::string &NewText)

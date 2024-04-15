@@ -18,7 +18,7 @@
 //using std::string;
 using std::string;
 
-class APPBOOK_EXPORTS StrBreak
+class APPBOOK_API StrBreak
 {
     static constexpr std::string_view mDefSeparators { "\\%(){}[]`$#@!;,~?^&<>=+-*/:." };
     using Iterator = std::string_view::iterator;
@@ -36,7 +36,7 @@ public:
 
     ~StrBreak() = default;
 
-    struct APPBOOK_EXPORTS Word
+    struct APPBOOK_API Word
     {
         StrBreak::Iterator Begin{};
         StrBreak::Iterator End{};
@@ -55,7 +55,7 @@ public:
         std::string Location() const;
     };
 
-    struct APPBOOK_EXPORTS ConfigData
+    struct APPBOOK_API ConfigData
     {
         std::string_view View;
         std::string_view Delimiters;

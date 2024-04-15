@@ -20,7 +20,7 @@
 /*!
  *
  */
-struct APPBOOK_EXPORTS Color
+struct APPBOOK_API Color
 {
 enum Code : uint16_t
 {
@@ -282,7 +282,7 @@ enum Code : uint16_t
     /*255 */ Reset
 };
 
-struct APPBOOK_EXPORTS Pair
+struct APPBOOK_API Pair
 {
     Color::Code Fg = Color::White;
     Color::Code Bg = Color::Grey11;
@@ -294,7 +294,7 @@ struct APPBOOK_EXPORTS Pair
 
 };
 
-struct APPBOOK_EXPORTS Data
+struct APPBOOK_API Data
 {
     Color::Code Enum = Color::Reset;
     std::string_view ColorName = " ";
@@ -319,7 +319,7 @@ static std::string Html(Color::Code Clr);
 static std::string Html(Color::Pair Pair);
 static Color::Data Argb(Color::Code A);
 
-struct APPBOOK_EXPORTS Item
+struct APPBOOK_API Item
 {
     std::string Id;
     Color::Pair Data;
@@ -332,7 +332,7 @@ struct APPBOOK_EXPORTS Item
 };
 
 
-struct APPBOOK_EXPORTS Array
+struct APPBOOK_API Array
 {
     using Dictionary = std::unordered_map<std::string, Color::Array>;
 

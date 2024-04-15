@@ -35,7 +35,7 @@
  * \author &copy;2023, oldlonecoder
  */
 
-class APPBOOK_EXPORTS AppBook : public Util::Object {
+class APPBOOK_API AppBook : public Util::Object {
 
     std::ostream *out_stream{nullptr}; ///< Pointer to the address of the currently selected output stream.
     Color::Format _Format{Color::Format::ansi256};
@@ -43,7 +43,7 @@ class APPBOOK_EXPORTS AppBook : public Util::Object {
 
 public:
 
-    struct APPBOOK_EXPORTS ElementComponents
+    struct APPBOOK_API ElementComponents
     {
         uint16_t icon: 1;
         uint16_t filename: 1;
@@ -63,7 +63,7 @@ public:
     static AppBook::ElementComponents::Dictionary ComponentsHeaders;
 
 
-    struct APPBOOK_EXPORTS config_data
+    struct APPBOOK_API config_data
     {
         std::string Filename;
         [[maybe_unused]] Color::Format OutputFormat;
@@ -73,7 +73,7 @@ public:
     /*!
      * \brief The Section class
     */
-    struct APPBOOK_EXPORTS Section : public Object
+    struct APPBOOK_API Section : public Object
     {
 
     using Array = std::vector<AppBook::Section *>;
@@ -105,7 +105,7 @@ public:
     *
     *
     */
-    struct APPBOOK_EXPORTS Contents : public Object
+    struct APPBOOK_API Contents : public Object
     {
 
         std::ofstream OutputFile; ///< the Filename and path Location are implicitely set by the parent Section, this bloc ID and the ouput format.
@@ -123,7 +123,7 @@ public:
         std::string GetFilename();
 
 
-        struct APPBOOK_EXPORTS Element : public Object
+        struct APPBOOK_API Element : public Object
         {
             using Memory = std::vector<AppBook::Section::Contents::Element>;
             std::vector<std::string> InputComponents;
@@ -234,7 +234,7 @@ public:
 
     };
 
-    class APPBOOK_EXPORTS Exception :  public std::exception
+    class APPBOOK_API Exception :  public std::exception
     {
     public:
 

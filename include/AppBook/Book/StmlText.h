@@ -14,6 +14,8 @@
 #pragma once
 
 
+// Will be deleted.
+// Will be replaced by BookFmt lib.
 
 #include "AppBook/Utf/Glyphes.h"
 #include "AppBook/Util/StrAcc.h"
@@ -89,7 +91,7 @@ using std::string_view;
 
  */
 
-class APPBOOK_EXPORTS STMLText
+class APPBOOK_API STMLText
 {
     std::string _InputText;
     Color::Format _Format = Color::Format::ansi256;
@@ -129,7 +131,7 @@ public:
 
     void Clear();
 
-    struct APPBOOK_EXPORTS STMLToken
+    struct APPBOOK_API STMLToken
     {
         enum class Type : uint8_t
         {
@@ -225,7 +227,7 @@ public:
 
     };
 
-    struct APPBOOK_EXPORTS  STMLAttribute
+    struct APPBOOK_API  STMLAttribute
     {
         // ============ Indiquer c'est quoi qu'il faut lire!!!!!! ======================
         Color::Code FG  = Color::Black;

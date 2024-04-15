@@ -152,9 +152,9 @@ std::map<Code, std::pair<Glyph::Type, Color::Pair>> codes_database={
     {Code::Overflow  ,      {Glyph::DeadHead,        {Color::Red4              ,Color::Reset }}},
     {Code::Oob       ,      {Glyph::Alien,           {Color::Red4              ,Color::Reset }}},
     {Code::Reimplement,     {Glyph::Books,           {Color::Yellow            ,Color::Reset }}},
-    {Code::Done       ,     {Glyph::Success,         {Color::Yellow            ,Color::Reset }}},
-    {Code::Complete   ,     {Glyph::School,          {Color::Yellow            ,Color::Reset }}},
-    {Code::Finish     ,     {Glyph::CMarkCheck,      {Color::SpringGreen4      ,Color::Reset }}},
+    {Code::Done       ,     {Glyph::Ok,              {Color::Yellow            ,Color::Reset }}},
+    {Code::Complete   ,     {Glyph::Ok,              {Color::Yellow            ,Color::Reset }}},
+    {Code::Finish     ,     {Glyph::Ok,              {Color::Lime              ,Color::Reset }}},
 };
 
 

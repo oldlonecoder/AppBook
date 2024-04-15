@@ -22,7 +22,7 @@ namespace Utf
 {
 
 
-struct APPBOOK_EXPORTS Glyph
+struct APPBOOK_API Glyph
 {
 
     using T = const char*;
@@ -360,7 +360,7 @@ For anyone interested, here'Code the fixed version (I hope you don't mind, I'll 
 
 
 
-struct APPBOOK_EXPORTS AccentFR
+struct APPBOOK_API AccentFR
 {
     using T = const char*;
 
