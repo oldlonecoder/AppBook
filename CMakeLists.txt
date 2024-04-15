@@ -56,6 +56,8 @@ add_library(
     src/ConIO/Widget/Label.cxx
     include/AppBook/ConIO/Widget/Label.h
     src/ConIO/UiEnums.cxx
+    src/ConIO/Widget/Frame.cxx
+    include/AppBook/ConIO/Widget/Frame.h
 
 
 )
