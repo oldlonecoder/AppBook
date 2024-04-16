@@ -19,7 +19,7 @@ public:
 
 protected:
     Book::Result Setup() override;
-    Book::Action ConsoleWindowTest(Cmd::Switch &Arg);
+    Book::Action ConsoleUiTest(Cmd::Switch &Arg);
 public:
     Book::Result Run() override;
 
@@ -27,7 +27,7 @@ public:
 };
 
 
-Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
+Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
 {
     using Ui::Console;
     AppBook::Message() << " Args:";
@@ -68,7 +68,7 @@ Book::Result Application::Setup()
     ApplicationBase::Setup();
 
     //...
-    (Args << Cmd::Switch{"ConIO::Test",    "-w", "--WindowConsole","Test Book::ConIO::Window on ConIO...",0 }).Connect(this, &Application::ConsoleWindowTest);
+    (Args << Cmd::Switch{"ConIO::Test",    "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
 
     return ProcessArguments();
 }
