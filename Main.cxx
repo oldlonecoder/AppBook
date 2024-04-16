@@ -42,7 +42,7 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     Icon->SetColors({Color::Maroon, Color::Blue});
     Icon->SetPosition({1,1});
     Frame->SetGeometry(Dim{32,6});
-    Label->SetPosition({4,1});
+    Label->SetPosition({3,1});
     Frame->SetPosition({2,2});
     Frame->SetCaption("FrameCaption");
     Frame->Show();

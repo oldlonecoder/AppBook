@@ -34,7 +34,7 @@ AttrDB::Elements AttrDB::DB =
     },
     {"Caption",
         {
-            {State::Active, {Color::GreenYellow,Color::Blue}},
+            {State::Active, {Color::Grey78,Color::Blue}},
             {State::Normal, {Color::DarkCyan,Color::Blue}},
         //...
         }

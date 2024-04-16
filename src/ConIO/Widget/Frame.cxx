@@ -67,14 +67,20 @@ Result Frame::Render(Rect)
             if(FrComp->Class & WClass::Caption)
             {
                 Utf::Cadre Cadre;
+                Model = Cadre.Model;
+                Cadre.Model = {2,1,0,1,0};
+                Cadre = Cadre.Model;
                 Point ScreenXY = FrComp->GetScreenXY();
                 Console::GotoXY(ScreenXY - Point{1,0});
                 Console::SetColors(AttrDB::DB["Frame"][State::Active]); // Arbitrary "State" because ...There is nos States yet! lol
                 Console::Write(Cadre[Utf::Cadre::VerticalTowardsLeft]);
                 ScreenXY += {FrComp->Width()+1,0};
                 Console::GotoXY(ScreenXY- Point{1,0});
-                Console::Write(Cadre[Utf::Cadre::VerticalTowardsRight]);            }
+                Console::Write(Cadre[Utf::Cadre::VerticalTowardsRight]);
+                Cadre = Model;
+            }
                 FrComp->Render({});
+
         }
     }
     return Result::Done;
