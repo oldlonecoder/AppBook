@@ -27,15 +27,15 @@ namespace Book::Ui
 struct APPBOOK_API Label: Element
 {
 
-    Icon* LeftIcon{nullptr};
-    Icon* RightIcon{nullptr};
+//    Icon* LeftIcon{nullptr};
+//    Icon* RightIcon{nullptr};
 
     StrAcc Text{};
     Label(Object* ParentObj, const std::string& LblText);
     ~Label() override;
 
     void Show() override;
-    void SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C);
+    //void SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C);
     void SetText(const std::string& NewText);
 
     virtual Result Render(Rect SubR) override;

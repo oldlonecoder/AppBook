@@ -38,6 +38,7 @@ struct APPBOOK_API Frame : public Element
 private:
     Label* CaptionLabel{nullptr};
 
+
 public:
     Frame();
     Frame(Object *parentObj, const std::string &uid, WClass::Type cc);
@@ -47,11 +48,7 @@ public:
     Utf::Cadre::FrameMat Model{2,2,2,2,0};
     virtual void Show() override;
     virtual Result Render(Rect SubR) override;
-
-
     void SetCaption(const std::string& CaptionText);
-
-    void SetIcon(Utf::Glyph::Type Ic);
 };
 
 } // Book::Ui

@@ -30,8 +30,6 @@ namespace Book::Ui
 Icon::Icon(Util::Object *ParentObj): Element(ParentObj, Utf::Glyph::Data[Utf::Glyph::Debian], WClass::Glyph)
 {
     std::string strid = "{ " + Id() +" }" + " Glyph Group";
-    Class &= ~WClass::Element; // Prevent implicit Element "auto-Render"
-
     SetId(strid);
     SetGeometry({1,1});
     // Override Element's ColorPair
@@ -51,6 +49,7 @@ std::string Icon::operator()()
 
 Result Icon::Render(Rect SubR)
 {
+    Debug();
     if(auto [b,IcStr] = Bloc[0].Graphen(); b)
     {
         Console::GotoXY(GetScreenXY());
@@ -67,7 +66,8 @@ void Icon::Show()
 //    auto Cp = Char(Attr).Colors();
 //    Debug() << " Colors: {" << Color::Name(Cp.Fg) << ", " << Color::Name(Cp.Bg) << "}";
 
-    *Bloc = Attr;
+    Clear();
+
     Bloc->SetGlyph(Ic);
 }
 

@@ -37,13 +37,14 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
 
     auto *Frame = new Ui::Frame((Util::Object*)nullptr, "The First Ui::Frame", Ui::WClass::TopLevel);
     auto *Label   = new Ui::Label(Frame,"It's Debian, Sir.");
-    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Maroon,Color::Blue});
+    auto *Icon    = new Ui::Icon(Frame);
+    *Icon = Utf::Glyph::Debian;
+    Icon->SetColors({Color::Maroon, Color::Blue});
+    Icon->SetPosition({1,1});
     Frame->SetGeometry(Dim{32,6});
-    Label->SetPosition({1,1});
-
+    Label->SetPosition({4,1});
     Frame->SetPosition({2,2});
     Frame->SetCaption("FrameCaption");
-    Frame->SetIcon(Utf::Glyph::Admin);
     Frame->Show();
     Frame->Render({});
     Frame->Dispose();

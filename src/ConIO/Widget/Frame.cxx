@@ -95,20 +95,12 @@ void Frame::SetCaption(const std::string &CaptionText)
     auto Cap = new Label(this, CaptionText);
     Cap->Class = WClass::FrameComponent|WClass::Caption;
     ///@todo Implement positioning policies...
-    Cap->SetPosition({Width() - Cap->Width()-5,0}); ///< Arbitrary right-justified position
+    Cap->SetPosition({Width() - Cap->Width()-2,0}); ///< Arbitrary right-justified position
     Cap->Attr = Char(Attr).SetBgFg(AttrDB::DB["Caption"][State::Active]).M;
+    Cap->Attr |= Char::Underline;
     CaptionLabel = Cap;
 }
 
-void Frame::SetIcon(Utf::Glyph::Type Ic)
-{
-    if(!CaptionLabel)
-    {
-        SetCaption(" ");
-    }
-    CaptionLabel->SetLeftGlyph(Ic, {Color::DarkBlue,Color::Blue});//AttrDB::DB["Icon"][State::Active]);
-
-}
 
 
 } // Book::Ui
