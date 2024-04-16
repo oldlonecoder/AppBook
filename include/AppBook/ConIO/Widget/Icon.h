@@ -19,14 +19,14 @@
 
 #pragma once
 
-#include "AppBook/ConIO/UiElement.h"
+#include "AppBook/ConIO/Element.h"
 
 
 
 namespace Book::Ui
 {
 
-struct APPBOOK_API Icon : UiElement
+struct APPBOOK_API Icon : Element
 {
     Utf::Glyph::Type Ic{Utf::Glyph::DeadHead};
 
@@ -37,6 +37,8 @@ struct APPBOOK_API Icon : UiElement
     //...
     std::string operator ()();
 
+    void Show() override;
+    Result Render(Rect SubR) override;
 
 };
 

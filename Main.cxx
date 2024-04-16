@@ -4,6 +4,8 @@
 
 #include <AppBook/Book/ApplicationBase.h>
 #include <AppBook/ConIO/Widget/Label.h>
+#include <AppBook/ConIO/Widget/Frame.h>
+
 namespace Book
 {
 
@@ -33,18 +35,21 @@ Book::Action Application::ConsoleWindowTest(Cmd::Switch &arg)
         AppBook::Out() << A;
     }
 
-    auto *Element = new Ui::UiElement((Util::Object*)nullptr, "First UI Element", Ui::WClass::Frame);
-    auto *Label   = new Ui::Label(Element,"It's Debian, Sir.");
-    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Maroon,Color::DarkBlue});
-    Element->SetGeometry(Dim{22,3});
+    auto *Frame = new Ui::Frame((Util::Object*)nullptr, "The First Ui::Frame", Ui::WClass::TopLevel);
+    auto *Label   = new Ui::Label(Frame,"It's Debian, Sir.");
+    Label->SetLeftGlyph(Utf::Glyph::Debian, {Color::Maroon,Color::Blue});
+    Frame->SetGeometry(Dim{32,6});
     Label->SetPosition({1,1});
 
-    Element->SetPosition({2,2});
-    Element->Show();
-    Element->Render();
-    Element->Dispose();
-    Console::GotoXY({1,6});
-    Ui::UiElement::PurgeGc();
+    Frame->SetPosition({2,2});
+    Frame->SetCaption("FrameCaption");
+    Frame->SetIcon(Utf::Glyph::Admin);
+    Frame->Show();
+    Frame->Render({});
+    Frame->Dispose();
+    Console::GotoXY({1,12});
+    Console::SetForegroundColor(Color::Reset);
+    Ui::Element::PurgeGc();
     return Book::Action::Continue;
 }
 
@@ -60,7 +65,6 @@ Book::Result Application::Run()
 Book::Result Application::Setup()
 {
     ApplicationBase::Setup();
-
 
     //...
     (Args << Cmd::Switch{"ConIO::Test",    "-w", "--WindowConsole","Test Book::ConIO::Window on ConIO...",0 }).Connect(this, &Application::ConsoleWindowTest);

@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-#include "AppBook/ConIO/UiElement.h"
+#include "AppBook/ConIO/Element.h"
 #include <AppBook/Utf/Cadres.h>
 #include <AppBook/ConIO/Widget/Icon.h>
 
@@ -30,10 +30,10 @@ namespace Book::Ui
 
 
 
-Util::Object::Array UiElement::Gc{};
+Util::Object::Array Console::Gc{};
 
 
-UiElement::~UiElement()
+Element::~Element()
 {
     delete [] Bloc;
     Bloc = nullptr;
@@ -43,7 +43,7 @@ UiElement::~UiElement()
     Book::Debug()  << Msg << Book::Result::Done;
 }
 
-UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass::Type CC): Util::Object(ParentObj, UID),Class(CC|Ui::WClass::Element)
+Element::Element(Util::Object *ParentObj, const std::string &UID, Ui::WClass::Type CC): Util::Object(ParentObj, UID),Class(CC | Ui::WClass::Element)
 {
     Attr = Char(Attr).SetBgFg(AttrDB::DB["Element"][State::Active]).M;
 }
@@ -51,16 +51,16 @@ UiElement::UiElement(Util::Object *ParentObj, const std::string &UID, Ui::WClass
 
 
 
-UiElement::UiElement(Book::Ui::UiElement *ParentObj, const std::string &UID, Ui::WClass::Type CC):Util::Object(ParentObj, UID),Class(CC | Ui::WClass::Element){}
+Element::Element(Book::Ui::Element *ParentObj, const std::string &UID, Ui::WClass::Type CC):Util::Object(ParentObj, UID),Class(CC | Ui::WClass::Element){}
 
-void UiElement::SetGeometry(const Dim& Geo)
+void Element::SetGeometry(const Dim& Geo)
 {
     R = {Point{0,0},Geo};
     Resize();
 }
 
 
-Book::Result UiElement::Alloc()
+size_t Element::Alloc()
 {
     //if(Bloc)
     delete [] Bloc;
@@ -68,54 +68,54 @@ Book::Result UiElement::Alloc()
     Char::Ptr C = Bloc;
     EndBloc = Bloc + R.Dwh.Area();
     for(;C < EndBloc; C++) C->M = Attr;
-    return Result::Ok;
+    return R.Dwh.Area()+R.Width();
 }
 
-Book::Result UiElement::Resize()
+size_t Element::Resize()
 {
     return Alloc();
 }
 
-size_t UiElement::GcPush(UiElement* E)
+size_t Console::GcPush(Element* E)
 {
-    for(auto* El : UiElement::Gc) if(E == El) return 0;
+    for(auto* El : Console::Gc) if(E == El) return 0;
     //E->Detach();
-    UiElement::Gc.push_back(E);
-    return UiElement::Gc.size();
+    Console::Gc.push_back(E);
+    return Console::Gc.size();
 }
 
-size_t UiElement::PurgeGc()
+size_t Element::PurgeGc()
 {
-    auto Sz = UiElement::Gc.size();
-    for(auto* El: UiElement::Gc) delete El;
+    auto Sz = Console::Gc.size();
+    for(auto* El: Console::Gc) delete El;
     return Sz;
 }
 
-Book::Result UiElement::Dispose()
+Book::Result Element::Dispose()
 {
-    UiElement::GcPush(this);
-    for(auto Child : ChildrenOfType<UiElement>()) Child->Dispose();
+    Console::GcPush(this);
+    for(auto Child : ChildrenOfType<Element>()) Child->Dispose();
     return Result::Ok;
 }
 
-void UiElement::SetPosition(Point XY)
+void Element::SetPosition(Point XY)
 {
     PosXY = XY;
 }
 
 
-Book::Result UiElement::GotoXY(const Point &XY)
+Book::Result Element::GotoXY(const Point &XY)
 {
     if(!R.GotoXY(XY)) return Book::Result::Rejected;
     return Result::Accepted;
 }
 
-void UiElement::PutGlyph(Utf::Glyph::Type G)
+void Element::PutGlyph(Utf::Glyph::Type G)
 {
     if(Char::Ptr P = At(); P) P->SetGlyph(G) | Attr;
 }
 
-Book::Result UiElement::WriteStr(const std::string &Txt)
+Book::Result Element::WriteStr(const std::string &Txt)
 {
     Char::Ptr P = At();
     for(auto C: Txt)
@@ -127,7 +127,7 @@ Book::Result UiElement::WriteStr(const std::string &Txt)
     return Result::Ok;
 }
 
-Char::Ptr UiElement::At(const Point &XY) const
+Char::Ptr Element::At(const Point &XY) const
 {
     Point CXY;
     if(!R[XY])
@@ -143,7 +143,7 @@ Char::Ptr UiElement::At(const Point &XY) const
     return Bloc + R.Width() * CXY.Y + CXY.X;
 }
 
-void UiElement::SetFgColor(Color::Code C)
+void Element::SetFgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
     //At()->SetFg(C);
@@ -151,20 +151,20 @@ void UiElement::SetFgColor(Color::Code C)
 }
 
 
-void UiElement::SetBgColor(Color::Code C)
+void Element::SetBgColor(Color::Code C)
 {
     if(!R[R.Cursor]) return;
     //At()->SetBg(C);
     Attr = Char(Attr).SetBg(C).M;
 }
 
-void UiElement::SetColors(Color::Pair Cp)
+void Element::SetColors(Color::Pair Cp)
 {
     SetBgColor(Cp.Bg);
     SetFgColor(Cp.Fg);
 }
 
-void UiElement::Clear() const
+void Element::Clear() const
 {
     for(Char::Ptr P = Bloc; P <= EndBloc; P++) P->M = Attr | 0x20;
 }
@@ -173,67 +173,89 @@ void UiElement::Clear() const
 
 
 // Mostly for Frame Drawing/ Drawing on and around the Frame.
-void UiElement::TopLeft()
+void Element::TopLeft()
 {
     R.GotoXY(R.A);
 }
 
-void UiElement::TopRight()
+void Element::TopRight()
 {
     R.GotoXY({R.B.X, R.A.Y});
 }
 
-void UiElement::Top()
+void Element::Top()
 {
     R.GotoXY({R.Cursor.X,R.A.Y});
 }
 
-void UiElement::Bottom()
+void Element::Bottom()
 {
     R.GotoXY({R.Cursor.X,R.B.Y});
 }
 
-void UiElement::BottomLeft()
+void Element::BottomLeft()
 {
     R.GotoXY({R.A.X,R.B.Y});
 }
 
-void UiElement::BottomRight()
+void Element::BottomRight()
 {
     R.GotoXY(R.B);
 }
 
-void UiElement::Show()
+void Element::Show()
 {
     //...
     Clear();
-    for(auto Child: ChildrenOfType<UiElement>()) Child->Show();
+    for(auto Child: ChildrenOfType<Element>()) Child->Show();
     //...
 }
 
-Book::Result UiElement::Render(Rect SubR)
+Book::Result Element::Render(Rect SubR)
 {
 
     Console::RenderElement(this,SubR);
-    auto ChildrenEl = ChildrenOfType<UiElement>();
+    auto ChildrenEl = ChildrenOfType<Element>();
 
     for(auto Child : ChildrenEl)
     {
-        Child->Render();
+        if(Child->Class & WClass::Element)
+            Child->Render({});
     }
     return Result::Done;
 }
 
-Point UiElement::GetScreenXY()
+Point Element::GetScreenXY()
 {
     Point XY = PosXY;
-    auto ParentUI = Parent<UiElement>();
+    auto ParentUI = Parent<Element>();
     while(ParentUI)
     {
         XY += ParentUI->PosXY;
-        ParentUI = ParentUI->Parent<UiElement>();
+        ParentUI = ParentUI->Parent<Element>();
     }
     return XY;
+}
+
+Element::Array Element::QueryTypes(WClass::Type Types)
+{
+    Array List{};
+    for(auto El: ChildrenOfType<Element>())
+        if(El->Class == Types) List.emplace_back(El); // Strict comparison !
+    if(List.empty())
+        Message() << " No such children of type " << static_cast<int>(Types);
+    //...
+    return List;
+}
+
+int Element::Width()
+{
+    return R.Width(); // For now...
+}
+
+int Element::Height()
+{
+    return R.Height(); //...
 }
 
 
@@ -312,7 +334,7 @@ void Console::Home()
  * @return Always return Book::Result::Done;
  * @note Attention: Actually developing and experimenting this Console code... There is nothing about Rectangle managements ( Clipping/intersection/visibility...etc...) !!
  */
-Book::Result Console::RenderElement(UiElement *El, Rect)
+Book::Result Console::RenderElement(Element *El, Rect)
 {
     auto ScreenXY = El->GetScreenXY();
     GotoXY(ScreenXY /* + SubR.A */);
@@ -358,9 +380,9 @@ Book::Result Console::RenderElement(UiElement *El, Rect)
         write(1,"\x1b[0m", 4);
 
     }
-    if(El->Class & Ui::WClass::Frame)
-        Console::DrawFrame(El);
-    else
+//    if(El->Class & Ui::WClass::Frame)
+//        Console::DrawFrame(El);
+    //else
     if(El->Class & WClass::Glyph)
     {
         Console::SetColors(El->Attr);
@@ -404,7 +426,7 @@ size_t Console::Write(const std::string &Text, bool isGlyph)
     return 0;
 }
 
-void Console::DrawFrame(UiElement *El)
+void Console::DrawFrame(Element *El)
 {
     Utf::Cadre Cadre;
     auto ScreenXY = El->GetScreenXY();

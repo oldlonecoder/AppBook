@@ -243,6 +243,11 @@ Color::Pair Char::Colors(Char::Type E)
     return {F,B};
 }
 
+Color::Pair Char::Colors()
+{
+    return Colors(M);
+}
+
 
 } // Book::ConIO
 

@@ -2,8 +2,8 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-//#ifndef APPBOOK_UIELEMENT_H
-//#define APPBOOK_UIELEMENT_H
+//#ifndef APPBOOK_ELEMENT_H
+//#define APPBOOK_ELEMENT_H
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -31,7 +31,7 @@ namespace Book::Ui
 {
 
 
-struct APPBOOK_API UiElement : public Util::Object
+struct APPBOOK_API Element : public Util::Object
 {
     Char::Bloc Bloc{nullptr};
     Rect R{};
@@ -45,11 +45,11 @@ struct APPBOOK_API UiElement : public Util::Object
     WClass::Type Class{Ui::WClass::Element};
     State::Type  St{State::Normal};
 
-    UiElement() = default;
-    ~UiElement() override;
+    Element() = default;
+    ~Element() override;
 
-    explicit UiElement(Util::Object* ParentObj, const std::string& UID,      Ui::WClass::Type CC = Ui::WClass::Element);
-    UiElement(Book::Ui::UiElement* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
+    explicit Element(Util::Object* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
+    Element(Book::Ui::Element* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
 
     void SetGeometry(const Dim& Geo);
     Book::Result Dispose();
@@ -72,19 +72,17 @@ struct APPBOOK_API UiElement : public Util::Object
     void BottomRight();
     virtual void Show();
     Point GetScreenXY();
-
+    int Width();
+    int Height();
+    Element::Array QueryTypes(WClass::Type Types);
 #pragma endregion Drawings
 
     void SetPosition(Point XY);
-    Book::Result Render(Rect SubR={});
+    virtual Book::Result Render(Rect SubR);
 protected:
 
-    Book::Result Alloc();
-    Book::Result Resize();
-    static Util::Object::Array Gc;
-    static size_t GcPush(UiElement* E);
-
-
+    size_t Alloc();
+    size_t Resize();
 };
 
 
@@ -97,20 +95,21 @@ struct Console
     static Book::Result GotoXY(const Point &XY);
     static void Home();
 
-    static Book::Result RenderElement(UiElement* El, Rect /*SubR*/);
+    static Book::Result RenderElement(Element* El, Rect /*SubR*/);
     static void SetBackgroundColor(Color::Code Color);
     static void SetForegroundColor(Color::Code Color);
     static size_t Write(const  std::string& Text, bool isGlyph=false);
-    static void DrawFrame(UiElement* El);
+    static void DrawFrame(Element* El);
     static void UseColors(Char* E);
     static void SetColors(Char::Type E);
     static void SetColors(Color::Pair Cp);
     static void SetUnderline(bool U);
-
+    static Util::Object::Array Gc;
+    static size_t GcPush(Element* E);
 };
 
 
 
 } // Book::ConIO
 
-//#endif //APPBOOK_UIELEMENT_H
+//#endif //APPBOOK_ELEMENT_H

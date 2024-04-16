@@ -24,7 +24,7 @@
 namespace Book::Ui
 {
 
-struct APPBOOK_API Label: UiElement
+struct APPBOOK_API Label: Element
 {
 
     Icon* LeftIcon{nullptr};
@@ -38,6 +38,7 @@ struct APPBOOK_API Label: UiElement
     void SetLeftGlyph(Utf::Glyph::Type G, Color::Pair C);
     void SetText(const std::string& NewText);
 
+    virtual Result Render(Rect SubR) override;
 };
 
 } // Book::Ui

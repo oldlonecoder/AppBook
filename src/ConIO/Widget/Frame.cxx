@@ -33,12 +33,12 @@ Frame::Frame()
 
 
 
-Frame::Frame(Util::Object *parentObj, const std::string &uid, WClass::Type cc) : UiElement(parentObj, uid, cc)
+Frame::Frame(Util::Object *parentObj, const std::string &uid, WClass::Type cc) : Element(parentObj, uid, cc | WClass::Frame)
 {
     Attr = Char(Attr).SetBgFg(AttrDB::DB["Frame"][State::Active]).M;
 }
 
-Frame::Frame(UiElement *parentObj, const std::string &uid, WClass::Type cc) : UiElement(parentObj, uid, cc)
+Frame::Frame(Element *parentObj, const std::string &uid, WClass::Type cc) : Element(parentObj, uid, cc | WClass::Frame)
 {
     Attr = Char(Attr).SetBgFg(AttrDB::DB["Frame"][State::Active]).M;
 }
@@ -49,6 +49,66 @@ Frame::~Frame()
 
 void Frame::Show()
 {
-    UiElement::Show();
+    Element::Show();
+
 }
+
+Result Frame::Render(Rect)
+{
+    Element::Render({});
+    Console::DrawFrame(this);
+    //... Then our children elements that draws on our frame.
+    auto List = QueryTypes(WClass::FrameComponent|WClass::Caption/*...more to come*/);
+    if(!List.empty())
+    {
+        for (auto O: List)
+        {
+            auto FrComp = O->As<Element>();
+            if(FrComp->Class & WClass::Caption)
+            {
+                Utf::Cadre Cadre;
+                Point ScreenXY = FrComp->GetScreenXY();
+                Console::GotoXY(ScreenXY - Point{1,0});
+                Console::SetColors(AttrDB::DB["Frame"][State::Active]); // Arbitrary "State" because ...There is nos States yet! lol
+                Console::Write(Cadre[Utf::Cadre::VerticalTowardsLeft]);
+                ScreenXY += {FrComp->Width()+1,0};
+                Console::GotoXY(ScreenXY- Point{1,0});
+                Console::Write(Cadre[Utf::Cadre::VerticalTowardsRight]);            }
+                FrComp->Render({});
+        }
+    }
+    return Result::Done;
+}
+
+void Frame::SetCaption(const std::string &CaptionText)
+{
+    if(CaptionText.empty()){;}
+    auto List = QueryTypes(WClass::Caption|WClass::FrameComponent);
+    if(!List.empty())
+    {
+        auto CapObj = List[0]->As<Label>(); // Ignore all other  Captions - in fact there is one and only one caption on a frame.
+                                                        // All other text container elements are different ...derived element type
+        if(CapObj)
+            CapObj->Text = CaptionText;
+        return ;
+    }
+    auto Cap = new Label(this, CaptionText);
+    Cap->Class = WClass::FrameComponent|WClass::Caption;
+    ///@todo Implement positioning policies...
+    Cap->SetPosition({Width() - Cap->Width()-5,0}); ///< Arbitrary right-justified position
+    Cap->Attr = Char(Attr).SetBgFg(AttrDB::DB["Caption"][State::Active]).M;
+    CaptionLabel = Cap;
+}
+
+void Frame::SetIcon(Utf::Glyph::Type Ic)
+{
+    if(!CaptionLabel)
+    {
+        SetCaption(" ");
+    }
+    CaptionLabel->SetLeftGlyph(Ic, {Color::DarkBlue,Color::Blue});//AttrDB::DB["Icon"][State::Active]);
+
+}
+
+
 } // Book::Ui

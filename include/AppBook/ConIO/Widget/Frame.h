@@ -18,12 +18,12 @@
 
 
 #pragma once
-#include <AppBook/ConIO/UiElement.h>
+#include <AppBook/ConIO/Widget/Label.h>
+#include <AppBook/Utf/Cadres.h>
 
 
 namespace Book::Ui
 {
-
 
 
 /*!
@@ -32,15 +32,26 @@ namespace Book::Ui
  * @author  &copy; 2024, Serge Lussier ( oldlonecoder@oldlonecoder.club )
  *
  */
-struct APPBOOK_API Frame : public UiElement
+struct APPBOOK_API Frame : public Element
 {
+
+private:
+    Label* CaptionLabel{nullptr};
+
+public:
     Frame();
     Frame(Object *parentObj, const std::string &uid, WClass::Type cc);
-    Frame(UiElement *parentObj, const std::string &uid, WClass::Type cc);
+    Frame(Element *parentObj, const std::string &uid, WClass::Type cc);
     ~Frame() override;
 
+    Utf::Cadre::FrameMat Model{2,2,2,2,0};
     virtual void Show() override;
+    virtual Result Render(Rect SubR) override;
 
+
+    void SetCaption(const std::string& CaptionText);
+
+    void SetIcon(Utf::Glyph::Type Ic);
 };
 
 } // Book::Ui

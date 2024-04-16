@@ -34,11 +34,11 @@ Label::~Label()
     Text.Clear();
 }
 
-Label::Label(Util::Object *ParentObj, const std::string &LblText) : UiElement(ParentObj, "Ui Label Group"),
+Label::Label(Util::Object *ParentObj, const std::string &LblText) : Element(ParentObj, "Ui Label Group"),
 Text(LblText)
 {
 
-    auto W= Text.Len();
+    auto W= Text.Len()+4;
     SetGeometry(Dim(static_cast<int>(W), 1));
 
 }
@@ -47,21 +47,20 @@ Text(LblText)
 void Label::Show()
 {
     Book::Debug() << Text() ;
-    Clear();
-
+    Element::Show();
     GotoXY({2,0});
     WriteStr(Text());
 
 }
 
-void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair)
+void Label::SetLeftGlyph(Utf::Glyph::Type G, Color::Pair Cp)
 {
     LeftIcon = new Icon(this);
     *LeftIcon = G;
-    //LeftIcon->SetColors(C);
+    LeftIcon->SetColors(Cp);
     auto W= Text.Len();
     SetGeometry(Dim(static_cast<int>(W)+2, 1));
-    LeftIcon->SetPosition({1,0});
+    LeftIcon->SetPosition({0,0});
 }
 
 void Label::SetText(const std::string &NewText)
@@ -70,6 +69,16 @@ void Label::SetText(const std::string &NewText)
     auto W= Text.Len();
     SetGeometry(Dim(static_cast<int>(W), 1));
 
+}
+
+Result Label::Render(Rect SubR)
+{
+    Element::Render({});
+    Book::Debug() << " Check if LeftIcon :";
+    if(LeftIcon)
+        return LeftIcon->Render({});
+    //...
+    return Result::Done;
 }
 
 

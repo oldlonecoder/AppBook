@@ -104,6 +104,7 @@ struct APPBOOK_API Char
     std::pair<bool, std::string> FrameChar() const;
     std::pair<bool, std::string> AccentFlag() const;
     Color::Pair  Colors(Char::Type E);
+    Color::Pair  Colors();
 
 };
 
