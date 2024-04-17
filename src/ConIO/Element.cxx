@@ -214,7 +214,7 @@ void Element::Show()
 Book::Result Element::Render(Rect SubR)
 {
 
-    Console::RenderElement(this,SubR);
+    Console::RenderElement(this);
     auto ChildrenEl = ChildrenOfType<Element>();
 
     for(auto Child : ChildrenEl)
@@ -332,12 +332,14 @@ void Console::Home()
  * @brief Render Ui Element on console screen
  * @param El
  * @return Always return Book::Result::Done;
- * @note Attention: Actually developing and experimenting this Console code... There is nothing about Rectangle managements ( Clipping/intersection/visibility...etc...) !!
+ * @note This version does not invalidate nor execute Rectangle:Intersection operations to adjust those dimensions because
+ *       it is completely two different things. This Book::Ui version is NOT a CUI Window/Ui Manager.
+ *
  */
-Book::Result Console::RenderElement(Element *El, Rect)
+Book::Result Console::RenderElement(Element *El)
 {
     auto ScreenXY = El->GetScreenXY();
-    GotoXY(ScreenXY /* + SubR.A */);
+    GotoXY(ScreenXY);
     El->R.Home();
     auto PrevCell = &El->Bloc[0];
     Console::UseColors(PrevCell);
@@ -389,9 +391,34 @@ Book::Result Console::RenderElement(Element *El, Rect)
         Console::GotoXY(ScreenXY);
         Write(Utf::Glyph::Data[El->As<Ui::Icon>()->Ic],true);
     }
+    // Terminate and reset colors and other attributes to not explode them in between the next modifications.
     std::cout << "\x1b[0m";
     return Result::Done;
 }
+
+
+Book::Result Console::RenderElement(Element *El, Rect SubRect)
+{
+    // Setup Local and Screen console geometry :
+    // Start with the Element itself:
+    auto ScreenRect = Rect(SubRect + El->GetScreenXY());
+    // Offset SubRect from ScreenRect:
+    auto ScreenSubRect = ScreenRect + SubRect;
+    // Then Clip ( get intersection ) with the ScreenRect
+    auto Screen = ScreenRect / ScreenSubRect;
+    if(!Screen) return Result::Rejected; // SubRegion and/or Element geometry are not "visible".
+    // Re-adjust Local geometry:
+
+    //...Then before trying to output the stuff, let's see the values:
+
+
+    return Result::Done;
+}
+
+
+
+
+
 
 
 void Console::SetBackgroundColor(Color::Code Color)
@@ -497,6 +524,7 @@ void Console::SetColors(Color::Pair Cp)
     write(1,Text.c_str(), Text.length());
 
 }
+
 
 
 } // Book::ConIO
