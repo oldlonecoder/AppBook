@@ -58,6 +58,8 @@ add_library(
     src/ConIO/UiEnums.cxx
     src/ConIO/Widget/Frame.cxx
     include/AppBook/ConIO/Widget/Frame.h
+    src/ConIO/Widget/InputField.cxx
+    include/AppBook/ConIO/Widget/InputField.h
 
 
 )

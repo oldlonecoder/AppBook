@@ -38,6 +38,7 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     auto *Frame = new Ui::Frame((Util::Object*)nullptr, "The First Ui::Frame", Ui::WClass::TopLevel);
     auto *Label   = new Ui::Label(Frame,"It's Debian, Sir.");
     auto *Icon    = new Ui::Icon(Frame);
+
     *Icon = Utf::Glyph::Debian;
     Icon->SetColors({Color::Maroon, Color::Blue});
     Icon->SetPosition({3,2});
