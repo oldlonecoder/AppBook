@@ -417,10 +417,6 @@ Book::Result Console::RenderElement(Element *El, Rect SubRect)
 
 
 
-
-
-
-
 void Console::SetBackgroundColor(Color::Code Color)
 {
     auto Acc = Color::AnsiBg(Color);
@@ -443,7 +439,8 @@ void Console::SetForegroundColor(Color::Code Color)
  */
 size_t Console::Write(const std::string &Text, bool isGlyph)
 {
-    auto sz = write(1, Text.c_str(), Text.length());
+    auto sz = Text.length();
+    write(1, Text.c_str(), sz);
     if(isGlyph)
     {
         Cursor.X++;

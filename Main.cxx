@@ -40,11 +40,11 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     auto *Icon    = new Ui::Icon(Frame);
     *Icon = Utf::Glyph::Debian;
     Icon->SetColors({Color::Maroon, Color::Blue});
-    Icon->SetPosition({1,1});
-    Frame->SetGeometry(Dim{32,6});
-    Label->SetPosition({3,1});
+    Icon->SetPosition({3,2});
+    Frame->SetGeometry(Dim{42,5});
+    Label->SetPosition({5,2});
     Frame->SetPosition({2,2});
-    Frame->SetCaption("FrameCaption");
+    Frame->SetCaption(Frame->Id());
     Frame->Show();
     Frame->Render({});
     Frame->Dispose();
@@ -68,7 +68,7 @@ Book::Result Application::Setup()
     ApplicationBase::Setup();
 
     //...
-    (Args << Cmd::Switch{"ConIO::Test",    "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
+    (Args << Cmd::Switch{"ConIO::Test", "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
 
     return ProcessArguments();
 }
