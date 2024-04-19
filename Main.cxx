@@ -69,7 +69,7 @@ Book::Result Application::Setup()
     ApplicationBase::Setup();
 
     //...
-    (Args << Cmd::Switch{"ConIO::Test", "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
+    (Args << Cmd::Switch{"Ui::Test", "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
 
     return ProcessArguments();
 }

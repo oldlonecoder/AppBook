@@ -20,7 +20,7 @@
  ******************************************************************************************/
 
 #pragma once
-#include <AppBook/ConIO/UiEnums.h>
+#include <AppBook/Ui/UiEnums.h>
 #include <AppBook/Utf/Cadres.h>
 
 
@@ -108,6 +108,6 @@ struct APPBOOK_API Char
 
 };
 
-} // Book::ConIO
+} // Book::Ui
 
 //#endif //APPBOOK_CHAR_H

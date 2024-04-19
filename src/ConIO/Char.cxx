@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-#include "AppBook/ConIO/Char.h"
+#include "AppBook/Ui/Char.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -249,5 +249,5 @@ Color::Pair Char::Colors()
 }
 
 
-} // Book::ConIO
+} // Book::Ui
 

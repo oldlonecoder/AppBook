@@ -2,9 +2,9 @@
 // Created by oldlonecoder on 24-04-12.
 //
 
-#include "AppBook/ConIO/Element.h"
+#include "AppBook/Ui/Element.h"
 #include <AppBook/Utf/Cadres.h>
-#include <AppBook/ConIO/Widget/Icon.h>
+#include <AppBook/Ui/Widget/Icon.h>
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -524,5 +524,5 @@ void Console::SetColors(Color::Pair Cp)
 
 
 
-} // Book::ConIO
+} // Book::Ui
 

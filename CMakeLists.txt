@@ -46,20 +46,20 @@ add_library(
     include/AppBook/Util/Delegate.h src/Util/Delegate.cc
     include/AppBook/Util/CArgs.h src/Util/CArgs.cc
     include/AppBook/Book/Expect.h
-    include/AppBook/ConIO/UiEnums.h
+    include/AppBook/Ui/UiEnums.h
     include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
     include/AppBook/Book/ApplicationBase.h src/Book/ApplicationBase.cxx
     include/AppBook/Utf/Cadres.h src/Utf/Cadres.cxx
-    include/AppBook/ConIO/Char.h src/ConIO/Char.cxx
-    include/AppBook/ConIO/Element.h src/ConIO/Element.cxx
-    include/AppBook/ConIO/Widget/Icon.h src/ConIO/Widget/Icon.cxx
+    include/AppBook/Ui/Char.h src/ConIO/Char.cxx
+    include/AppBook/Ui/Element.h src/ConIO/Element.cxx
+    include/AppBook/Ui/Widget/Icon.h src/ConIO/Widget/Icon.cxx
     src/ConIO/Widget/Label.cxx
-    include/AppBook/ConIO/Widget/Label.h
+    include/AppBook/Ui/Widget/Label.h
     src/ConIO/UiEnums.cxx
     src/ConIO/Widget/Frame.cxx
-    include/AppBook/ConIO/Widget/Frame.h
+    include/AppBook/Ui/Widget/Frame.h
     src/ConIO/Widget/InputField.cxx
-    include/AppBook/ConIO/Widget/InputField.h
+    include/AppBook/Ui/Widget/InputField.h
 
 
 )

@@ -54,7 +54,7 @@ Book::Result DevApp::SetupArgs()
     (Args << Cmd::Switch{"StrBreak test",  "-w", "--Break","Test Book::StrBreak", 1 }).Connect(this, &DevApp::StrBreakTest);
     (Args << Cmd::Switch{"Test TScanner",  "-s",  "--TScanner", "Test TScanner", 0 }).Connect(this, &DevApp::SVScanTest);
     (Args << Cmd::Switch{"Dummy test",     "-d", "--Dummy", "Dummy[test]",0 }).Connect(this, &DevApp::DummyTest);
-    (Args << Cmd::Switch{"CWindow test",   "-n", "--ConsoleWindow", "ConIO/CWindow and Utf::Cadre tests",0 }).Connect(this, &DevApp::ConsoleWindowTest);
+    (Args << Cmd::Switch{"CWindow test",   "-n", "--ConsoleWindow", "Ui/CWindow and Utf::Cadre tests",0 }).Connect(this, &DevApp::ConsoleWindowTest);
 
     return Args.Input(inArgs);
 }

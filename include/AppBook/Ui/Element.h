@@ -22,7 +22,7 @@
 #pragma once
 
 #include <AppBook/Util/Object.h>
-#include <AppBook/ConIO/Char.h>
+#include <AppBook/Ui/Char.h>
 
 
 
@@ -111,6 +111,6 @@ struct Console
 
 
 
-} // Book::ConIO
+} // Book::Ui
 
 //#endif //APPBOOK_ELEMENT_H

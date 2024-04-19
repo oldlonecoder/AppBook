@@ -1,9 +1,9 @@
 //
-// Created by oldlonecoder on 24-04-18.
+// Created by oldlonecoder on 24-04-15.
 //
 
-//#ifndef APPBOOK_INPUTFIELD_H
-//#define APPBOOK_INPUTFIELD_H
+//#ifndef APPBOOK_UIFRAME_H
+//#define APPBOOK_UIFRAME_H
 /***************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
  *   serge.lussier@oldlonecoder.club                                       *
@@ -18,35 +18,39 @@
 
 
 #pragma once
-#include <AppBook/ConIO/Widget/Label.h>
+#include <AppBook/Ui/Widget/Label.h>
+#include <AppBook/Utf/Cadres.h>
+
 
 namespace Book::Ui
 {
 
-struct APPBOOK_API InputField : Element
-{
-    Icon* LeftIcon{nullptr};
-    std::string PlaceHolder{};
-    enum class Type: uint8_t
-    {
-        Passwd,
-        Email,
-        Username,
-        Birth,
-        Generic,
-        //...etc...
-    }InType{InputField::Type::Generic};
 
-    enum class Mode : uint8_t
-    {
-        Echo,
-        Random,
-        Star
-    }InMode{Mode::Echo};
-    //...
+/*!
+ * @brief Framed Rectangular element that can contains several kind of children elements.
+ *
+ * @author  &copy; 2024, Serge Lussier ( oldlonecoder@oldlonecoder.club )
+ *
+ */
+struct APPBOOK_API Frame : public Element
+{
+
+private:
+    Label* CaptionLabel{nullptr};
+
+
+public:
+    Frame();
+    Frame(Object *parentObj, const std::string &uid, WClass::Type cc);
+    Frame(Element *parentObj, const std::string &uid, WClass::Type cc);
+    ~Frame() override;
+
+    Utf::Cadre::FrameMat Model{2,2,2,2,0};
+    virtual void Show() override;
+    virtual Result Render(Rect SubR) override;
+    void SetCaption(const std::string& CaptionText);
 };
 
-} // Ui
-} // Book
+} // Book::Ui
 
-//#endif //APPBOOK_INPUTFIELD_H
+//#endif //APPBOOK_UIFRAME_H

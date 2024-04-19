@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-14.
 //
 
-#include "AppBook/ConIO/Widget/Label.h"
+#include "AppBook/Ui/Widget/Label.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *

@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 24-04-18.
 //
 
-#include "AppBook/ConIO/Widget/InputField.h"
+#include "AppBook/Ui/Widget/InputField.h"
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -23,9 +23,8 @@
 
 
 
-namespace Book
+namespace Book::Ui
 {
-namespace Ui
-{
-} // Ui
-} // Book
+
+
+}//namespace Book::Ui
