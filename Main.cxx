@@ -3,8 +3,8 @@
 //
 
 #include <AppBook/Book/ApplicationBase.h>
-#include <AppBook/ConIO/Widget/Label.h>
-#include <AppBook/ConIO/Widget/Frame.h>
+#include <AppBook/Ui/Widget/Label.h>
+#include <AppBook/Ui/Widget/Frame.h>
 
 namespace Book
 {

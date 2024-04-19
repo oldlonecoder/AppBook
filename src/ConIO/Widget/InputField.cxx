@@ -35,7 +35,7 @@ InputField::~InputField()
 InputField::InputField(Element *ParentEl, const std::string &Uid):Element(ParentEl, Uid),
 PlaceHolder(Uid){}
 
-void InputField::SetGeometry(Dim Geo)
+void InputField::SetGeometry(const Dim& Geo)
 {
     Element::SetGeometry(Geo);
     if(Geo.H > 1)

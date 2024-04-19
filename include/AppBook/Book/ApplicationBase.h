@@ -1,5 +1,5 @@
 
-#include <BookApplicationSkel/Interface.h>
+#include <AppBook/Book/AppBook.h>
 #include <AppBook/Util/Object.h>
 #include <AppBook/Util/CArgs.h>
 

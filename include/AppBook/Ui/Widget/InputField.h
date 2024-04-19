@@ -53,7 +53,7 @@ struct APPBOOK_API InputField : Element
     ~InputField() override;
 
     InputField(Element* ParentEl, const std::string& Uid);
-    void SetGeometry(Dim Geo) override;
+    void SetGeometry(const Dim& Geo) override;
     Book::Result Render(Rect SubR) override;
 
 

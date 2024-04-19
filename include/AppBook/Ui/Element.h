@@ -51,7 +51,7 @@ struct APPBOOK_API Element : public Util::Object
     explicit Element(Util::Object* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
     Element(Book::Ui::Element* ParentObj, const std::string& UID, Ui::WClass::Type CC = Ui::WClass::Element);
 
-    void SetGeometry(const Dim& Geo);
+    virtual void SetGeometry(const Dim& Geo);
     Book::Result Dispose();
     static size_t PurgeGc();
     Char::Ptr At(const Point& XY = {} ) const;
