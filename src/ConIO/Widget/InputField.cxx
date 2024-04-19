@@ -27,4 +27,32 @@ namespace Book::Ui
 {
 
 
+InputField::~InputField()
+{
+
+}
+
+InputField::InputField(Element *ParentEl, const std::string &Uid):Element(ParentEl, Uid),
+PlaceHolder(Uid){}
+
+void InputField::SetGeometry(Dim Geo)
+{
+    Element::SetGeometry(Geo);
+    if(Geo.H > 1)
+    {
+        // Icon on line 0
+        // Set frame or underline explicitly  on every draw on empty lines.
+        ;
+    }
+}
+
+Book::Result InputField::Render(Rect SubR)
+{
+    Attr |= Char::Underline;
+    Element::Render({});
+    //...
+    R.Home();
+    return Result::Done;
+}
+
 }//namespace Book::Ui

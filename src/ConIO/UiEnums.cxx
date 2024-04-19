@@ -38,7 +38,15 @@ AttrDB::Elements AttrDB::DB =
             {State::Normal, {Color::DarkCyan,Color::Blue}},
         //...
         }
-    }
+    },
+    {"InputField", // Including underline attr
+        {
+            {State::Active, {Color::LighcoreateBlue,Color::Reset}},
+            {State::Normal, {Color::White,Color::Reset}},
+            {State::Error,  {Color::Red,Color::Reset}},
+            //...
+        }
+    },
 };
 
 

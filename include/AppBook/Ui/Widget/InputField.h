@@ -19,7 +19,7 @@
 
 #pragma once
 #include <AppBook/Ui/Widget/Label.h>
-
+#include <AppBook/Utf/Cadres.h>
 namespace Book::Ui
 {
 
@@ -27,6 +27,8 @@ struct APPBOOK_API InputField : Element
 {
     Icon* LeftIcon{nullptr};
     std::string PlaceHolder{};
+    Dim InputLengths{};
+
     enum class Type: uint8_t
     {
         Passwd,
@@ -43,6 +45,20 @@ struct APPBOOK_API InputField : Element
         Random,
         Star
     }InMode{Mode::Echo};
+
+    Utf::Cadre::FrameMat Model={2,0,2,0,0};
+
+
+    InputField() = default;
+    ~InputField() override;
+
+    InputField(Element* ParentEl, const std::string& Uid);
+    void SetGeometry(Dim Geo) override;
+    Book::Result Render(Rect SubR) override;
+
+
+
+
     //...
 };
 
