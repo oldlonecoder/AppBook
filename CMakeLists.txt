@@ -50,15 +50,15 @@ add_library(
     include/AppBook/Book/TScanner.h src/Book/TScanner.cxx
     include/AppBook/Book/ApplicationBase.h src/Book/ApplicationBase.cxx
     include/AppBook/Utf/Cadres.h src/Utf/Cadres.cxx
-    include/AppBook/Ui/Char.h src/ConIO/Char.cxx
-    include/AppBook/Ui/Element.h src/ConIO/Element.cxx
-    include/AppBook/Ui/Widget/Icon.h src/ConIO/Widget/Icon.cxx
-    src/ConIO/Widget/Label.cxx
+    include/AppBook/Ui/Char.h src/Ui/Char.cxx
+    include/AppBook/Ui/Element.h src/Ui/Element.cxx
+    include/AppBook/Ui/Widget/Icon.h src/Ui/Widget/Icon.cxx
+    src/Ui/Widget/Label.cxx
     include/AppBook/Ui/Widget/Label.h
-    src/ConIO/UiEnums.cxx
-    src/ConIO/Widget/Frame.cxx
+    src/Ui/UiEnums.cxx
+    src/Ui/Widget/Frame.cxx
     include/AppBook/Ui/Widget/Frame.h
-    src/ConIO/Widget/InputField.cxx
+    src/Ui/Widget/InputField.cxx
     include/AppBook/Ui/Widget/InputField.h
 
 

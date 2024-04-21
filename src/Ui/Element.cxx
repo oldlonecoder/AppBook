@@ -121,7 +121,7 @@ Book::Result Element::WriteStr(const std::string &Txt)
     for(auto C: Txt)
     {
         if(P > EndBloc) return Book::Result::Overflow;
-        P->M |= (P->M & ~(Char::UtfMask | Char::BgFgMask)) | Attr | C;
+        P->M |= (P->M & ~(Char::UtfMask | Char::BgFgMask)) | (Attr& 0xFF) | C;
         ++P;
     }
     return Result::Ok;

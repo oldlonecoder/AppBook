@@ -36,11 +36,11 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     }
 
     auto *Frame = new Ui::Frame((Util::Object*)nullptr, "The First Ui::Frame", Ui::WClass::TopLevel);
-    auto *Label   = new Ui::Label(Frame,"It's Debian, Sir.");
+    auto *Label   = new Ui::Label(Frame,"That's Archlinux boyz!");
     auto *Icon    = new Ui::Icon(Frame);
 
-    *Icon = Utf::Glyph::Debian;
-    Icon->SetColors({Color::Maroon, Color::Blue});
+    *Icon = Utf::Glyph::Arch;
+    Icon->SetColors({Color::LightCyan3, Color::DarkBlue});
     Icon->SetPosition({3,2});
     Frame->SetGeometry(Dim{42,5});
     Label->SetPosition({5,2});
