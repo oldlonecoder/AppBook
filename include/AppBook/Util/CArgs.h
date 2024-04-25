@@ -41,7 +41,6 @@ struct APPBOOK_API Switch
     Data                   Arguments{};
     bool                   Enabled{ false };
     Delegate<Switch&> DelegateCB;
-
     bool operator !() { return DelegateCB.Empty(); }
 
     template<typename T> void Connect(T* Obj, Book::Enums::Action (T::*Fn)(Switch&)){

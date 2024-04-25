@@ -20,10 +20,12 @@ public:
 protected:
     Book::Result Setup() override;
     Book::Action ConsoleUiTest(Cmd::Switch &Arg);
+    Signal<int,const char*, const std::string&> test{"Signal tests..."};
+
 public:
     Book::Result Run() override;
 
-
+    int Slot(const char* cchar, const std::string& stdstring);
 };
 
 
@@ -52,6 +54,9 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     Console::GotoXY({1,12});
     Console::SetForegroundColor(Color::Reset);
     Ui::Element::PurgeGc();
+
+
+
     return Book::Action::Continue;
 }
 
@@ -60,6 +65,11 @@ Book::Result Application::Run()
 {
     if(!Setup()) return Book::Result::Failed;
     Args.Process();
+    Signal<int, const char*, const std::string&>::Accumulator Accumulator{};
+    test = Signal<int, const char*, const std::string&>("Signal Tests...", Accumulator);
+    test.Connect(this, &Application::Slot);
+    test("cchar","std::string");
+    for(auto V: Accumulator) Book::Debug() << " Accumulator :" << V;
     return Book::Result::Ok;
 }
 
@@ -72,6 +82,12 @@ Book::Result Application::Setup()
     (Args << Cmd::Switch{"Ui::Test", "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
 
     return ProcessArguments();
+}
+
+int Application::Slot(const char * cchar, const std::string &stdstring)
+{
+    Book::Debug()  << cchar << ":" << stdstring;
+    return 42;
 }
 
 } // namespace Book;
