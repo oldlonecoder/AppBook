@@ -67,7 +67,7 @@ Book::Enums::Code CArgs::Input(const std::vector<std::string_view>& StrArray)
     {
         auto Next = Query(Sv);
 
-        AppBook::Debug() << Color::Cyan << "Cargs::Input" << Color::White << '(' << Color::Yellow << Sv << Color::White << "):";
+        AppBook::Debug() << Color::Cyan << "CArgs::Input" << Color::White << '(' << Color::Yellow << Sv << Color::White << ") :";
 
         if(Next == Args.end())
         {

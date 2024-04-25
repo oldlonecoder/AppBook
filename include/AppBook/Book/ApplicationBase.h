@@ -25,7 +25,7 @@ public:
 
     virtual Result Run()=0;
     static ApplicationBase& Instance();
-    Book::Result ProcessArguments();
+    Book::Result CompileArguments();
 };
 
 } // Book

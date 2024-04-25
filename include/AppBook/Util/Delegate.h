@@ -151,7 +151,7 @@ private:
     mutable typename Delegate::Accumulator* _acc{ nullptr };
 };
 
-template<typename Ret, typename ...Parameters> class Signal
+template<typename Ret=Book::Action, typename ...Parameters> class Signal
 {
     std::string _id{ "anonymous signal" };
 public:

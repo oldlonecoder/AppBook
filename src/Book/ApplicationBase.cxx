@@ -117,7 +117,7 @@ ApplicationBase& ApplicationBase::Instance()
 }
 
 
-Book::Result ApplicationBase::ProcessArguments()
+Book::Result ApplicationBase::CompileArguments()
 {
     return Args.Input(mArgs);
 }

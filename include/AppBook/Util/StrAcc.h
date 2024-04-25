@@ -184,6 +184,12 @@ public:
         //std::cerr << v << '\n';
         return *this;
     }
+    template<typename T> StrAcc& HexStr(T HxValue)
+    {
+        std::ostringstream is;
+        is << std::hex << HxValue;
+        return Format(is.str());
+    }
 
     template<typename T> StrAcc& operator += (const T& arg_)
     {

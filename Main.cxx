@@ -41,8 +41,8 @@ Book::Action Application::ConsoleUiTest(Cmd::Switch &arg)
     auto *Label   = new Ui::Label(Frame,"That's Archlinux boyz!");
     auto *Icon    = new Ui::Icon(Frame);
 
-    *Icon = Utf::Glyph::Arch;
-    Icon->SetColors({Color::LightCyan3, Color::DarkBlue});
+    *Icon = Utf::Glyph::Debian;
+    Icon->SetColors({Color::Red4, Color::Blue});
     Icon->SetPosition({3,2});
     Frame->SetGeometry(Dim{42,5});
     Label->SetPosition({5,2});
@@ -68,7 +68,7 @@ Book::Result Application::Run()
     Signal<int, const char*, const std::string&>::Accumulator Accumulator{};
     test = Signal<int, const char*, const std::string&>("Signal Tests...", Accumulator);
     test.Connect(this, &Application::Slot);
-    test("cchar","std::string");
+    test("Hello","[std::string]::World!");
     for(auto V: Accumulator) Book::Debug() << " Accumulator :" << V;
     return Book::Result::Ok;
 }
@@ -81,7 +81,7 @@ Book::Result Application::Setup()
     //...
     (Args << Cmd::Switch{"Ui::Test", "-w", "--UI::Console","Test Book::UI...",0 }).Connect(this, &Application::ConsoleUiTest);
 
-    return ProcessArguments();
+    return CompileArguments();
 }
 
 int Application::Slot(const char * cchar, const std::string &stdstring)

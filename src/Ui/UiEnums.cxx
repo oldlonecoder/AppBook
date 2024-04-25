@@ -13,29 +13,29 @@ AttrDB::Elements AttrDB::DB =
 {
     {"Element",
         {
-            {State::Active, {Color::Yellow, Color::DarkBlue}},
-            {State::Normal, {Color::Grey0, Color::DarkBlue}},
+            {State::Active, {Color::Yellow, Color::Blue}},
+            {State::Normal, {Color::Grey0, Color::Blue}},
             //...
         }
     },
     {"Frame",
         {
-            {State::Active, {Color::Grey100, Color::DarkBlue}},
-            {State::Normal, {Color::Grey0, Color::DarkBlue}},
+            {State::Active, {Color::Grey100, Color::Blue}},
+            {State::Normal, {Color::Grey0, Color::Blue}},
         //...
         }
     },
     {"Glyph",
         {
-            {State::Active, {Color::Maroon,Color::DarkBlue}},
-            {State::Normal, {Color::Maroon,Color::DarkBlue}},
+            {State::Active, {Color::Maroon,Color::Blue}},
+            {State::Normal, {Color::Maroon,Color::Blue}},
         //...
         }
     },
     {"Caption",
         {
-            {State::Active, {Color::Grey78,Color::DarkBlue}},
-            {State::Normal, {Color::DarkCyan,Color::DarkBlue}},
+            {State::Active, {Color::Grey78,Color::Blue}},
+            {State::Normal, {Color::DarkCyan,Color::Blue}},
         //...
         }
     },
